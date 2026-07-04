@@ -108,6 +108,11 @@
   }
 }
 
+/* Login inputs always render light, independent of the app's dark-mode overrides above */
+.login-input {
+  background-color: #f1f5f9 !important;
+}
+
 /* Force light autofill background, overriding the browser's dark-mode autofill styling */
 .login-input:-webkit-autofill,
 .login-input:-webkit-autofill:hover,

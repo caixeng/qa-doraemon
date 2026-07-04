@@ -167,7 +167,7 @@ export function Login() {
                 placeholder="Admin hoặc email"
                 required
                 autoComplete="username"
-                className="login-input w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-lg
+                className="login-input w-full px-4 py-3 border border-slate-200 rounded-lg
                   text-slate-900 placeholder:text-slate-400
                   focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
                   transition-all duration-200"
@@ -191,7 +191,7 @@ export function Login() {
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="login-input w-full px-4 py-3 pr-12 bg-slate-100 border border-slate-200 rounded-lg
+                  className="login-input w-full px-4 py-3 pr-12 border border-slate-200 rounded-lg
                     text-slate-900 placeholder:text-slate-400
                     focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
                     transition-all duration-200"
