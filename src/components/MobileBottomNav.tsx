@@ -20,6 +20,12 @@ export function MobileBottomNav() {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-surface-container border-t border-outline-variant flex items-stretch h-12 pb-[env(safe-area-inset-bottom)]"
+      style={{
+        transform: "translateZ(0)",
+        WebkitBackfaceVisibility: "hidden",
+        backfaceVisibility: "hidden",
+        willChange: "transform",
+      }}
       aria-label="Điều hướng chính"
     >
       {tabs.map((item) => {

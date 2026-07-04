@@ -195,6 +195,10 @@ export function Topbar({
       )}
       style={{
         transition: "left 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)",
+        transform: "translateZ(0)",
+        WebkitBackfaceVisibility: "hidden",
+        backfaceVisibility: "hidden",
+        willChange: "transform",
       }}
     >
       {/* ── Left section ────────────────── */}
