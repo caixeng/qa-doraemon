@@ -17,7 +17,7 @@ import {
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
 import { toast } from "../stores/toastStore";
-import { ConfirmDialog, useSlidePanel, ErrorState } from "../components/ui";
+import { ConfirmDialog, useSlidePanel, ErrorState, MobileFilterToggle } from "../components/ui";
 import { NotificationForm } from "../components/forms/NotificationForm";
 import { NotificationDetailPanel } from "../components/details/NotificationDetailPanel";
 import { useAuthStore } from "../stores/authStore";
@@ -222,38 +222,39 @@ export function Notifications() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-on-surface">Thông Báo</h1>
-          <p className="text-sm text-on-surface-variant">
+          <h1 className="text-[18px] md:text-2xl font-bold tracking-tight text-on-surface">Thông Báo</h1>
+          <p className="hidden md:block text-sm text-on-surface-variant">
             Quản lý thông báo chung của trường, thông báo theo lớp và tương tác với phụ huynh qua Zalo OA.
           </p>
         </div>
-        
+
         <div className="flex gap-2">
           {notifications.some(n => !n.is_read) && (
             <button
               onClick={handleMarkAllRead}
-              className="inline-flex items-center justify-center gap-2 bg-surface hover:bg-surface-container border border-outline-variant/40 px-4 py-2.5 rounded-xl text-sm font-semibold text-on-surface transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-surface hover:bg-surface-container border border-outline-variant/40 px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-[13px] md:text-sm font-semibold text-on-surface transition-all cursor-pointer"
             >
               <MailOpen className="w-4 h-4 text-on-surface-variant" />
-              Đọc Tất Cả
+              <span className="hidden md:inline">Đọc Tất Cả</span>
             </button>
           )}
 
           {isPrivileged && (
             <button
               onClick={handleCreateNotification}
-              className="inline-flex items-center justify-center gap-2 bg-primary text-on-primary hover:bg-primary/90 px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-[13px] md:text-sm font-semibold shadow-sm transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              Soạn Thông Báo
+              <span className="md:hidden">Soạn</span>
+              <span className="hidden md:inline">Soạn Thông Báo</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Filters bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface border border-outline-variant/40 rounded-2xl p-4">
-        <div className="relative flex-1 max-w-md">
+      <div className="flex flex-wrap md:flex-nowrap md:items-center justify-between gap-2.5 md:gap-4 md:bg-surface md:border md:border-outline-variant/40 rounded-2xl md:p-4">
+        <div className="relative flex-1 min-w-0 md:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <input
             type="text"
@@ -264,11 +265,11 @@ export function Notifications() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <MobileFilterToggle hasActiveFilters={selectedType !== 'all' || selectedStatus !== 'all'}>
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
+            className="w-full md:w-auto bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
           >
             <option value="all">Tất cả phân loại</option>
             <option value="announcement">Thông báo chung</option>
@@ -279,13 +280,13 @@ export function Notifications() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
+            className="w-full md:w-auto bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
           >
             <option value="all">Tất cả trạng thái</option>
             <option value="unread">Chưa đọc</option>
             <option value="read">Đã đọc</option>
           </select>
-        </div>
+        </MobileFilterToggle>
       </div>
 
       {/* Notifications list */}

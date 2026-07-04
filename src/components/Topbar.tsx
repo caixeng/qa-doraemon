@@ -188,7 +188,7 @@ export function Topbar({
       className={cn(
         "fixed top-0 right-0 z-30 flex items-center justify-between gap-4",
         "h-14 md:h-[72px] px-4 md:px-6 lg:px-8",
-        "bg-surface-container-lowest/80 border-b border-outline-variant backdrop-blur-md",
+        "bg-surface-container-lowest md:bg-surface-container-lowest/80 border-b border-outline-variant md:backdrop-blur-md",
         // Offset for sidebar
         "left-0 md:left-16",
         !sidebarCollapsed && "md:left-[280px]"

@@ -13,7 +13,8 @@ import {
   useSlidePanel,
   Table,
   type TableColumn,
-  ExcelImportModal
+  ExcelImportModal,
+  MobileFilterToggle
 } from "../components/ui";
 import { cn } from "../lib/utils";
 import { useStudents, type StudentWithRelations } from "../hooks/useStudents";
@@ -325,29 +326,30 @@ export function Students() {
               Tổng số: {totalCount} học sinh
             </span>
           </div>
-          <p className="text-[14px] md:text-[16px] text-on-surface-variant mt-1">Quản lý và theo dõi thông tin chi tiết của tất cả học sinh tại trường mầm non.</p>
+          <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1">Quản lý và theo dõi thông tin chi tiết của tất cả học sinh tại trường mầm non.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <button 
+          <button
             onClick={handleExportExcel}
-            className="border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
+            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
             Xuất Excel
           </button>
-          <button 
+          <button
             onClick={() => setIsImportOpen(true)}
-            className="border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
+            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
           >
             <Plus className="w-4 h-4 text-primary" />
             Nhập Excel
           </button>
-          <button 
+          <button
             onClick={handleCreateStudent}
-            className="bg-primary text-on-primary px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-sm hover:shadow-md cursor-pointer duration-200 whitespace-nowrap shrink-0"
+            className="bg-primary text-on-primary px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-1.5 md:gap-2 hover:bg-primary/90 transition-all shadow-sm hover:shadow-md cursor-pointer duration-200 whitespace-nowrap shrink-0"
           >
             <Plus className="w-4 h-4" />
-            Thêm học sinh mới
+            <span className="md:hidden">Thêm</span>
+            <span className="hidden md:inline">Thêm học sinh mới</span>
           </button>
         </div>
       </div>
@@ -379,79 +381,83 @@ export function Students() {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-surface-container-lowest p-3.5 rounded-2xl border border-outline-variant/30 shadow-xs flex flex-wrap gap-3.5 items-center">
+      <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-xs flex flex-wrap gap-2.5 md:gap-3.5 items-center">
         {/* Search Input */}
-        <div className="relative w-full md:w-64">
+        <div className="relative flex-1 min-w-0 md:flex-none md:w-64">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo tên học sinh, mã số..." 
+            placeholder="Tìm theo tên học sinh, mã số..."
             className="w-full pl-10 pr-4 py-2 border border-outline-variant/50 rounded-xl text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors"
           />
         </div>
 
-        {/* Class Filter - Only visible for Active and Registered tabs */}
-        {(selectedStatus === 'active' || selectedStatus === 'registered') && (
-          <select 
-            value={selectedClassId}
-            onChange={(e) => setSelectedClassId(e.target.value)}
-            className="border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors cursor-pointer font-semibold text-on-surface-variant"
-          >
-            <option value="all">Tất cả các lớp</option>
-            {classesList.map((c: any) => {
-              const gradeName = getGradeName(c.grade_level);
-              return (
-                <option key={c.id} value={c.id}>
-                  {c.name}{gradeName ? ` (${gradeName})` : ''}
-                </option>
-              );
-            })}
-          </select>
-        )}
-
-        {/* Birth Year / Age Filter */}
-        {availableBirthYears.length > 0 && (
-          <select 
-            value={selectedBirthYear}
-            onChange={(e) => setSelectedBirthYear(e.target.value)}
-            className="border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors cursor-pointer font-semibold text-on-surface-variant"
-          >
-            <option value="all">Tất cả độ tuổi</option>
-            {availableBirthYears.map((year) => {
-              const age = new Date().getFullYear() - year;
-              return (
-                <option key={year} value={year}>
-                  {year} ({age} tuổi)
-                </option>
-              );
-            })}
-          </select>
-        )}
-
-        {/* Priority Filter - Only visible for Waiting, Future and Registered tabs */}
-        {(selectedStatus === 'waiting' || selectedStatus === 'future' || selectedStatus === 'registered') && (
-          <select 
-            value={selectedPriority}
-            onChange={(e) => setSelectedPriority(e.target.value)}
-            className="border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors cursor-pointer font-semibold text-on-surface-variant"
-          >
-            <option value="all">Tất cả các đối tượng</option>
-            <option value="Con GVNV">Ưu tiên 1 (Con GVNV)</option>
-            <option value="Anh chị đang học ở trường">Ưu tiên 2 (Anh chị đang học ở trường)</option>
-            <option value="HĐQT">Ưu tiên 3 (HĐQT)</option>
-            <option value="Phụ huynh cũ">Ưu tiên 4 (Phụ huynh cũ)</option>
-            <option value="none">Không ưu tiên</option>
-          </select>
-        )}
-
-        <button 
-          onClick={handleResetFilters}
-          className="px-4 py-2 text-primary text-[14px] font-bold hover:bg-primary/5 rounded-xl transition-all cursor-pointer ml-auto"
+        <MobileFilterToggle
+          hasActiveFilters={selectedClassId !== 'all' || selectedBirthYear !== 'all' || selectedPriority !== 'all'}
         >
-          Xóa bộ lọc
-        </button>
+          {/* Class Filter - Only visible for Active and Registered tabs */}
+          {(selectedStatus === 'active' || selectedStatus === 'registered') && (
+            <select
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
+              className="w-full md:w-auto border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors cursor-pointer font-semibold text-on-surface-variant"
+            >
+              <option value="all">Tất cả các lớp</option>
+              {classesList.map((c: any) => {
+                const gradeName = getGradeName(c.grade_level);
+                return (
+                  <option key={c.id} value={c.id}>
+                    {c.name}{gradeName ? ` (${gradeName})` : ''}
+                  </option>
+                );
+              })}
+            </select>
+          )}
+
+          {/* Birth Year / Age Filter */}
+          {availableBirthYears.length > 0 && (
+            <select
+              value={selectedBirthYear}
+              onChange={(e) => setSelectedBirthYear(e.target.value)}
+              className="w-full md:w-auto border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors cursor-pointer font-semibold text-on-surface-variant"
+            >
+              <option value="all">Tất cả độ tuổi</option>
+              {availableBirthYears.map((year) => {
+                const age = new Date().getFullYear() - year;
+                return (
+                  <option key={year} value={year}>
+                    {year} ({age} tuổi)
+                  </option>
+                );
+              })}
+            </select>
+          )}
+
+          {/* Priority Filter - Only visible for Waiting, Future and Registered tabs */}
+          {(selectedStatus === 'waiting' || selectedStatus === 'future' || selectedStatus === 'registered') && (
+            <select
+              value={selectedPriority}
+              onChange={(e) => setSelectedPriority(e.target.value)}
+              className="w-full md:w-auto border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors cursor-pointer font-semibold text-on-surface-variant"
+            >
+              <option value="all">Tất cả các đối tượng</option>
+              <option value="Con GVNV">Ưu tiên 1 (Con GVNV)</option>
+              <option value="Anh chị đang học ở trường">Ưu tiên 2 (Anh chị đang học ở trường)</option>
+              <option value="HĐQT">Ưu tiên 3 (HĐQT)</option>
+              <option value="Phụ huynh cũ">Ưu tiên 4 (Phụ huynh cũ)</option>
+              <option value="none">Không ưu tiên</option>
+            </select>
+          )}
+
+          <button
+            onClick={handleResetFilters}
+            className="px-4 py-2 text-primary text-[14px] font-bold hover:bg-primary/5 rounded-xl transition-all cursor-pointer md:ml-auto"
+          >
+            Xóa bộ lọc
+          </button>
+        </MobileFilterToggle>
       </div>
 
       {/* Bulk Action Bar */}

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
-import { DatePicker, Skeleton, EmptyState, ErrorState, Button, Modal, Table, type TableColumn } from "../components/ui";
+import { DatePicker, Skeleton, EmptyState, ErrorState, Button, Modal, Table, MobileFilterToggle, type TableColumn } from "../components/ui";
 import { toast } from "../stores/toastStore";
 import { useAuthStore } from "../stores/authStore";
 import { format } from "date-fns";
@@ -398,7 +398,7 @@ export function Attendance() {
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
             Điểm danh hàng ngày
           </h2>
-          <p className="text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
+          <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
             Theo dõi chuyên cần, đi trễ, nghỉ phép và ghi nhận sức khỏe học sinh.
           </p>
         </div>
@@ -456,8 +456,8 @@ export function Attendance() {
       </div>
 
       {/* Filter and Date selection panel */}
-      <div className="bg-surface-container-lowest p-3.5 rounded-2xl border border-outline-variant/30 shadow-sm flex flex-wrap md:flex-nowrap gap-3.5 items-center mb-5">
-        <div className="w-full md:w-64">
+      <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-sm flex flex-wrap md:flex-nowrap gap-2.5 md:gap-3.5 items-center mb-5">
+        <div className="flex-1 min-w-0 md:flex-none md:w-64">
           <DatePicker
             value={selectedDate}
             onChange={(date) => date && setSelectedDate(date)}
@@ -465,49 +465,51 @@ export function Attendance() {
           />
         </div>
 
-        <select
-          value={selectedClassId}
-          onChange={(e) => setSelectedClassId(e.target.value)}
-          className="w-full md:w-64 h-10 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm px-3 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer font-semibold text-on-surface-variant"
-        >
-          {classesList.map((c: any) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-          {classesList.length === 0 && (
-            <option value="">Không có lớp học nào</option>
-          )}
-        </select>
+        <MobileFilterToggle>
+          <select
+            value={selectedClassId}
+            onChange={(e) => setSelectedClassId(e.target.value)}
+            className="w-full md:w-64 h-10 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm px-3 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer font-semibold text-on-surface-variant"
+          >
+            {classesList.map((c: any) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+            {classesList.length === 0 && (
+              <option value="">Không có lớp học nào</option>
+            )}
+          </select>
+        </MobileFilterToggle>
 
-        <div className="text-on-surface-variant/80 text-[13px] font-semibold md:ml-auto">
+        <div className="hidden md:block text-on-surface-variant/80 text-[13px] font-semibold md:ml-auto">
           Ngày hiển thị: <strong className="text-primary font-bold">{format(selectedDate, 'eeee, dd/MM/yyyy', { locale: vi })}</strong>
         </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        <div className="bg-surface rounded-2xl border border-outline-variant/65 border-l-4 border-l-slate-500 p-4 shadow-2xs flex flex-col justify-between min-h-[92px]">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tổng sĩ số</span>
-          <span className="text-[28px] font-black font-playfair text-slate-900 dark:text-slate-50 mt-1 leading-none">{totalStudents}</span>
+      <div className="flex gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-3 lg:grid-cols-6 md:gap-4 md:overflow-visible mb-4 md:mb-8">
+        <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-slate-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
+          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Tổng sĩ số</span>
+          <span className="text-[15px] md:text-[28px] font-black font-playfair text-slate-900 dark:text-slate-50 md:mt-1 leading-none">{totalStudents}</span>
         </div>
-        <div className="bg-surface rounded-2xl border border-outline-variant/65 border-l-4 border-l-emerald-500 p-4 shadow-2xs flex flex-col justify-between min-h-[92px]">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Có mặt</span>
-          <span className="text-[28px] font-black font-playfair text-emerald-600 dark:text-emerald-400 mt-1 leading-none">{presentCount}</span>
+        <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-emerald-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
+          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 whitespace-nowrap">Có mặt</span>
+          <span className="text-[15px] md:text-[28px] font-black font-playfair text-emerald-600 dark:text-emerald-400 md:mt-1 leading-none">{presentCount}</span>
         </div>
-        <div className="bg-surface rounded-2xl border border-outline-variant/65 border-l-4 border-l-rose-500 p-4 shadow-2xs flex flex-col justify-between min-h-[92px]">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-400">Vắng mặt</span>
-          <span className="text-[28px] font-black font-playfair text-rose-600 dark:text-rose-450 mt-1 leading-none">{absentCount}</span>
+        <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-rose-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
+          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-400 whitespace-nowrap">Vắng mặt</span>
+          <span className="text-[15px] md:text-[28px] font-black font-playfair text-rose-600 dark:text-rose-450 md:mt-1 leading-none">{absentCount}</span>
         </div>
-        <div className="bg-surface rounded-2xl border border-outline-variant/65 border-l-4 border-l-amber-500 p-4 shadow-2xs flex flex-col justify-between min-h-[92px]">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400">Đi trễ</span>
-          <span className="text-[28px] font-black font-playfair text-amber-600 dark:text-amber-450 mt-1 leading-none">{lateCount}</span>
+        <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-amber-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
+          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 whitespace-nowrap">Đi trễ</span>
+          <span className="text-[15px] md:text-[28px] font-black font-playfair text-amber-600 dark:text-amber-450 md:mt-1 leading-none">{lateCount}</span>
         </div>
-        <div className="bg-surface rounded-2xl border border-outline-variant/65 border-l-4 border-l-purple-500 p-4 shadow-2xs flex flex-col justify-between min-h-[92px]">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-400">Có phép / Bệnh</span>
-          <span className="text-[28px] font-black font-playfair text-purple-600 dark:text-purple-450 mt-1 leading-none">{excusedCount + sickCount}</span>
+        <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-purple-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
+          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-400 whitespace-nowrap">Có phép / Bệnh</span>
+          <span className="text-[15px] md:text-[28px] font-black font-playfair text-purple-600 dark:text-purple-450 md:mt-1 leading-none">{excusedCount + sickCount}</span>
         </div>
-        <div className="bg-surface rounded-2xl border border-outline-variant/65 border-l-4 border-l-slate-400 p-4 shadow-2xs flex flex-col justify-between min-h-[92px]">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Chưa điểm danh</span>
-          <span className="text-[28px] font-black font-playfair text-slate-600 dark:text-slate-400 mt-1 leading-none">{unmarkedCount}</span>
+        <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-slate-400 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
+          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Chưa điểm danh</span>
+          <span className="text-[15px] md:text-[28px] font-black font-playfair text-slate-600 dark:text-slate-400 md:mt-1 leading-none">{unmarkedCount}</span>
         </div>
       </div>
 

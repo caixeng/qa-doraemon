@@ -253,16 +253,17 @@ export function Classes() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Quản lý Lớp học</h2>
-          <p className="text-[13px] md:text-[14px] text-on-surface-variant mt-1">
+          <p className="hidden md:block text-[13px] md:text-[14px] text-on-surface-variant mt-1">
             Danh sách các lớp học, phân công giáo viên và quản lý học sinh theo lớp năm học {currentYearName}.
           </p>
         </div>
         <button
           onClick={handleCreateClass}
-          className="inline-flex items-center justify-center gap-2 bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+          className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
         >
           <Plus className="w-4 h-4" />
-          Tạo Lớp Mới
+          <span className="md:hidden">Thêm</span>
+          <span className="hidden md:inline">Tạo Lớp Mới</span>
         </button>
       </div>
 
@@ -278,8 +279,8 @@ export function Classes() {
         <div className="w-full space-y-6">
             
             {/* Filters */}
-            <div className="bg-surface-container-lowest p-3.5 rounded-2xl border border-outline-variant/30 shadow-sm flex flex-wrap gap-3.5 items-center">
-              <div className="relative w-full md:w-80">
+            <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-sm flex flex-wrap gap-2.5 md:gap-3.5 items-center">
+              <div className="relative flex-1 min-w-0 md:flex-none md:w-80">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
                 <input
                   type="text"

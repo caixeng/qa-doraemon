@@ -35,5 +35,6 @@ export { Tooltip } from "./Tooltip";
 export { Checkbox } from "./Checkbox";
 export { Dropdown, type DropdownItem } from "./Dropdown";
 export { Breadcrumb, type BreadcrumbItem } from "./Breadcrumb";
+export { MobileFilterToggle } from "./MobileFilterToggle";
 
 

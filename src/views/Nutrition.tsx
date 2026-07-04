@@ -327,7 +327,7 @@ export function Nutrition() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
         <div>
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Dinh Dưỡng & Thực Đơn</h2>
-          <p className="text-[13px] md:text-[14px] text-on-surface-variant mt-1 font-inter">
+          <p className="hidden md:block text-[13px] md:text-[14px] text-on-surface-variant mt-1 font-inter">
             Lập kế hoạch thực đơn dinh dưỡng hàng tuần và in gửi phụ huynh học sinh.
           </p>
         </div>
@@ -337,57 +337,60 @@ export function Nutrition() {
             <button
               onClick={() => handleCloneLastWeek(false)}
               disabled={cloning}
-              className="inline-flex items-center justify-center gap-2 bg-white hover:bg-surface-container border border-outline-variant/40 px-3.5 py-2 rounded-xl text-[13px] font-semibold text-on-surface transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
+              className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-white hover:bg-surface-container border border-outline-variant/40 px-2.5 md:px-3.5 py-2 rounded-xl text-[13px] font-semibold text-on-surface transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
+              title="Nhân bản tuần trước"
             >
               <Copy className="w-4 h-4 text-on-surface-variant" />
-              {cloning ? 'Đang sao chép...' : 'Nhân Bản Tuần Trước'}
+              <span className="hidden md:inline">{cloning ? 'Đang sao chép...' : 'Nhân Bản Tuần Trước'}</span>
             </button>
           )}
 
           <button
             onClick={handlePrint}
-            className="inline-flex items-center justify-center gap-2 bg-white hover:bg-surface-container border border-outline-variant/40 px-3.5 py-2 rounded-xl text-[13px] font-semibold text-on-surface transition-all cursor-pointer whitespace-nowrap shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-white hover:bg-surface-container border border-outline-variant/40 px-2.5 md:px-3.5 py-2 rounded-xl text-[13px] font-semibold text-on-surface transition-all cursor-pointer whitespace-nowrap shrink-0"
+            title="In thực đơn"
           >
             <Printer className="w-4 h-4 text-on-surface-variant" />
-            In Thực Đơn
+            <span className="hidden md:inline">In Thực Đơn</span>
           </button>
 
           {isPrivileged && (
             <button
               onClick={handleCreateMealPlan}
-              className="inline-flex items-center justify-center gap-2 bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               <Plus className="w-4 h-4" />
-              Thêm Thực Đơn
+              <span className="md:hidden">Thêm</span>
+              <span className="hidden md:inline">Thêm Thực Đơn</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Week navigator & Filters - hidden in printing */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-surface border border-outline-variant/40 rounded-2xl p-4 print:hidden shadow-xs">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 md:gap-4 bg-surface border border-outline-variant/40 rounded-2xl p-2.5 md:p-4 print:hidden shadow-xs">
+        <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto">
           <button
             onClick={handlePrevWeek}
-            className="p-2 hover:bg-surface-container-high/60 rounded-xl text-on-surface transition-all cursor-pointer border border-outline-variant/30"
+            className="shrink-0 p-2 hover:bg-surface-container-high/60 rounded-xl text-on-surface transition-all cursor-pointer border border-outline-variant/30"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          
+
           <button
             onClick={handleToday}
-            className="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-xs font-bold text-on-surface rounded-xl transition-all cursor-pointer"
+            className="shrink-0 px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-xs font-bold text-on-surface rounded-xl transition-all cursor-pointer"
           >
             Tuần Này
           </button>
 
-          <span className="text-sm font-bold text-on-surface px-2">
-            Tuần: {weekDates[0].toLocaleDateString('vi-VN')} - {weekDates[4].toLocaleDateString('vi-VN')}
+          <span className="shrink-0 text-[12px] md:text-sm font-bold text-on-surface px-2 whitespace-nowrap">
+            {weekDates[0].toLocaleDateString('vi-VN')} - {weekDates[4].toLocaleDateString('vi-VN')}
           </span>
 
           <button
             onClick={handleNextWeek}
-            className="p-2 hover:bg-surface-container-high/60 rounded-xl text-on-surface transition-all cursor-pointer border border-outline-variant/30"
+            className="shrink-0 p-2 hover:bg-surface-container-high/60 rounded-xl text-on-surface transition-all cursor-pointer border border-outline-variant/30"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -396,7 +399,7 @@ export function Nutrition() {
         <select
           value={selectedClassId}
           onChange={(e) => setSelectedClassId(e.target.value)}
-          className="bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
+          className="w-full md:w-auto bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
         >
           <option value="all">Thực đơn chung toàn trường</option>
           {classesList.map((c) => (

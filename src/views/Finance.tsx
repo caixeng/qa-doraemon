@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
-import { DatePicker, Table, type TableColumn, Button, useSlidePanel, ErrorState } from "../components/ui";
+import { DatePicker, Table, type TableColumn, Button, useSlidePanel, ErrorState, MobileFilterToggle } from "../components/ui";
 import { FeeForm } from "../components/forms/FeeForm";
 import { FeeDetailPanel } from "../components/details/FeeDetailPanel";
 import { toast } from "../stores/toastStore";
@@ -521,18 +521,18 @@ export function Finance() {
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
             Quản lý Học phí
           </h2>
-          <p className="text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
+          <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
             Tạo và theo dõi phiếu thu học phí bán trú hàng tháng của học sinh.
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3 w-full md:w-auto shrink-0">
           <Button
             type="button"
             variant="outline"
             onClick={handleExportCSV}
             leftIcon={<Download className="w-4 h-4" />}
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 rounded-xl text-[13px] font-bold border-outline-variant/50 hover:bg-surface-container-low cursor-pointer whitespace-nowrap shrink-0"
+            className="hidden md:flex flex-1 md:flex-none items-center justify-center gap-2 rounded-xl text-[13px] font-bold border-outline-variant/50 hover:bg-surface-container-low cursor-pointer whitespace-nowrap shrink-0"
           >
             Xuất Excel
           </Button>
@@ -542,46 +542,47 @@ export function Finance() {
             leftIcon={<Plus className="w-4 h-4" />}
             className="flex-1 md:flex-none flex items-center justify-center gap-2 rounded-xl bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-sm text-[13px] font-bold cursor-pointer whitespace-nowrap shrink-0"
           >
-            Tạo phiếu thu
+            <span className="md:hidden">Tạo phiếu</span>
+            <span className="hidden md:inline">Tạo phiếu thu</span>
           </Button>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-8">
         {/* Stat Card 1 */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between min-h-[120px] relative overflow-hidden">
+        <div className="bg-surface-container-lowest rounded-2xl p-3 md:p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between min-h-[76px] md:min-h-[120px] relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <p className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Dự kiến thu (Tháng {currentMonth}/{currentYear})</p>
-              <h3 className="text-[22px] font-extrabold tracking-tight text-on-surface mt-1">
+              <p className="text-[9px] md:text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Dự kiến thu (Tháng {currentMonth}/{currentYear})</p>
+              <h3 className="text-[16px] md:text-[22px] font-extrabold tracking-tight text-on-surface mt-1">
                 {aggregates.expected.toLocaleString('vi-VN')} ₫
               </h3>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              <TrendingUp className="w-4.5 h-4.5" />
+            <div className="w-7 h-7 md:w-9 md:h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <TrendingUp className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
             </div>
           </div>
-          <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px] text-emerald-600 font-bold">
+          <div className="mt-2 md:mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[10px] md:text-[11px] text-emerald-600 font-bold">
             <span>Sĩ số đóng phí</span>
             <span>{totalCount} học sinh</span>
           </div>
         </div>
-        
+
         {/* Stat Card 2 */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between min-h-[120px] relative overflow-hidden">
+        <div className="bg-surface-container-lowest rounded-2xl p-3 md:p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between min-h-[76px] md:min-h-[120px] relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <p className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Đã thực thu</p>
-              <h3 className="text-[22px] font-extrabold tracking-tight text-green-600 mt-1">
+              <p className="text-[9px] md:text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Đã thực thu</p>
+              <h3 className="text-[16px] md:text-[22px] font-extrabold tracking-tight text-green-600 mt-1">
                 {aggregates.paid.toLocaleString('vi-VN')} ₫
               </h3>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-green-500/10 flex items-center justify-center text-green-600 shrink-0">
-              <TrendingUp className="w-4.5 h-4.5" />
+            <div className="w-7 h-7 md:w-9 md:h-9 rounded-xl bg-green-500/10 flex items-center justify-center text-green-600 shrink-0">
+              <TrendingUp className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
             </div>
           </div>
-          <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px] text-on-surface-variant font-bold">
+          <div className="mt-2 md:mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[10px] md:text-[11px] text-on-surface-variant font-bold">
             <span>Tỷ lệ hoàn thành</span>
             <span className="text-green-600 font-extrabold">
               Đạt {aggregates.expected > 0 ? Math.round((aggregates.paid / aggregates.expected) * 100) : 0}% kế hoạch
@@ -590,19 +591,19 @@ export function Finance() {
         </div>
 
         {/* Stat Card 3 */}
-        <div className="bg-red-50/50 dark:bg-red-950/5 rounded-2xl p-5 shadow-xs border border-red-200/50 dark:border-red-900/20 flex flex-col justify-between min-h-[120px] relative overflow-hidden">
+        <div className="bg-red-50/50 dark:bg-red-950/5 rounded-2xl p-3 md:p-5 shadow-xs border border-red-200/50 dark:border-red-900/20 flex flex-col justify-between min-h-[76px] md:min-h-[120px] relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <p className="text-[10px] font-extrabold text-red-750 dark:text-red-400 uppercase tracking-wider">Còn nợ / Chưa thanh toán</p>
-              <h3 className="text-[22px] font-extrabold tracking-tight text-red-600 dark:text-red-400 mt-1">
+              <p className="text-[9px] md:text-[10px] font-extrabold text-red-750 dark:text-red-400 uppercase tracking-wider">Còn nợ / Chưa thanh toán</p>
+              <h3 className="text-[16px] md:text-[22px] font-extrabold tracking-tight text-red-600 dark:text-red-400 mt-1">
                 {aggregates.remaining.toLocaleString('vi-VN')} ₫
               </h3>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-red-500/10 flex items-center justify-center text-red-600 shrink-0">
-              <AlertCircle className="w-4.5 h-4.5" />
+            <div className="w-7 h-7 md:w-9 md:h-9 rounded-xl bg-red-500/10 flex items-center justify-center text-red-600 shrink-0">
+              <AlertCircle className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
             </div>
           </div>
-          <div className="mt-3 pt-2 border-t border-red-200/30 dark:border-red-900/10 flex items-center justify-between text-[11px] text-red-700 dark:text-red-400 font-bold">
+          <div className="mt-2 md:mt-3 pt-2 border-t border-red-200/30 dark:border-red-900/10 flex items-center justify-between text-[10px] md:text-[11px] text-red-700 dark:text-red-400 font-bold">
             <span>Chưa hoàn thành</span>
             <span>
               {aggregates.unpaidCount} học sinh ({aggregates.overdueCount} quá hạn)
@@ -650,10 +651,10 @@ export function Finance() {
       {/* Main Table section */}
       <div className="bg-surface-container-lowest rounded-[32px] shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col">
         {/* Filters Toolbar */}
-        <div className="p-5 border-b border-outline-variant/30 flex flex-wrap md:flex-nowrap justify-between items-center gap-4 bg-surface-container-low/30">
-          
+        <div className="p-3 md:p-5 border-b border-outline-variant/30 flex flex-wrap md:flex-nowrap justify-between items-center gap-2.5 md:gap-4 bg-surface-container-low/30">
+
           {/* Month picker filter */}
-          <div className="w-full md:w-56">
+          <div className="flex-1 min-w-0 md:flex-none md:w-56">
             <DatePicker
               mode="month"
               value={selectedMonthYear}
@@ -661,7 +662,7 @@ export function Finance() {
             />
           </div>
 
-          <div className="flex flex-wrap md:flex-nowrap items-center gap-4 w-full md:w-auto">
+          <MobileFilterToggle hasActiveFilters={selectedClassId !== 'all' || selectedStatus !== 'all'}>
             {/* Class filter */}
             <div className="flex flex-col gap-1 w-full md:w-44">
               <select
@@ -690,7 +691,7 @@ export function Finance() {
                 <option value="overdue">Quá hạn đóng</option>
               </select>
             </div>
-          </div>
+          </MobileFilterToggle>
         </div>
 
         {/* Data Table */}
