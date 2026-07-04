@@ -14,7 +14,6 @@ import {
   Bell,
   Settings,
   ChevronLeft,
-  LogOut,
   School,
   Award,
   UserPlus,
@@ -24,7 +23,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "../lib/utils";
-import { Avatar } from "./ui/Avatar";
 import { useAuthStore } from "../stores/authStore";
 import { api } from "../lib/api";
 import schoolLogo from "../assets/logo.jpg";
@@ -163,11 +161,9 @@ function SidebarNavItem({
 /* ── SidebarContent ────────────────────────────────── */
 
 function SidebarContent({
-  user,
   collapsed,
   onToggleCollapse,
-  onLogout,
-}: Omit<SidebarProps, "mobileOpen" | "onMobileClose">) {
+}: Omit<SidebarProps, "mobileOpen" | "onMobileClose" | "user" | "onLogout">) {
   const [logoError, setLogoError] = useState(false);
   const { user: currentUser } = useAuthStore();
   const userRole = currentUser?.role;
@@ -250,61 +246,6 @@ function SidebarContent({
         ))}
       </div>
 
-      {/* ── User profile + Logout ─────────── */}
-      <div
-        className={cn(
-          "shrink-0 border-t border-outline-variant/30 mx-3",
-          collapsed ? "px-1 py-3" : "px-3 py-3"
-        )}
-      >
-        <div
-          className={cn(
-            "flex items-center rounded-xl transition-colors",
-            collapsed ? "justify-center p-2" : "gap-3 p-2"
-          )}
-        >
-          <Avatar
-            src={user.avatar}
-            name={user.name}
-            size="sm"
-            status="online"
-          />
-          <AnimatePresence>
-            {!collapsed && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.2 }}
-                className="flex-1 min-w-0 overflow-hidden"
-              >
-                <p className="text-[13px] font-semibold text-on-surface truncate">
-                  {user.name}
-                </p>
-                <p className="text-[11px] text-on-surface-variant truncate">
-                  {user.role}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {!collapsed && (
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={onLogout}
-                className="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/60 transition-colors shrink-0"
-                aria-label="Đăng xuất"
-                title="Đăng xuất"
-              >
-                <LogOut className="w-4 h-4" />
-              </motion.button>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-
       {/* ── Collapse toggle (desktop) ─────── */}
       <div className="shrink-0 px-3 pb-3 hidden md:block">
         <button
@@ -343,12 +284,10 @@ function SidebarContent({
 /* ── Sidebar (exported) ───────────────────────────── */
 
 export function Sidebar({
-  user,
   collapsed,
   onToggleCollapse,
   mobileOpen = false,
   onMobileClose,
-  onLogout,
 }: SidebarProps) {
   return (
     <>
@@ -363,10 +302,8 @@ export function Sidebar({
         )}
       >
         <SidebarContent
-          user={user}
           collapsed={collapsed}
           onToggleCollapse={onToggleCollapse}
-          onLogout={onLogout}
         />
       </motion.aside>
 
@@ -394,10 +331,8 @@ export function Sidebar({
               className="fixed left-0 top-0 h-full w-[280px] z-50 bg-surface-container border-r border-outline-variant md:hidden"
             >
               <SidebarContent
-                user={user}
                 collapsed={false}
                 onToggleCollapse={onToggleCollapse}
-                onLogout={onLogout}
               />
             </motion.aside>
           </>
