@@ -264,12 +264,12 @@ export function Teachers() {
   return (
     <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Danh sách cán bộ, giáo viên, nhân viên</h2>
         </div>
-        
-        <div className="flex items-center gap-3 shrink-0">
+
+        <div className="flex items-center gap-3 flex-wrap">
           <button 
             onClick={handleExportExcel}
             className="border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"

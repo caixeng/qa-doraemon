@@ -163,7 +163,7 @@ export const FeeForm: React.FC<FeeFormProps> = ({
         />
 
         {/* Month & Year Selection */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input
             label="Tháng thu phí"
             type="number"
@@ -185,7 +185,7 @@ export const FeeForm: React.FC<FeeFormProps> = ({
         </div>
 
         {/* Amounts Group */}
-        <div className="grid grid-cols-2 gap-4 border-t border-outline-variant/20 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-outline-variant/20 pt-4">
           <Input
             label="Học phí cơ bản (VNĐ)"
             type="number"
@@ -228,7 +228,7 @@ export const FeeForm: React.FC<FeeFormProps> = ({
         </div>
 
         {/* Payment details */}
-        <div className="grid grid-cols-2 gap-4 border-t border-outline-variant/20 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-outline-variant/20 pt-4">
           <Input
             label="Đã đóng (VNĐ)"
             type="number"

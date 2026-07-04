@@ -224,7 +224,7 @@ export function Health() {
   return (
     <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 space-y-4">
       {/* Header section */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Sức khỏe & Phát triển</h2>
           <p className="text-[13px] md:text-[14px] text-on-surface-variant mt-1 font-inter">

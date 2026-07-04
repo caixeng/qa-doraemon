@@ -23,8 +23,8 @@ export const Tabs: React.FC<TabsProps> = ({
   variant = 'underline',
 }) => {
   return (
-    <div className={cn("flex border-b border-outline-variant/50 select-none", className)}>
-      <div className="flex gap-6 -mb-px" role="tablist" aria-label="Tabs">
+    <div className={cn("flex border-b border-outline-variant/50 select-none overflow-x-auto", className)}>
+      <div className="flex gap-6 -mb-px flex-nowrap" role="tablist" aria-label="Tabs">
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;
           

@@ -4,6 +4,7 @@ import { Topbar } from './Topbar';
 import { useUIStore } from '../stores/uiStore';
 import { useAuthStore } from '../stores/authStore';
 import { SlidePanelContainer } from './ui';
+import { cn } from '../lib/utils';
 
 
 /**
@@ -14,8 +15,6 @@ export function AppLayout() {
   const { sidebarCollapsed, mobileSidebarOpen, setMobileSidebarOpen, toggleSidebar } =
     useUIStore();
   const { user } = useAuthStore();
-
-  const sidebarWidth = sidebarCollapsed ? 72 : 280;
 
   return (
     <div className="flex bg-background min-h-screen font-inter text-on-surface">
@@ -55,8 +54,10 @@ export function AppLayout() {
 
       {/* Main Content */}
       <main
-        className="flex-1 pt-[96px] min-h-screen px-4 md:px-8 py-8 overflow-y-auto transition-all duration-300"
-        style={{ marginLeft: `${sidebarWidth}px` }}
+        className={cn(
+          "flex-1 pt-[96px] min-h-screen px-4 md:px-8 py-8 overflow-y-auto transition-all duration-300",
+          sidebarCollapsed ? "md:ml-[72px]" : "md:ml-[280px]"
+        )}
       >
         <div className="mx-auto max-w-7xl">
           <Outlet />

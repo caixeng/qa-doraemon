@@ -24,7 +24,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
   className,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [effectiveAlign, setEffectiveAlign] = useState(align);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -36,6 +38,24 @@ export const Dropdown: React.FC<DropdownProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Flip the alignment if the menu would overflow the viewport edge.
+  useEffect(() => {
+    if (!isOpen) return;
+    setEffectiveAlign(align);
+
+    const frame = requestAnimationFrame(() => {
+      const rect = menuRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      if (rect.right > window.innerWidth) {
+        setEffectiveAlign('left');
+      } else if (rect.left < 0) {
+        setEffectiveAlign('right');
+      }
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [isOpen, align]);
 
   const handleItemClick = (item: DropdownItem) => {
     if (item.disabled) return;
@@ -51,9 +71,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
       {isOpen && (
         <div
+          ref={menuRef}
           className={cn(
-            'absolute z-[1000] mt-2 w-48 rounded-2xl bg-white border border-outline-variant/60 shadow-md p-1.5 animate-in fade-in slide-in-from-top-2 duration-150',
-            align === 'right' ? 'right-0' : 'left-0'
+            'absolute z-[1000] mt-2 w-48 max-w-[calc(100vw-2rem)] rounded-2xl bg-white border border-outline-variant/60 shadow-md p-1.5 animate-in fade-in slide-in-from-top-2 duration-150',
+            effectiveAlign === 'right' ? 'right-0' : 'left-0'
           )}
         >
           <div className="flex flex-col gap-0.5" role="menu" aria-orientation="vertical">

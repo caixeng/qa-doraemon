@@ -89,7 +89,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           size="sm"
           onClick={() => handlePageChange(1)}
           disabled={currentPage === 1}
-          className="h-8 w-8 p-0 rounded-lg cursor-pointer"
+          className="h-9 w-9 p-0 rounded-lg cursor-pointer"
           aria-label="Trang đầu"
         >
           <ChevronsLeft className="w-4 h-4" />
@@ -101,7 +101,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           size="sm"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-8 w-8 p-0 rounded-lg cursor-pointer"
+          className="h-9 w-9 p-0 rounded-lg cursor-pointer"
           aria-label="Trang trước"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -115,7 +115,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             size="sm"
             onClick={() => handlePageChange(page)}
             className={cn(
-              "h-8 w-8 p-0 rounded-lg cursor-pointer text-xs font-bold",
+              "h-9 w-9 p-0 rounded-lg cursor-pointer text-xs font-bold",
               page === currentPage 
                 ? "bg-primary text-on-primary shadow-sm" 
                 : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
@@ -131,7 +131,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           size="sm"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-8 w-8 p-0 rounded-lg cursor-pointer"
+          className="h-9 w-9 p-0 rounded-lg cursor-pointer"
           aria-label="Trang sau"
         >
           <ChevronRight className="w-4 h-4" />
@@ -143,7 +143,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           size="sm"
           onClick={() => handlePageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="h-8 w-8 p-0 rounded-lg cursor-pointer"
+          className="h-9 w-9 p-0 rounded-lg cursor-pointer"
           aria-label="Trang cuối"
         >
           <ChevronsRight className="w-4 h-4" />
