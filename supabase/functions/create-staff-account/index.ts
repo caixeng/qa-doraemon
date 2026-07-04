@@ -89,6 +89,11 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Work around a GoTrue quirk where users created via the Admin API can end
+    // up with NULL instead of '' in a few internal token columns, which then
+    // makes every future login for that user fail with a 500 error.
+    await adminClient.rpc("fix_auth_user_tokens", { target_user_id: created.user.id });
+
     return new Response(
       JSON.stringify({ success: true, userId: created.user.id }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
