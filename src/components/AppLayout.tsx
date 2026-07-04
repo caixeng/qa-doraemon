@@ -1,6 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { MobileBottomNav } from './MobileBottomNav';
+import { MobileMoreSheet } from './MobileMoreSheet';
 import { useUIStore } from '../stores/uiStore';
 import { useAuthStore } from '../stores/authStore';
 import { SlidePanelContainer } from './ui';
@@ -12,18 +14,16 @@ import { cn } from '../lib/utils';
  * Used as a wrapper for all authenticated routes.
  */
 export function AppLayout() {
-  const { sidebarCollapsed, mobileSidebarOpen, setMobileSidebarOpen, toggleSidebar } =
+  const { sidebarCollapsed, mobileMoreOpen, setMobileMoreOpen, toggleSidebar } =
     useUIStore();
   const { user } = useAuthStore();
 
   return (
     <div className="flex bg-background min-h-screen font-inter text-on-surface">
-      {/* Sidebar */}
+      {/* Sidebar (desktop only) */}
       <Sidebar
         collapsed={sidebarCollapsed}
         onToggleCollapse={toggleSidebar}
-        mobileOpen={mobileSidebarOpen}
-        onMobileClose={() => setMobileSidebarOpen(false)}
         user={
           user
             ? {
@@ -38,7 +38,6 @@ export function AppLayout() {
       {/* Topbar */}
       <Topbar
         sidebarCollapsed={sidebarCollapsed}
-        onMenuClick={() => setMobileSidebarOpen(true)}
         onToggleSidebar={toggleSidebar}
         user={
           user
@@ -55,7 +54,7 @@ export function AppLayout() {
       {/* Main Content */}
       <main
         className={cn(
-          "flex-1 pt-[96px] min-h-screen px-4 md:px-8 py-8 overflow-y-auto transition-all duration-300",
+          "flex-1 pt-16 md:pt-[96px] min-h-screen px-4 md:px-8 pb-20 md:pb-8 py-4 md:py-8 overflow-y-auto transition-all duration-300",
           sidebarCollapsed ? "md:ml-[72px]" : "md:ml-[280px]"
         )}
       >
@@ -64,13 +63,9 @@ export function AppLayout() {
         </div>
       </main>
 
-      {/* Mobile sidebar backdrop */}
-      {mobileSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden backdrop-blur-sm"
-          onClick={() => setMobileSidebarOpen(false)}
-        />
-      )}
+      {/* Mobile bottom tab bar (replaces sidebar on small screens) */}
+      <MobileBottomNav />
+      <MobileMoreSheet isOpen={mobileMoreOpen} onClose={() => setMobileMoreOpen(false)} />
 
       {/* SlidePanel Container */}
       <SlidePanelContainer isSidebarCollapsed={sidebarCollapsed} />

@@ -255,24 +255,24 @@ export function Dashboard() {
   return (
     <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12">
       {/* Dashboard Welcome Header */}
-      <div className="mb-8">
-        <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface tracking-[-0.02em] leading-tight">
+      <div className="mb-4 md:mb-8">
+        <h2 className="text-[18px] md:text-[24px] font-bold italic font-playfair text-on-surface tracking-[-0.02em] leading-tight">
           Tổng quan hôm nay
         </h2>
-        <p className="text-[14px] md:text-[16px] text-on-surface-variant font-medium mt-1 font-inter">
+        <p className="text-[13px] md:text-[16px] text-on-surface-variant font-medium mt-1 font-inter">
           {format(today, 'eeee, dd MMMM, yyyy', { locale: vi })}
         </p>
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-8">
         {/* Card 1: Active */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[120px]">
+        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-3 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[88px] md:min-h-[120px]">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
               <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Đang học</p>
               <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[24px] font-extrabold tracking-tight text-on-surface">{counts.active}</span>
+                <span className="text-[18px] md:text-[24px] font-extrabold tracking-tight text-on-surface">{counts.active}</span>
                 <span className="text-[11px] text-on-surface-variant font-semibold"> trẻ</span>
               </div>
             </div>
@@ -287,12 +287,12 @@ export function Dashboard() {
         </div>
 
         {/* Card 2: Registered */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[120px]">
+        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-3 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[88px] md:min-h-[120px]">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
               <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Đã ghi danh</p>
               <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[24px] font-extrabold tracking-tight text-indigo-600">{counts.registered}</span>
+                <span className="text-[18px] md:text-[24px] font-extrabold tracking-tight text-indigo-600">{counts.registered}</span>
                 <span className="text-[11px] text-on-surface-variant font-semibold"> trẻ</span>
               </div>
             </div>
@@ -307,12 +307,12 @@ export function Dashboard() {
         </div>
 
         {/* Card 3: Waiting */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[120px]">
+        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-3 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[88px] md:min-h-[120px]">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
               <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Hồ sơ chờ</p>
               <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[24px] font-extrabold tracking-tight text-amber-600">{counts.waiting}</span>
+                <span className="text-[18px] md:text-[24px] font-extrabold tracking-tight text-amber-600">{counts.waiting}</span>
                 <span className="text-[11px] text-on-surface-variant font-semibold"> hồ sơ</span>
               </div>
             </div>
@@ -327,12 +327,12 @@ export function Dashboard() {
         </div>
 
         {/* Card 4: Future */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[120px]">
+        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-3 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[88px] md:min-h-[120px]">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
               <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Đăng ký năm tới</p>
               <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[24px] font-extrabold tracking-tight text-emerald-600">{counts.future}</span>
+                <span className="text-[18px] md:text-[24px] font-extrabold tracking-tight text-emerald-600">{counts.future}</span>
                 <span className="text-[11px] text-on-surface-variant font-semibold"> hồ sơ</span>
               </div>
             </div>
@@ -347,18 +347,18 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-3 md:gap-6">
         {/* Grade Distribution Chart Section */}
-        <div className="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-outline-variant/35 rounded-[32px] p-6 shadow-sm flex flex-col justify-start gap-4">
+        <div className="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-outline-variant/35 rounded-2xl md:rounded-[32px] p-3 md:p-6 shadow-sm flex flex-col justify-start gap-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-[20px] font-bold italic font-playfair text-on-surface">Phân bổ học sinh theo Lớp</h3>
+            <h3 className="text-[16px] md:text-[20px] font-bold italic font-playfair text-on-surface">Phân bổ học sinh theo Lớp</h3>
             <button type="button" className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors cursor-pointer">
               <MoreVertical className="w-5 h-5" />
             </button>
           </div>
 
           {/* Custom Bar Chart View */}
-          <div className="h-56 flex items-end justify-between gap-6 pb-2 border-b border-outline-variant/30 relative select-none pl-12 pr-4 mt-2">
+          <div className="h-40 md:h-56 flex items-end justify-between gap-3 md:gap-6 pb-2 border-b border-outline-variant/30 relative select-none pl-10 md:pl-12 pr-4 mt-2">
             {/* Y Axis Labels */}
             <div className="absolute left-0 top-0 bottom-2 flex flex-col justify-between text-[10px] text-on-surface-variant/80 w-8 text-right pr-2 font-bold font-mono select-none">
               {yIntervals.map((val, idx) => (
@@ -448,9 +448,9 @@ export function Dashboard() {
         {/* Alerts & Quick Actions Column */}
         <div className="col-span-12 lg:col-span-4 flex flex-col">
           {/* New Registrations Column */}
-          <div className="bg-surface-container-lowest border border-outline-variant/35 rounded-[32px] p-6 shadow-sm flex flex-col h-full justify-between">
+          <div className="bg-surface-container-lowest border border-outline-variant/35 rounded-2xl md:rounded-[32px] p-3 md:p-6 shadow-sm flex flex-col h-full justify-between">
             <div>
-              <h3 className="text-[20px] font-bold italic font-playfair text-on-surface mb-6">Đăng ký mới gần đây</h3>
+              <h3 className="text-[16px] md:text-[20px] font-bold italic font-playfair text-on-surface mb-3 md:mb-6">Đăng ký mới gần đây</h3>
               <div className="space-y-4 max-h-[460px] overflow-y-auto pr-1">
                 {stats?.newRegistrations.map((student: any) => (
                   <div 

@@ -1,35 +1,15 @@
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  LayoutDashboard,
-  Users,
-  BookOpen,
-  GraduationCap,
-  ClipboardCheck,
-  CreditCard,
-  UtensilsCrossed,
-  HeartPulse,
-  Bell,
-  Settings,
-  ChevronLeft,
-  School,
-  Award,
-  UserPlus,
-  BarChart3,
-  Shield,
-  Baby,
-  type LucideIcon,
-} from "lucide-react";
+import { ChevronLeft, School } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useAuthStore } from "../stores/authStore";
 import { api } from "../lib/api";
 import schoolLogo from "../assets/logo.jpg";
+import { mainNavItems, bottomNavItems, type NavItem } from "../config/navigation";
 
 /* ── Types ─────────────────────────────────────────── */
-
-type UserRole = 'admin' | 'teacher' | 'staff' | 'guardian';
 
 export interface SidebarUser {
   name: string;
@@ -41,40 +21,8 @@ export interface SidebarProps {
   user: SidebarUser;
   collapsed: boolean;
   onToggleCollapse: () => void;
-  mobileOpen?: boolean;
-  onMobileClose?: () => void;
   onLogout?: () => void;
 }
-
-/* ── Nav items ─────────────────────────────────────── */
-
-interface NavItem {
-  to: string;
-  label: string;
-  icon: LucideIcon;
-  badge?: number;
-  roles?: UserRole[];
-}
-
-const mainNavItems: NavItem[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/students", label: "Học Sinh", icon: Users },
-  { to: "/teachers", label: "Giáo Viên", icon: GraduationCap, roles: ['admin'] },
-  { to: "/classes", label: "Lớp Học", icon: BookOpen },
-  { to: "/attendance", label: "Điểm Danh", icon: ClipboardCheck, roles: ['admin', 'teacher'] },
-  { to: "/finance", label: "Tài Chính", icon: CreditCard, roles: ['admin'] },
-  { to: "/nutrition", label: "Dinh Dưỡng", icon: UtensilsCrossed },
-  { to: "/health", label: "Sức Khỏe", icon: HeartPulse, roles: ['admin', 'teacher'] },
-  { to: "/evaluations", label: "Đánh Giá", icon: Award, roles: ['admin', 'teacher'] },
-  { to: "/reports", label: "Báo Cáo", icon: BarChart3, roles: ['admin'] },
-  { to: "/audit-log", label: "Nhật Ký", icon: Shield, roles: ['admin'] },
-  { to: "/guardian", label: "Cổng PH", icon: Baby, roles: ['guardian'] },
-];
-
-const bottomNavItems: NavItem[] = [
-  { to: "/notifications", label: "Thông Báo", icon: Bell },
-  { to: "/settings", label: "Cài Đặt", icon: Settings, roles: ['admin'] },
-];
 
 /* ── SidebarNavItem ────────────────────────────────── */
 
@@ -163,7 +111,7 @@ function SidebarNavItem({
 function SidebarContent({
   collapsed,
   onToggleCollapse,
-}: Omit<SidebarProps, "mobileOpen" | "onMobileClose" | "user" | "onLogout">) {
+}: Omit<SidebarProps, "user" | "onLogout">) {
   const [logoError, setLogoError] = useState(false);
   const { user: currentUser } = useAuthStore();
   const userRole = currentUser?.role;
@@ -286,58 +234,21 @@ function SidebarContent({
 export function Sidebar({
   collapsed,
   onToggleCollapse,
-  mobileOpen = false,
-  onMobileClose,
 }: SidebarProps) {
   return (
-    <>
-      {/* ═══ Desktop / Tablet sidebar ══════════════════ */}
-      <motion.aside
-        animate={{ width: collapsed ? 64 : 280 }}
-        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-        className={cn(
-          "fixed left-0 top-0 h-full z-40",
-          "bg-surface-container border-r border-outline-variant",
-          "hidden md:flex flex-col"
-        )}
-      >
-        <SidebarContent
-          collapsed={collapsed}
-          onToggleCollapse={onToggleCollapse}
-        />
-      </motion.aside>
-
-      {/* ═══ Mobile overlay sidebar ════════════════════ */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-50 bg-on-surface/40 backdrop-blur-sm md:hidden"
-              onClick={onMobileClose}
-              aria-hidden="true"
-            />
-
-            {/* Drawer */}
-            <motion.aside
-              initial={{ x: -280 }}
-              animate={{ x: 0 }}
-              exit={{ x: -280 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="fixed left-0 top-0 h-full w-[280px] z-50 bg-surface-container border-r border-outline-variant md:hidden"
-            >
-              <SidebarContent
-                collapsed={false}
-                onToggleCollapse={onToggleCollapse}
-              />
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+    <motion.aside
+      animate={{ width: collapsed ? 64 : 280 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+      className={cn(
+        "fixed left-0 top-0 h-full z-40",
+        "bg-surface-container border-r border-outline-variant",
+        "hidden md:flex flex-col"
+      )}
+    >
+      <SidebarContent
+        collapsed={collapsed}
+        onToggleCollapse={onToggleCollapse}
+      />
+    </motion.aside>
   );
 }

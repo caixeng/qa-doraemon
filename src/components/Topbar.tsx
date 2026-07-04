@@ -5,7 +5,6 @@ import {
   Search,
   Bell,
   ChevronRight,
-  Menu,
   LogOut,
   Settings,
   User,
@@ -28,7 +27,6 @@ import { vi } from "date-fns/locale";
 
 export interface TopbarProps {
   sidebarCollapsed: boolean;
-  onMenuClick: () => void;
   onToggleSidebar: () => void;
   user?: { name: string; role: string; avatar?: string };
   onLogout?: () => void;
@@ -77,7 +75,6 @@ function useDebounce(value: string, delay: number) {
 
 export function Topbar({
   sidebarCollapsed,
-  onMenuClick,
   onToggleSidebar,
   user,
   onLogout,
@@ -190,7 +187,7 @@ export function Topbar({
     <header
       className={cn(
         "fixed top-0 right-0 z-30 flex items-center justify-between gap-4",
-        "h-[72px] px-4 md:px-6 lg:px-8",
+        "h-14 md:h-[72px] px-4 md:px-6 lg:px-8",
         "bg-surface-container-lowest/80 border-b border-outline-variant backdrop-blur-md",
         // Offset for sidebar
         "left-0 md:left-16",
@@ -202,15 +199,6 @@ export function Topbar({
     >
       {/* ── Left section ────────────────── */}
       <div className="flex items-center gap-3 min-w-0">
-        {/* Mobile hamburger */}
-        <button
-          onClick={onMenuClick}
-          className="md:hidden p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
-          aria-label="Mở menu"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-
         {/* Breadcrumb */}
         <div className="hidden sm:flex items-center min-w-0">
           <div className="flex items-center gap-1 text-[12px] text-on-surface-variant">

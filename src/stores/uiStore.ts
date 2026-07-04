@@ -4,8 +4,8 @@ import { persist } from 'zustand/middleware';
 interface UIState {
   /** Whether sidebar is collapsed (desktop: mini mode, mobile: hidden) */
   sidebarCollapsed: boolean;
-  /** Whether mobile sidebar overlay is open */
-  mobileSidebarOpen: boolean;
+  /** Whether the mobile "Quản lý" bottom sheet is open */
+  mobileMoreOpen: boolean;
   /** Current page title for topbar */
   pageTitle: string;
   /** Global search query */
@@ -14,7 +14,7 @@ interface UIState {
   // Actions
   toggleSidebar: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
-  setMobileSidebarOpen: (open: boolean) => void;
+  setMobileMoreOpen: (open: boolean) => void;
   setPageTitle: (title: string) => void;
   setSearchQuery: (query: string) => void;
 }
@@ -23,14 +23,14 @@ export const useUIStore = create<UIState>()(
   persist(
     (set, get) => ({
       sidebarCollapsed: false,
-      mobileSidebarOpen: false,
+      mobileMoreOpen: false,
       pageTitle: 'Dashboard',
       searchQuery: '',
 
       toggleSidebar: () =>
         set({ sidebarCollapsed: !get().sidebarCollapsed }),
       setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
-      setMobileSidebarOpen: (mobileSidebarOpen) => set({ mobileSidebarOpen }),
+      setMobileMoreOpen: (mobileMoreOpen) => set({ mobileMoreOpen }),
       setPageTitle: (pageTitle) => set({ pageTitle }),
       setSearchQuery: (searchQuery) => set({ searchQuery }),
     }),
