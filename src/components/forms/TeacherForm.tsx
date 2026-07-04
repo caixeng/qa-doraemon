@@ -250,17 +250,26 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
 
         toast.success('Cập nhật thông tin nhân sự thành công!');
       } else {
-        // Generate new UUID for the profile
-        teacherId = crypto.randomUUID();
-        
-        // 1. Create Teacher Profile in users
+        // 1. Create the login account (Supabase Auth) — username is the phone
+        // number, default password '123456'. Must go through an Edge Function
+        // since creating auth users requires the service_role key.
+        const { data: accountData, error: accountError } = await supabase.functions.invoke(
+          'create-staff-account',
+          { body: { phone: values.phone } }
+        );
+        if (accountError || !accountData?.success) {
+          throw new Error(accountData?.error || accountError?.message || 'Không thể tạo tài khoản đăng nhập');
+        }
+        teacherId = accountData.userId;
+
+        // 2. Create Teacher Profile in users, using the same id as the auth account
         const userRes = await api.create('users', {
           id: teacherId,
           ...userPayload,
         });
         if (userRes.error) throw new Error(userRes.error);
 
-        // 2. Create Class Assignments (only if role is teacher)
+        // 3. Create Class Assignments (only if role is teacher)
         if (values.assigned_class_ids.length > 0 && values.role === 'teacher') {
           const assignmentsPayload = values.assigned_class_ids.map((cid) => ({
             class_id: cid,
@@ -270,7 +279,10 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
           await api.createMany('class_teachers', assignmentsPayload);
         }
 
-        toast.success('Thêm nhân sự mới thành công!');
+        toast.success(
+          'Thêm nhân sự mới thành công!',
+          `Tài khoản đăng nhập: ${values.phone} — Mật khẩu: 123456`
+        );
       }
 
       // Invalidate queries to refresh list

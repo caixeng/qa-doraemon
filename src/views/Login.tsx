@@ -24,8 +24,11 @@ export function Login() {
 
     try {
       let loginEmail = email.trim();
-      if (loginEmail.toLowerCase() === 'admin') {
-        loginEmail = 'admin@doraemon.edu.vn';
+      // Non-admin staff log in with their phone number; admin logs in with
+      // the literal "admin" username. Neither is a real email, so we map
+      // both to the same synthetic auth domain used when the account was created.
+      if (!loginEmail.includes('@')) {
+        loginEmail = `${loginEmail.toLowerCase()}@doraemon.edu.vn`;
       }
 
       // Sign in with Supabase Auth
@@ -164,7 +167,7 @@ export function Login() {
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Admin hoặc email"
+                placeholder="Admin, số điện thoại hoặc email"
                 required
                 autoComplete="username"
                 className="login-input w-full px-4 py-3 border border-slate-200 rounded-lg
