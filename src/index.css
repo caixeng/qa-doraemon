@@ -108,6 +108,16 @@
   }
 }
 
+/* Force light autofill background, overriding the browser's dark-mode autofill styling */
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #0f172a;
+  -webkit-box-shadow: 0 0 0px 1000px #f1f5f9 inset;
+  box-shadow: 0 0 0px 1000px #f1f5f9 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .dark {
   --color-background: #0f172a;
   --color-on-background: #f8fafc;
