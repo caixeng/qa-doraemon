@@ -145,7 +145,7 @@ export function Login() {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className="bg-error-container text-on-error-container text-sm px-4 py-3 rounded-lg border border-error/20"
+                className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg border border-red-200"
               >
                 {error}
               </motion.div>
@@ -155,7 +155,7 @@ export function Login() {
             <div className="space-y-1.5">
               <label
                 htmlFor="email"
-                className="text-sm font-medium text-on-surface"
+                className="text-sm font-medium text-slate-900"
               >
                 Tên đăng nhập hoặc Email
               </label>
@@ -167,8 +167,8 @@ export function Login() {
                 placeholder="Admin hoặc email"
                 required
                 autoComplete="username"
-                className="w-full px-4 py-3 bg-surface-variant/50 border border-outline-variant rounded-lg
-                  text-on-surface placeholder:text-on-surface-variant/50
+                className="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-lg
+                  text-slate-900 placeholder:text-slate-400
                   focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
                   transition-all duration-200"
               />
@@ -178,7 +178,7 @@ export function Login() {
             <div className="space-y-1.5">
               <label
                 htmlFor="password"
-                className="text-sm font-medium text-on-surface"
+                className="text-sm font-medium text-slate-900"
               >
                 Mật khẩu
               </label>
@@ -191,15 +191,15 @@ export function Login() {
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="w-full px-4 py-3 pr-12 bg-surface-variant/50 border border-outline-variant rounded-lg
-                    text-on-surface placeholder:text-on-surface-variant/50
+                  className="w-full px-4 py-3 pr-12 bg-slate-100 border border-slate-200 rounded-lg
+                    text-slate-900 placeholder:text-slate-400
                     focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
                     transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? (
@@ -213,10 +213,10 @@ export function Login() {
 
             {/* Remember & Forgot */}
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-on-surface-variant cursor-pointer">
+              <label className="flex items-center gap-2 text-slate-500 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/30"
+                  className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/30"
                 />
                 Ghi nhớ đăng nhập
               </label>
@@ -254,14 +254,14 @@ export function Login() {
 
           {/* Footer */}
           <div className="px-8 pb-6 text-center">
-            <p className="text-xs text-on-surface-variant/60">
+            <p className="text-xs text-slate-400">
               AN TOÀN — YÊU THƯƠNG — TÔN TRỌNG
             </p>
           </div>
         </div>
 
         {/* Copyright */}
-        <p className="text-center text-xs text-on-surface-variant/50 mt-6">
+        <p className="text-center text-xs text-slate-400 mt-6">
           © 2026 Trường Mầm Non Doraemon — Hà Tĩnh
         </p>
       </motion.div>
