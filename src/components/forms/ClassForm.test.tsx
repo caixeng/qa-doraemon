@@ -24,8 +24,8 @@ vi.mock('../../stores/appStore', () => ({
   },
 }));
 
-vi.mock('../ui', () => {
-  const React = require('react');
+vi.mock('../ui', async () => {
+  const React = await import('react');
   const Input = React.forwardRef(({ label, error, ...props }: any, ref: any) => (
     <div>
       <label>{label}</label>

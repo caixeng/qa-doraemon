@@ -1,102 +1,123 @@
-# Kế hoạch hoàn thiện — Doraemon Kindergarten Management
+# Kế hoạch tối ưu & hoàn thiện — Doraemon Kindergarten Management (v2)
 
-> Ngày lập: 2026-06-25 | Phần mềm quản lý Trường Mầm Non Doraemon — Hà Tĩnh
+> Ngày đánh giá: 2026-07-04 | Thay thế bản kế hoạch 2026-06-25 (các hạng mục GĐ1–GĐ4 cũ đã hoàn thành gần hết)
 
 ---
 
-## 1. Tổng quan kiến trúc
+## 1. Hiện trạng tổng thể
 
-| Lớp | Công nghệ | Trạng thái |
+| Hạng mục | Trạng thái | Ghi chú |
 |---|---|---|
-| Frontend | React 19, Vite 6, TypeScript 5.8, Tailwind 4, Motion | ~85–90% UI/UX |
-| State/Data | TanStack Query 5, Zustand 5 | Ổn định |
-| Backend | Supabase (Postgres + Auth + RLS) | Schema 12 bảng, RLS cho admin/teacher/guardian |
-| Tích hợp | Zalo OA (ZNS), Excel (xlsx), Google Gemini AI | Zalo còn mock/stub |
+| Build production | ✅ OK (9.6s) | Chunk `index` 742KB (222KB gzip) — hơi lớn |
+| Test | ✅ 28 tests / 4 files pass | Coverage còn mỏng |
+| Type check (`npm run lint`) | ✅ Đã fix | Lỗi `require` trong `ClassForm.test.tsx:28` đã sửa (2026-07-04) |
+| CI (GitHub Actions) | ✅ Xanh trở lại | |
+| Kiểu `any` | ⚠️ 244 chỗ | Tăng so với 188 lúc lập plan cũ |
+| Supabase security advisors | ⚠️ 35 cảnh báo | Chi tiết mục 2 |
+| Supabase performance advisors | ⚠️ 68 cảnh báo | Chi tiết mục 4 |
+| Edge Functions | ⚠️ Chỉ `create-staff-account` deployed | **`zalo-send` chưa deploy** dù frontend đã gọi |
+| Schema drift | ⚠️ Có | Hàm `create_parent_account_by_phone` + nhóm hàm `*_unaccent` tồn tại trên DB nhưng không có trong `supabase/migrations/` |
+| Repo GitHub | ✅ Đã chuyển Private (2026-07-04) | Trước đó public, chứa dữ liệu thật trẻ em |
+| Git history | ✅ Đã purge (2026-07-04) | Dùng `git filter-repo` xóa 3 file Excel + 1 ảnh + `_Delete/` khỏi toàn bộ lịch sử, force-push cần thực hiện tiếp |
 
 ---
 
-## 2. Tình trạng từng module
+## 2. Phát hiện bảo mật (ưu tiên cao nhất)
 
-| Module | UI/UX | Frontend | Backend | Ghi chú |
-|---|---|---|---|---|
-| Dashboard | 90% | 80% | 60% | Biểu đồ có giá trị fallback hardcode; aggregate client-side |
-| Học sinh | 95% | 90% | 85% | Đầy đủ form/detail/Excel import |
-| Đăng ký | 90% | 85% | 80% | Mới nâng cấp (migration 009) |
-| Giáo viên/CB | 95% | 90% | 85% | View lớn nhất, có work_status |
-| Lớp học | 90% | 85% | 80% | DetailPanel rất chi tiết |
-| Điểm danh | 90% | 85% | 75% | Chưa auto-gửi Zalo thật |
-| Tài chính | 90% | 85% | 65% | Thiếu auto-overdue, biên lai backend |
-| Dinh dưỡng | 85% | 80% | 80% | OK |
-| Sức khỏe | 85% | 80% | 80% | OK |
-| Đánh giá | 85% | 80% | 80% | OK |
-| Thông báo | 80% | 75% | 60% | Badge hardcode "3"; gửi Zalo mock |
-| Cài đặt | 85% | 80% | 70% | Lưu token Zalo phía client (rủi ro bảo mật) |
+### 2.1 🔴 RPC `create_parent_account_by_phone` — anon gọi được, không kiểm tra vai trò
+- SECURITY DEFINER, `anon` + `authenticated` đều EXECUTE được, **không kiểm tra caller là admin**.
+- Tạo tài khoản bằng cách **INSERT thẳng vào `auth.users`** với mật khẩu cứng `'123456'` — chính pattern này đã gây bug 500 NULL-token trước đây (migration 017 phải vá).
+- Chỉ tồn tại trên DB, không có trong migrations → không review được qua git.
+- **Chưa xử lý** — cần làm ở GĐ2.
 
----
+### 2.2 ✅ Dữ liệu thật của trẻ em trong git — ĐÃ XỬ LÝ (2026-07-04)
+- Repo `caixeng/qa-doraemon` đã chuyển từ **public → private**.
+- Đã dùng `git filter-repo` xóa vĩnh viễn khỏi toàn bộ lịch sử: `DRM- DANH SÁCH HỌC SINH...xlsx`, `DSGVNV DORAEMON.xlsx`, `rpDSHocSinhCaTruong (72).xlsx`, ảnh `368411483_...jpg`, và thư mục `_Delete/`.
+- **Còn lại**: force-push nhánh đã rewrite lên `origin/main` để hoàn tất (chưa làm — xem GĐ1.4b).
+- Lưu ý: dữ liệu có thể đã bị crawl/cache trong thời gian repo còn public — rewrite chỉ ngăn rò rỉ tiếp diễn, không "thu hồi" được bản đã lộ.
 
-## 3. Các vấn đề trọng yếu
+### 2.3 🟡 Chính sách mật khẩu yếu
+- Mật khẩu mặc định `123456` cho toàn bộ GV/NV và phụ huynh, không bắt đổi lần đầu.
+- Leaked-password protection (HaveIBeenPwned) đang **tắt** trong Supabase Auth.
 
-### 3.1 Bảo mật
-- **Zalo ZNS là mock** — access token để lộ client-side (`src/lib/zalo.ts`). Cần Edge Function proxy.
-- **Vai trò `staff` thiếu RLS** — enum tồn tại nhưng không có policy → staff bị chặn đọc hầu hết dữ liệu.
-- Không lọc menu theo vai trò ở Sidebar; `ProtectedRoute` hỗ trợ `allowedRoles` nhưng chưa dùng.
+### 2.4 🟡 Vệ sinh hàm DB (advisor WARN x33)
+- 11 hàm SECURITY DEFINER `anon`/`authenticated` execute được (revoke, chỉ giữ `service_role` nơi cần).
+- 11 hàm chưa `SET search_path` cố định.
+- Extension `unaccent` nằm trong schema `public`.
 
-### 3.2 Frontend
-- **Lạm dụng `any`** — Dashboard và nhiều view mất type-safety.
-- **Không có test** — không có test runner trong `package.json`.
-- **Aggregate nặng phía client** — Dashboard kéo 1000–5000 bản ghi.
-- Badge thông báo hardcode `3` trong `Sidebar.tsx`.
-- Thiếu Error Boundary toàn cục.
-- Chưa audit accessibility và responsive bảng dữ liệu.
-
-### 3.3 Backend
-- Không có RPC/View tổng hợp cho Dashboard & báo cáo.
-- Học phí quá hạn không tự cập nhật (`status='overdue'`).
-- Chưa cấu hình Storage bucket cho upload ảnh.
-- Cổng phụ huynh chưa có (schema hỗ trợ nhưng chưa có UI).
+### 2.5 🟢 Ghi nhận thêm
+- `.env.local` chứa `SUPABASE_ACCESS_TOKEN` + DB password — đã gitignore đúng, không commit, không trong history.
+- Zalo token đã chuyển qua Edge Function proxy ở phía frontend — nhưng xem 3.1 (function chưa deploy).
 
 ---
 
-## 4. Kế hoạch theo giai đoạn
+## 3. Tính năng chưa chạy thật
 
-### GĐ 1 — Bảo mật & Nền tảng (1–1.5 tuần)
+### 3.1 Zalo ZNS — frontend gọi function không tồn tại
+`src/lib/zalo.ts` gọi `functions/v1/zalo-send`, code function có ở `supabase/functions/zalo-send/` nhưng **chưa deploy** → mọi nút "Gửi Zalo" (nhắc học phí, thông báo, điểm danh) đang fail lúc runtime.
 
-- [x] **1.1** Lọc menu Sidebar theo `user.role` (admin/teacher/staff) — `Sidebar.tsx`
-- [x] **1.2** Truyền `allowedRoles` vào `ProtectedRoute` cho các route nhạy cảm — `App.tsx`
-- [x] **1.3** Fix badge thông báo hardcode → query đếm unread thật — `Sidebar.tsx`
-- [x] **1.4** Thêm Error Boundary toàn cục — `ErrorBoundary.tsx` + `App.tsx`
-- [x] **1.5** Bổ sung RLS policy cho role `staff` — `010_staff_rls_policies.sql`
-- [ ] **1.6** Viết Supabase Edge Function `zalo-zns` làm proxy; chuyển token ra env server
-
-### GĐ 2 — Backend đúng đắn & Dữ liệu thật (1.5–2 tuần)
-
-- [x] **2.1** Tạo RPC `dashboard_stats()` + `finance_monthly_summary()` → 1 query thay 8 query, xóa fallback hardcode — `011_dashboard_rpc.sql`, `Dashboard.tsx`, `Finance.tsx`
-- [x] **2.2** Trigger `check_fee_overdue` + batch function `mark_overdue_fees()` — `012_auto_overdue_trigger.sql`
-- [x] **2.3** Storage buckets (avatars, student-photos, documents) + RLS — `013_storage_buckets.sql`
-- [x] **2.4** RPC `generate_receipt()` + frontend helper `receipt.ts` — `014_receipt_rpc.sql`, `receipt.ts`
-
-### GĐ 3 — Chất lượng & UX (1–1.5 tuần)
-
-- [x] **3.1** Loading skeleton — tạo `ViewSkeleton` component dùng chung; Dashboard đã có full skeleton — `ViewSkeleton.tsx`
-- [ ] **3.2** Dọn `any` (188 occurrences) → dùng type từ `database.ts`; thống nhất dùng `queryKeys.ts` — *tiến hành dần qua các PR tiếp*
-- [x] **3.3** Accessibility — Modal focus trap + auto-focus; Table `role="table"` + `aria-sort` + `scope="col"` — `Modal.tsx`, `Table.tsx`
-- [x] **3.4** Thiết lập Vitest + Testing Library — 19 tests pass (formatters, receipt) — `vitest.config.ts`, `formatters.test.ts`, `receipt.test.ts`
-
-### GĐ 4 — Mở rộng (tùy chọn, 2+ tuần)
-
-- [x] **4.1** Cổng phụ huynh — `GuardianPortal.tsx` (4 tab: tổng quan, điểm danh, học phí, sức khoẻ) + route `/guardian` + role guardian trong RBAC
-- [x] **4.2** Audit log — `015_audit_log.sql` (bảng + trigger 5 bảng + RPC `get_audit_log`) + `AuditLog.tsx` (filter, expand, pagination)
-- [x] **4.3** Báo cáo nâng cao — `016_advanced_reports_rpc.sql` (3 RPC: attendance/finance/students_summary) + `Reports.tsx` (3 tab + xuất Excel)
-- [x] **4.4** PWA — `manifest.json` + `sw.js` + service worker registration + meta tags
+### 3.2 Tự động gửi khi điểm danh / học phí quá hạn
+Vẫn chưa có luồng auto-send (chỉ gửi thủ công từ UI).
 
 ---
 
-## 5. Ưu tiên
+## 4. Nợ hiệu năng database (advisor)
 
-> **GĐ 1 > GĐ 2 > GĐ 3 > GĐ 4**
->
-> GĐ 1 là ưu tiên tuyệt đối vì liên quan bảo mật (Zalo token lộ, RLS thiếu cho staff, RBAC không enforce).
+| Loại | Số lượng | Xử lý |
+|---|---|---|
+| `multiple_permissive_policies` | 30 (WARN) | Gộp các policy trùng action/role thành 1 policy mỗi bảng |
+| `auth_rls_initplan` | 9 (WARN) | Bọc `auth.uid()`/`current_setting()` trong `(select ...)` |
+| `unindexed_foreign_keys` | 11 (INFO) | Thêm index cho FK (attendance, enrollments…) |
+| `unused_index` | 18 (INFO) | Cân nhắc drop sau khi có traffic thật |
 
 ---
 
-*Tài liệu này được tạo tự động bởi Claude Code. Cập nhật lần cuối: 2026-06-25.*
+## 5. Nợ chất lượng code
+
+- **244 chỗ `any`** — nhiều nhất: `GuardianPortal` (14), `Attendance` (12), `Health`/`Evaluations` (11), `Teachers` (10).
+- **File quá lớn** (>600 dòng): `Attendance.tsx` 747, `Finance.tsx` 746, `ClassRollCallTab.tsx` 704, `useStudents.ts` 695, `Students.tsx` 607, `Nutrition.tsx` 602.
+- **Test mỏng**: chỉ formatters, receipt, classUtils, ClassForm. Chưa test: useStudents, logic học phí/quá hạn, Attendance.
+- **Bundle**: chunk `index` 742KB — cần `manualChunks` tách vendor (react, supabase, motion).
+- **Rác trong repo**: 2 file plan chồng nhau (`implementation_plan.md` đã lỗi thời, còn nằm trong tree — cần xóa ở commit thường, không cần rewrite history vì không nhạy cảm).
+
+---
+
+## 6. Kế hoạch thực hiện
+
+### GĐ 1 — Vá ngay (≤ 1 ngày)
+- [x] **1.1** Sửa lỗi tsc `require` trong `ClassForm.test.tsx` → dùng `import` — CI xanh trở lại
+- [ ] **1.2** Deploy Edge Function `zalo-send` (kèm secrets Zalo token) — hoặc ẩn nút gửi Zalo cho tới khi deploy
+- [ ] **1.3** REVOKE EXECUTE của `anon`/`authenticated` trên các hàm SECURITY DEFINER (`create_parent_account_by_phone`, `fix_auth_user_tokens`, …); thêm kiểm tra vai trò admin trong `create_parent_account_by_phone`
+- [x] **1.4a** Chuyển repo GitHub sang Private
+- [x] **1.4b** Xóa khỏi lịch sử git: 3 file Excel dữ liệu thật, ảnh jpg, `_Delete/` (dùng `git filter-repo`)
+- [ ] **1.4c** Force-push nhánh đã rewrite lên `origin/main` để hoàn tất; xóa `implementation_plan.md` lỗi thời (commit thường); thêm `*.xlsx` vào `.gitignore`
+- [ ] **1.5** Bật leaked-password protection trong Supabase Auth
+
+### GĐ 2 — Bảo mật tài khoản (2–3 ngày)
+- [ ] **2.1** Chuyển tạo tài khoản phụ huynh sang Edge Function dùng Admin API (như `create-staff-account`), bỏ INSERT trực tiếp `auth.users`
+- [ ] **2.2** Bắt đổi mật khẩu lần đầu đăng nhập (flag `must_change_password` + màn hình đổi mật khẩu)
+- [ ] **2.3** Đồng bộ schema drift: dump các hàm/policy chỉ có trên DB thành migration `019_sync_db_functions.sql`
+- [ ] **2.4** `SET search_path` cho 11 hàm; move `unaccent` sang schema `extensions`
+
+### GĐ 3 — Hiệu năng DB (1–2 ngày)
+- [ ] **3.1** Migration fix 9 policy `auth_rls_initplan` (bọc `(select auth.uid())`)
+- [ ] **3.2** Gộp 30 multiple permissive policies
+- [ ] **3.3** Index cho 11 FK chưa có index
+- [ ] **3.4** Rà 18 unused index sau 2–4 tuần chạy thật rồi mới drop
+
+### GĐ 4 — Chất lượng code (liên tục, ~1 tuần rải)
+- [ ] **4.1** Giảm `any` theo thứ tự: GuardianPortal → Attendance → Health/Evaluations → Teachers (dùng type từ `database.ts`)
+- [ ] **4.2** Tách các file >600 dòng thành component/hook con (ưu tiên Attendance, Finance)
+- [ ] **4.3** Thêm test cho logic tiền: tính học phí, trạng thái overdue, và hooks useStudents
+- [ ] **4.4** `build.rollupOptions.output.manualChunks` tách vendor để giảm chunk index 742KB
+
+### GĐ 5 — Hoàn thiện tính năng (tùy chọn)
+- [ ] **5.1** Auto gửi Zalo khi điểm danh vắng (sau khi 1.2 xong) — trigger hoặc gọi từ luồng lưu điểm danh
+- [ ] **5.2** Cron `mark_overdue_fees()` chạy hằng ngày (pg_cron hoặc scheduled Edge Function) + auto nhắc học phí
+- [ ] **5.3** Bật lại PWA đúng cách (hiện `sw.js` là self-destruct để xóa cache cũ) — chỉ làm khi cần offline
+
+> **Ưu tiên: GĐ1 (còn lại 1.2, 1.3, 1.4c, 1.5) > GĐ2 > GĐ3 > GĐ4 > GĐ5.**
+
+---
+
+*Cập nhật lần cuối: 2026-07-04 — dựa trên: build/test/tsc local, Supabase advisors (35 security / 68 performance), danh sách Edge Functions deployed, soát mã nguồn, và thao tác xử lý sự cố dữ liệu trẻ em bị public trên GitHub.*
