@@ -452,12 +452,15 @@ export function Topbar({
 
                 <div className="py-1.5">
                   {[
-                    { icon: User, label: "Hồ sơ", action: () => {} },
-                    { icon: Settings, label: "Cài đặt", action: () => {} },
+                    { icon: User, label: "Hồ sơ", action: () => navigate('/settings?tab=profile') },
+                    { icon: Settings, label: "Cài đặt", action: () => navigate('/settings') },
                   ].map((item) => (
                     <button
                       key={item.label}
-                      onClick={item.action}
+                      onClick={() => {
+                        item.action();
+                        setShowUserMenu(false);
+                      }}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium text-on-surface hover:bg-surface-container transition-colors"
                     >
                       <item.icon className="w-4 h-4 text-on-surface-variant" />

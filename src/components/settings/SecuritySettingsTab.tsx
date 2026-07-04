@@ -63,7 +63,7 @@ export const SecuritySettingsTab: React.FC = () => {
       <form onSubmit={handleSubmit(onChangePassword)} className="space-y-5 max-w-md">
         <div className="p-4 rounded-2xl bg-warning-container/10 border border-warning-container/20 flex gap-3 text-xs text-warning leading-relaxed font-semibold">
           <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
-          Đổi mật khẩu tài khoản sẽ ảnh hưởng đến toàn bộ người dùng. Hãy chỉ thay đổi khi được cấp quyền từ quản trị viên.
+          Thao tác này chỉ đổi mật khẩu của tài khoản bạn đang đăng nhập. Hãy ghi nhớ mật khẩu mới sau khi đổi.
         </div>
 
         <Input

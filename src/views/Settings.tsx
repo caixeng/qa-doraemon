@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { 
   Building, 
@@ -26,8 +27,13 @@ export function Settings() {
   const { user, setUser } = useAuthStore();
   const selectedAcademicYearId = useAppStore((state) => state.selectedAcademicYearId);
   const setSelectedAcademicYearId = useAppStore((state) => state.setSelectedAcademicYearId);
+  const isAdmin = user?.role === 'admin';
 
-  const [activeTab, setActiveTab] = useState<'school' | 'years' | 'security' | 'zalo' | 'profile'>('school');
+  const [searchParams] = useSearchParams();
+  const requestedTab = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'school' | 'years' | 'security' | 'zalo' | 'profile'>(
+    requestedTab === 'profile' || requestedTab === 'security' || isAdmin ? (requestedTab as any) || 'school' : 'profile'
+  );
 
   // 1. Fetch School Info
   const { data: schoolData, isLoading: isLoadingSchool } = useQuery({
@@ -88,6 +94,7 @@ export function Settings() {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Navigation Tabs */}
         <div className="w-full lg:w-64 shrink-0 bg-surface border border-outline-variant/40 rounded-3xl p-4 flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible">
+          {isAdmin && (
           <button
             onClick={() => setActiveTab('school')}
             className={cn(
@@ -100,6 +107,7 @@ export function Settings() {
             <Building className="w-4 h-4" />
             Thông tin trường học
           </button>
+          )}
 
           <button
             onClick={() => setActiveTab('profile')}
@@ -114,6 +122,7 @@ export function Settings() {
             Hồ sơ cá nhân
           </button>
           
+          {isAdmin && (
           <button
             onClick={() => setActiveTab('years')}
             className={cn(
@@ -126,7 +135,9 @@ export function Settings() {
             <Calendar className="w-4 h-4" />
             Cấu hình năm học
           </button>
+          )}
 
+          {isAdmin && (
           <button
             onClick={() => setActiveTab('zalo')}
             className={cn(
@@ -139,6 +150,7 @@ export function Settings() {
             <MessageSquare className="w-4 h-4" />
             Cấu hình Zalo OA
           </button>
+          )}
 
           <button
             onClick={() => setActiveTab('security')}

@@ -82,7 +82,6 @@ export default function App() {
                   <Route path="finance" element={<Finance />} />
                   <Route path="reports" element={<Reports />} />
                   <Route path="audit-log" element={<AuditLog />} />
-                  <Route path="settings" element={<Settings />} />
                 </Route>
 
                 {/* Admin + Teacher routes */}
@@ -96,6 +95,7 @@ export default function App() {
                   <Route path="attendance" element={<Attendance />} />
                   <Route path="health" element={<Health />} />
                   <Route path="evaluations" element={<Evaluations />} />
+                  <Route path="settings" element={<Settings />} />
                 </Route>
 
                 {/* Guardian-only routes */}
