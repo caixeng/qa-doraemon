@@ -223,16 +223,16 @@ export function Topbar({
         </div>
 
         {/* Mobile page title */}
-        <h2 className="sm:hidden text-[16px] font-bold font-playfair text-on-surface truncate">
+        <h2 className="sm:hidden text-[14px] font-bold font-playfair text-on-surface truncate">
           {pageTitle}
         </h2>
       </div>
 
       {/* ── Right section ───────────────── */}
-      <div className="flex items-center gap-2 md:gap-3 shrink-0">
+      <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
         {/* Academic Year Selector */}
-        <div className="flex items-center gap-1.5 bg-surface-container border border-outline-variant/60 rounded-full px-3 py-1.5 h-10 select-none">
-          <Calendar className="w-4 h-4 text-primary shrink-0" />
+        <div className="flex items-center gap-1 md:gap-1.5 bg-surface-container border border-outline-variant/60 rounded-full px-2 md:px-3 py-1.5 h-9 md:h-10 select-none">
+          <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary shrink-0" />
           <select
             value={selectedAcademicYearId || ""}
             onChange={(e) => setSelectedAcademicYearId(e.target.value || null)}
@@ -279,20 +279,20 @@ export function Topbar({
         </div>
 
         {/* Mobile search button */}
-        <button className="md:hidden p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors">
-          <Search className="w-5 h-5" />
+        <button className="md:hidden p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors">
+          <Search className="w-4 h-4" />
         </button>
 
         {/* Theme Toggle */}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all"
+          className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all"
           aria-label="Đổi giao diện"
         >
           {theme === "dark" ? (
-            <Sun className="w-5 h-5" />
+            <Sun className="w-4 h-4 md:w-5 md:h-5" />
           ) : (
-            <Moon className="w-5 h-5" />
+            <Moon className="w-4 h-4 md:w-5 md:h-5" />
           )}
         </button>
 
@@ -304,7 +304,7 @@ export function Topbar({
               setShowUserMenu(false);
             }}
             className={cn(
-              "relative w-10 h-10 rounded-full flex items-center justify-center",
+              "relative w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center",
               "text-on-surface-variant transition-all",
               showNotifications
                 ? "bg-primary-container text-on-primary-container"
@@ -312,9 +312,9 @@ export function Topbar({
             )}
             aria-label="Thông báo"
           >
-            <Bell className="w-5 h-5" />
+            <Bell className="w-4 h-4 md:w-5 md:h-5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest" />
+              <span className="absolute top-1 right-1 md:top-1.5 md:right-1.5 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-error ring-2 ring-surface-container-lowest" />
             )}
           </button>
 

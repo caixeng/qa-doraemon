@@ -39,8 +39,8 @@ function SkeletonRow({ cols }: { cols: number }) {
   return (
     <tr className="border-b border-outline-variant/30">
       {Array.from({ length: cols }).map((_, i) => (
-        <td key={i} className="px-4 py-3">
-          <div className="h-4 bg-surface-container-high rounded animate-pulse" />
+        <td key={i} className="px-2 py-2 md:px-4 md:py-3">
+          <div className="h-3 md:h-4 bg-surface-container-high rounded animate-pulse" />
         </td>
       ))}
     </tr>
@@ -145,17 +145,17 @@ export function Table<T>({
         className
       )}
     >
-      <table className="w-full border-collapse min-w-[600px]" role="table">
+      <table className="w-full border-collapse min-w-[480px] md:min-w-[600px]" role="table">
         {/* ── Head ─────────────────────────── */}
         <thead>
           <tr className="bg-surface-container">
             {selectable && (
-              <th className="w-12 px-4 py-3 sticky top-0 z-10 bg-surface-container shadow-[0_1px_0_0_var(--color-outline-variant)]">
+              <th className="w-10 md:w-12 px-2 py-2 md:px-4 md:py-3 sticky top-0 z-10 bg-surface-container shadow-[0_1px_0_0_var(--color-outline-variant)]">
                 <input
                   type="checkbox"
                   checked={allSelected}
                   onChange={toggleAll}
-                  className="w-4 h-4 rounded border-outline accent-primary cursor-pointer"
+                  className="w-3.5 h-3.5 md:w-4 md:h-4 rounded border-outline accent-primary cursor-pointer"
                   aria-label="Chọn tất cả"
                 />
               </th>
@@ -165,7 +165,7 @@ export function Table<T>({
                 key={col.key}
                 style={col.width ? { width: col.width } : undefined}
                 className={cn(
-                  "px-4 py-3 text-[12.5px] font-extrabold text-on-surface-variant uppercase tracking-[0.06em] sticky top-0 z-10 bg-surface-container shadow-[0_1px_0_0_var(--color-outline-variant)]",
+                  "px-2 py-2 md:px-4 md:py-3 text-[9px] md:text-[12.5px] font-extrabold text-on-surface-variant uppercase tracking-[0.06em] sticky top-0 z-10 bg-surface-container shadow-[0_1px_0_0_var(--color-outline-variant)]",
                   alignClass(col.align),
                   col.sortable && "cursor-pointer select-none hover:text-on-surface"
                 )}
@@ -173,18 +173,18 @@ export function Table<T>({
                 aria-sort={sortCol === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
                 scope="col"
               >
-                <span className="inline-flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-1 md:gap-1.5">
                   {col.header}
                   {col.sortable && (
                     <span className="text-on-surface-variant/60">
                       {sortCol === col.key ? (
                         sortDir === "asc" ? (
-                          <ArrowUp className="w-3.5 h-3.5" />
+                          <ArrowUp className="w-3 h-3 md:w-3.5 md:h-3.5" />
                         ) : (
-                          <ArrowDown className="w-3.5 h-3.5" />
+                          <ArrowDown className="w-3 h-3 md:w-3.5 md:h-3.5" />
                         )
                       ) : (
-                        <ArrowUpDown className="w-3.5 h-3.5" />
+                        <ArrowUpDown className="w-3 h-3 md:w-3.5 md:h-3.5" />
                       )}
                     </span>
                   )}
@@ -202,14 +202,14 @@ export function Table<T>({
             ))
           ) : sortedData.length === 0 ? (
             <tr>
-              <td colSpan={totalCols} className="py-16">
-                <div className="flex flex-col items-center gap-3 text-on-surface-variant">
-                  <div className="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center">
-                    <Inbox className="w-7 h-7" />
+              <td colSpan={totalCols} className="py-10 md:py-16">
+                <div className="flex flex-col items-center gap-2 md:gap-3 text-on-surface-variant">
+                  <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-surface-container flex items-center justify-center">
+                    <Inbox className="w-5 h-5 md:w-7 md:h-7" />
                   </div>
                   <div className="text-center">
-                    <p className="text-[14px] font-semibold">{emptyTitle}</p>
-                    <p className="text-[13px] mt-0.5">{emptyDescription}</p>
+                    <p className="text-[11px] md:text-[14px] font-semibold">{emptyTitle}</p>
+                    <p className="text-[10px] md:text-[13px] mt-0.5">{emptyDescription}</p>
                   </div>
                 </div>
               </td>
@@ -232,13 +232,13 @@ export function Table<T>({
                   )}
                 >
                   {selectable && (
-                    <td className="w-12 px-4 py-3">
+                    <td className="w-10 md:w-12 px-2 py-2 md:px-4 md:py-3">
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleRow(key)}
                         onClick={(e) => e.stopPropagation()}
-                        className="w-4 h-4 rounded border-outline accent-primary cursor-pointer"
+                        className="w-3.5 h-3.5 md:w-4 md:h-4 rounded border-outline accent-primary cursor-pointer"
                         aria-label={`Chọn dòng ${i + 1}`}
                       />
                     </td>
@@ -247,7 +247,7 @@ export function Table<T>({
                     <td
                       key={col.key}
                       className={cn(
-                        "px-4 py-3 text-[14px] text-on-surface",
+                        "px-2 py-2 md:px-4 md:py-3 text-[10px] md:text-[14px] text-on-surface",
                         alignClass(col.align)
                       )}
                     >

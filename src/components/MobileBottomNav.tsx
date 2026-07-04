@@ -19,7 +19,7 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-surface-container border-t border-outline-variant flex items-stretch h-16 pb-[env(safe-area-inset-bottom)]"
+      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-surface-container border-t border-outline-variant flex items-stretch h-12 pb-[env(safe-area-inset-bottom)]"
       aria-label="Điều hướng chính"
     >
       {tabs.map((item) => {
@@ -38,8 +38,8 @@ export function MobileBottomNav() {
           >
             {({ isActive }) => (
               <>
-                <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
-                <span className="text-[10px] font-semibold truncate max-w-full px-1">
+                <Icon className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-[9px] font-semibold truncate max-w-full px-1">
                   {item.label}
                 </span>
               </>
@@ -53,8 +53,8 @@ export function MobileBottomNav() {
         onClick={() => setMobileMoreOpen(true)}
         className="flex-1 flex flex-col items-center justify-center gap-0.5 text-on-surface-variant cursor-pointer"
       >
-        <LayoutGrid className="w-5 h-5" />
-        <span className="text-[10px] font-semibold">Quản lý</span>
+        <LayoutGrid className="w-4 h-4" />
+        <span className="text-[9px] font-semibold">Quản lý</span>
       </button>
     </nav>
   );

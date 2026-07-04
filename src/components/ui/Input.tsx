@@ -34,17 +34,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const errorId = `${inputId}-error`;
 
     const sizeStyles = {
-      sm: "h-9 text-[13px]",
-      md: "h-10 text-[14px]",
-      lg: "h-12 text-[15px]",
+      sm: "h-8 md:h-9 text-[13px]",
+      md: "h-8 md:h-10 text-[14px]",
+      lg: "h-9 md:h-12 text-[15px]",
     };
 
     return (
-      <div className={cn("flex flex-col gap-1.5", className)}>
+      <div className={cn("flex flex-col gap-1 md:gap-1.5", className)}>
         {label && (
           <label
             htmlFor={inputId}
-            className="text-[13px] font-semibold text-on-surface tracking-[0.01em]"
+            className="text-[10px] md:text-[13px] font-semibold text-on-surface tracking-[0.01em]"
           >
             {label}
           </label>
@@ -52,7 +52,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative">
           {leftIcon && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant [&>svg]:w-4 [&>svg]:h-4 pointer-events-none">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant [&>svg]:w-3.5 [&>svg]:h-3.5 md:[&>svg]:w-4 md:[&>svg]:h-4 pointer-events-none">
               {leftIcon}
             </span>
           )}
@@ -87,20 +87,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {rightIcon && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant [&>svg]:w-4 [&>svg]:h-4">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant [&>svg]:w-3.5 [&>svg]:h-3.5 md:[&>svg]:w-4 md:[&>svg]:h-4">
               {rightIcon}
             </span>
           )}
         </div>
 
         {error && (
-          <p id={errorId} className="text-[12px] text-error font-medium" role="alert">
+          <p id={errorId} className="text-[10px] md:text-[12px] text-error font-medium" role="alert">
             {error}
           </p>
         )}
 
         {!error && helperText && (
-          <p id={helperId} className="text-[12px] text-on-surface-variant">
+          <p id={helperId} className="text-[10px] md:text-[12px] text-on-surface-variant">
             {helperText}
           </p>
         )}

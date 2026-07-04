@@ -19,9 +19,9 @@ export interface SelectProps
 }
 
 const sizeStyles = {
-  sm: "h-9 text-[13px] pl-3 pr-8",
-  md: "h-10 text-[14px] pl-3 pr-9",
-  lg: "h-12 text-[15px] pl-4 pr-10",
+  sm: "h-8 md:h-9 text-[13px] pl-3 pr-8",
+  md: "h-8 md:h-10 text-[14px] pl-3 pr-9",
+  lg: "h-9 md:h-12 text-[15px] pl-4 pr-10",
 };
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -46,11 +46,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     const helperId = `${selectId}-helper`;
 
     return (
-      <div className={cn("flex flex-col gap-1.5", className)}>
+      <div className={cn("flex flex-col gap-1 md:gap-1.5", className)}>
         {label && (
           <label
             htmlFor={selectId}
-            className="text-[13px] font-semibold text-on-surface tracking-[0.01em]"
+            className="text-[10px] md:text-[13px] font-semibold text-on-surface tracking-[0.01em]"
           >
             {label}
           </label>
@@ -88,17 +88,17 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ))}
           </select>
 
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-on-surface-variant pointer-events-none" />
         </div>
 
         {error && (
-          <p id={errorId} className="text-[12px] text-error font-medium" role="alert">
+          <p id={errorId} className="text-[10px] md:text-[12px] text-error font-medium" role="alert">
             {error}
           </p>
         )}
 
         {!error && helperText && (
-          <p id={helperId} className="text-[12px] text-on-surface-variant">
+          <p id={helperId} className="text-[10px] md:text-[12px] text-on-surface-variant">
             {helperText}
           </p>
         )}

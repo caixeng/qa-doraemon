@@ -45,18 +45,18 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     };
 
     return (
-      <div className={cn("flex flex-col gap-1.5", className)}>
+      <div className={cn("flex flex-col gap-1 md:gap-1.5", className)}>
         <div className="flex justify-between items-baseline select-none">
           {label && (
             <label
               htmlFor={textareaId}
-              className="text-[13px] font-semibold text-on-surface tracking-[0.01em]"
+              className="text-[10px] md:text-[13px] font-semibold text-on-surface tracking-[0.01em]"
             >
               {label}
             </label>
           )}
           {showCharacterCount && maxLength && (
-            <span className="text-[11px] text-on-surface-variant font-medium ml-auto">
+            <span className="text-[9px] md:text-[11px] text-on-surface-variant font-medium ml-auto">
               {charCount}/{maxLength}
             </span>
           )}
@@ -75,7 +75,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           defaultValue={defaultValue}
           className={cn(
             // Base
-            "w-full rounded-xl border bg-surface-container-lowest font-inter p-3 text-sm min-h-[100px] resize-y",
+            "w-full rounded-xl border bg-surface-container-lowest font-inter p-2 md:p-3 text-sm min-h-[70px] md:min-h-[100px] resize-y",
             "text-on-surface placeholder:text-on-surface-variant/60",
             "transition-all duration-200",
             // Focus
@@ -91,13 +91,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         />
 
         {error && (
-          <p id={errorId} className="text-[12px] text-error font-medium" role="alert">
+          <p id={errorId} className="text-[10px] md:text-[12px] text-error font-medium" role="alert">
             {error}
           </p>
         )}
 
         {!error && helperText && (
-          <p id={helperId} className="text-[12px] text-on-surface-variant">
+          <p id={helperId} className="text-[10px] md:text-[12px] text-on-surface-variant">
             {helperText}
           </p>
         )}
