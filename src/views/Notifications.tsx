@@ -228,13 +228,14 @@ export function Notifications() {
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 md:gap-2">
           {notifications.some(n => !n.is_read) && (
             <button
               onClick={handleMarkAllRead}
-              className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-surface hover:bg-surface-container border border-outline-variant/40 px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-[13px] md:text-sm font-semibold text-on-surface transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1 md:gap-2 bg-surface hover:bg-surface-container border border-outline-variant/40 w-8 h-8 md:w-auto md:px-4 md:py-2.5 rounded-lg md:rounded-xl text-[13px] md:text-sm font-semibold text-on-surface transition-all cursor-pointer"
+              title="Đọc tất cả"
             >
-              <MailOpen className="w-4 h-4 text-on-surface-variant" />
+              <MailOpen className="w-3.5 h-3.5 md:w-4 md:h-4 text-on-surface-variant" />
               <span className="hidden md:inline">Đọc Tất Cả</span>
             </button>
           )}
@@ -242,9 +243,9 @@ export function Notifications() {
           {isPrivileged && (
             <button
               onClick={handleCreateNotification}
-              className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-[13px] md:text-sm font-semibold shadow-sm transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-2.5 md:px-4 h-8 md:h-auto md:py-2.5 rounded-lg md:rounded-xl text-[12px] md:text-sm font-semibold shadow-sm transition-all cursor-pointer"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
               <span className="md:hidden">Soạn</span>
               <span className="hidden md:inline">Soạn Thông Báo</span>
             </button>

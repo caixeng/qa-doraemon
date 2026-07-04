@@ -230,13 +230,17 @@ export function Topbar({
 
       {/* ── Right section ───────────────── */}
       <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
-        {/* Academic Year Selector */}
-        <div className="flex items-center gap-1 md:gap-1.5 bg-surface-container border border-outline-variant/60 rounded-full px-2 md:px-3 py-1.5 h-9 md:h-10 select-none">
-          <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary shrink-0" />
+        {/* Academic Year Selector — icon-only on mobile, icon + label from md: up */}
+        <div className="relative flex items-center justify-center w-8 h-8 md:w-auto md:justify-start md:gap-1.5 md:px-3 md:py-1.5 md:h-10 bg-surface-container border border-outline-variant/60 rounded-full select-none">
+          <Calendar className="w-4 h-4 text-primary shrink-0 pointer-events-none" />
+          <span className="hidden md:inline text-xs font-bold text-on-surface truncate max-w-[140px] pointer-events-none">
+            {yearsList.find((y: any) => y.id === selectedAcademicYearId)?.name || 'Chọn năm học'}
+          </span>
           <select
             value={selectedAcademicYearId || ""}
             onChange={(e) => setSelectedAcademicYearId(e.target.value || null)}
-            className="bg-transparent border-none text-xs font-bold text-on-surface focus:outline-none pr-1 max-w-[140px] truncate cursor-pointer"
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            aria-label="Chọn năm học"
           >
             {selectedAcademicYearId === null && (
               <option value="" disabled className="text-on-surface-variant bg-surface-container-low font-medium">Chọn năm học</option>
@@ -279,7 +283,7 @@ export function Topbar({
         </div>
 
         {/* Mobile search button */}
-        <button className="md:hidden p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors">
+        <button className="md:hidden w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
           <Search className="w-4 h-4" />
         </button>
 
