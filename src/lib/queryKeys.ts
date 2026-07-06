@@ -38,6 +38,12 @@ export const queryKeys = {
     students: (classId: string) => ['students-attendance', classId] as const,
   },
 
+  // Teacher Attendance
+  teacherAttendance: {
+    all: ['teacher-attendance'] as const,
+    records: (date: string) => ['teacher-attendance-records', date] as const,
+  },
+
   // Finance / Tuition
   finance: {
     all: ['tuition-fees'] as const,

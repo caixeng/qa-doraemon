@@ -431,6 +431,59 @@ export interface AttendanceUpdate {
 }
 
 // ─────────────────────────────────────────────
+// Table: teacher_attendance
+// ─────────────────────────────────────────────
+
+export type TeacherAttendanceStatus =
+  | 'full_day'
+  | 'half_day'
+  | 'excused_absence'
+  | 'unexcused_absence'
+  | 'unexcused_absence_half'
+  | 'hour_1'
+  | 'hour_2'
+  | 'hour_3'
+  | 'hour_5'
+  | 'hour_6'
+  | 'hour_7';
+
+/** Bản ghi điểm danh giáo viên/nhân viên */
+export interface TeacherAttendanceRow {
+  id: string;
+  school_id: string;
+  teacher_id: string;
+  date: string;
+  status: TeacherAttendanceStatus;
+  note: string | null;
+  recorded_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeacherAttendanceInsert {
+  id?: string;
+  school_id: string;
+  teacher_id: string;
+  date: string;
+  status: TeacherAttendanceStatus;
+  note?: string | null;
+  recorded_by?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface TeacherAttendanceUpdate {
+  id?: string;
+  school_id?: string;
+  teacher_id?: string;
+  date?: string;
+  status?: TeacherAttendanceStatus;
+  note?: string | null;
+  recorded_by?: string | null;
+  updated_at?: string;
+}
+
+// ─────────────────────────────────────────────
 // Table: health_records
 // ─────────────────────────────────────────────
 
@@ -795,6 +848,11 @@ export interface Database {
         Insert: StudentEvaluationInsert;
         Update: StudentEvaluationUpdate;
       };
+      teacher_attendance: {
+        Row: TeacherAttendanceRow;
+        Insert: TeacherAttendanceInsert;
+        Update: TeacherAttendanceUpdate;
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -825,6 +883,7 @@ export interface Database {
       notification_type: NotificationType;
       notification_target: NotificationTarget;
       guardian_relationship: GuardianRelationship;
+      teacher_attendance_status: TeacherAttendanceStatus;
     };
   };
 }

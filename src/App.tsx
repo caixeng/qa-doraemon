@@ -14,6 +14,7 @@ const Dashboard = lazy(() => import('./views/Dashboard').then(m => ({ default: m
 const Students = lazy(() => import('./views/Students').then(m => ({ default: m.Students })));
 const Teachers = lazy(() => import('./views/Teachers').then(m => ({ default: m.Teachers })));
 const Attendance = lazy(() => import('./views/Attendance').then(m => ({ default: m.Attendance })));
+const TeacherAttendance = lazy(() => import('./views/TeacherAttendance').then(m => ({ default: m.TeacherAttendance })));
 const Finance = lazy(() => import('./views/Finance').then(m => ({ default: m.Finance })));
 const Classes = lazy(() => import('./views/Classes').then(m => ({ default: m.Classes })));
 const Nutrition = lazy(() => import('./views/Nutrition').then(m => ({ default: m.Nutrition })));
@@ -79,6 +80,7 @@ export default function App() {
                   }
                 >
                   <Route path="teachers" element={<Teachers />} />
+                  <Route path="teacher-attendance" element={<TeacherAttendance />} />
                   <Route path="finance" element={<Finance />} />
                   <Route path="reports" element={<Reports />} />
                   <Route path="audit-log" element={<AuditLog />} />

@@ -19,6 +19,7 @@ export type {
   NotificationType,
   NotificationTarget,
   GuardianRelationship,
+  TeacherAttendanceStatus,
 
   // Table Row / Insert / Update types
   SchoolRow,
@@ -60,6 +61,9 @@ export type {
   StudentEvaluationRow,
   StudentEvaluationInsert,
   StudentEvaluationUpdate,
+  TeacherAttendanceRow,
+  TeacherAttendanceInsert,
+  TeacherAttendanceUpdate,
 
   // Composite / helper types
   Database,
