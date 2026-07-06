@@ -426,9 +426,10 @@ export function Students() {
               <option value="all">Tất cả độ tuổi</option>
               {availableBirthYears.map((year) => {
                 const age = new Date().getFullYear() - year;
+                const ageLabel = age <= 0 ? '< 1 tuổi' : `${age} tuổi`;
                 return (
                   <option key={year} value={year}>
-                    {year} ({age} tuổi)
+                    {year} ({ageLabel})
                   </option>
                 );
               })}
