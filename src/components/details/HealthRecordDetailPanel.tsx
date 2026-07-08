@@ -38,12 +38,14 @@ interface HealthRecordDetailPanelProps {
   studentId: string;
   studentsList: { id: string; full_name: string; student_code?: string }[];
   onUpdateSuccess?: () => void;
+  readOnly?: boolean;
 }
 
 export const HealthRecordDetailPanel: React.FC<HealthRecordDetailPanelProps> = ({
   studentId,
   studentsList,
   onUpdateSuccess,
+  readOnly = false,
 }) => {
   const queryClient = useQueryClient();
   const { openPanel, closePanel } = useSlidePanel();
@@ -183,13 +185,15 @@ export const HealthRecordDetailPanel: React.FC<HealthRecordDetailPanelProps> = (
             </p>
           </div>
         </div>
-        <Button
-          onClick={handleCreateRecord}
-          leftIcon={<Plus className="w-4 h-4" />}
-          className="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer shrink-0"
-        >
-          Thêm lượt khám
-        </Button>
+        {!readOnly && (
+          <Button
+            onClick={handleCreateRecord}
+            leftIcon={<Plus className="w-4 h-4" />}
+            className="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer shrink-0"
+          >
+            Thêm lượt khám
+          </Button>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -342,23 +346,25 @@ export const HealthRecordDetailPanel: React.FC<HealthRecordDetailPanelProps> = (
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1.5 self-end sm:self-start select-none">
-                    <button
-                      onClick={() => handleEditRecord(rec)}
-                      className="p-1.5 hover:bg-white rounded-lg text-on-surface-variant hover:text-on-surface transition-all cursor-pointer border border-outline-variant/30 bg-white/50"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedRecord(rec);
-                        setIsDeleteDialogOpen(true);
-                      }}
-                      className="p-1.5 hover:bg-red-50 rounded-lg text-on-surface-variant hover:text-red-600 transition-all cursor-pointer border border-red-100 bg-white/50"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  {!readOnly && (
+                    <div className="flex items-center gap-1.5 self-end sm:self-start select-none">
+                      <button
+                        onClick={() => handleEditRecord(rec)}
+                        className="p-1.5 hover:bg-white rounded-lg text-on-surface-variant hover:text-on-surface transition-all cursor-pointer border border-outline-variant/30 bg-white/50"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedRecord(rec);
+                          setIsDeleteDialogOpen(true);
+                        }}
+                        className="p-1.5 hover:bg-red-50 rounded-lg text-on-surface-variant hover:text-red-600 transition-all cursor-pointer border border-red-100 bg-white/50"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

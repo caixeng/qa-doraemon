@@ -3,10 +3,79 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutGrid, Table as TableIcon, MessageSquare, Edit2, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../../../lib/api';
-import { Button, Modal, DatePicker, EmptyState } from '../../ui';
+import { Button, DatePicker, EmptyState } from '../../ui';
+import { useSlidePanel } from '../../../context/SlidePanelContext';
 import { toast } from '../../../stores/toastStore';
 import { cn } from '../../../lib/utils';
 import type { StudentRow, AttendanceRow } from '../../../types';
+
+interface RollCallNotePanelContentProps {
+  student: StudentRow;
+  initialNote: string;
+  onSave: (note: string) => void;
+  closePanel: () => void;
+  getInitials: (name: string) => string;
+}
+
+const RollCallNotePanelContent: React.FC<RollCallNotePanelContentProps> = ({
+  student,
+  initialNote,
+  onSave,
+  closePanel,
+  getInitials,
+}) => {
+  const [note, setNote] = useState(initialNote);
+  
+  const handleSave = () => {
+    onSave(note);
+  };
+
+  return (
+    <div className="p-6 space-y-5 select-none flex flex-col h-full justify-between">
+      <div className="space-y-5">
+        <div className="flex items-center gap-3 bg-surface-container-low p-3 rounded-2xl">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold font-playfair text-primary">
+            {getInitials(student.full_name)}
+          </div>
+          <div>
+            <span className="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Học sinh</span>
+            <h4 className="text-sm font-bold text-on-surface font-inter mt-0.5">{student.full_name}</h4>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-semibold text-on-surface tracking-[0.01em]">
+            Nội dung ghi chú
+          </label>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Nhập ghi chú ví dụ: nghỉ ốm sốt nhẹ, phụ huynh đón sớm..."
+            className="w-full rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm p-3 text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-3 border-t border-outline-variant/20">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={closePanel}
+          className="rounded-xl cursor-pointer"
+        >
+          Hủy
+        </Button>
+        <Button
+          type="button"
+          onClick={handleSave}
+          className="rounded-xl cursor-pointer"
+        >
+          Lưu ghi chú
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 interface ClassRollCallTabProps {
   classId: string;
@@ -26,9 +95,8 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
   // Roll call states
   const [rollCallDate, setRollCallDate] = useState<Date>(new Date());
   const [rollCallViewMode, setRollCallViewMode] = useState<'grid' | 'table'>('grid');
-  const [isRollCallNoteModalOpen, setIsRollCallNoteModalOpen] = useState(false);
-  const [selectedStudentForRollCallNote, setSelectedStudentForRollCallNote] = useState<StudentRow | null>(null);
-  const [rollCallTempNote, setRollCallTempNote] = useState('');
+
+  const { openPanel, closePanel } = useSlidePanel();
 
   const formattedRollCallDate = format(rollCallDate, 'yyyy-MM-dd');
 
@@ -154,28 +222,36 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
     });
   };
 
-  const handleSaveRollCallNote = () => {
-    if (!selectedStudentForRollCallNote) return;
-    const existingRecord = rollCallMap.get(selectedStudentForRollCallNote.id);
-    const status = existingRecord?.status || 'present';
-
-    saveRollCallMutation.mutate(
-      {
-        studentId: selectedStudentForRollCallNote.id,
-        status,
-        note: rollCallTempNote,
-        checkInTime: existingRecord?.check_in_time || null,
-        recordId: existingRecord?.id,
-      },
-      {
-        onSuccess: () => {
-          setIsRollCallNoteModalOpen(false);
-          setSelectedStudentForRollCallNote(null);
-          setRollCallTempNote('');
-          toast.success('Đã lưu ghi chú!');
-        },
-      }
-    );
+  const handleOpenNotePanel = (student: StudentRow, note: string) => {
+    openPanel({
+      title: 'Ghi chú điểm danh',
+      icon: <MessageSquare size={14} />,
+      width: 460,
+      component: (
+        <RollCallNotePanelContent
+          student={student}
+          initialNote={note}
+          getInitials={getInitials}
+          closePanel={closePanel}
+          onSave={(updatedNote) => {
+            const existingRecord = rollCallMap.get(student.id);
+            const status = existingRecord?.status || 'present';
+            saveRollCallMutation.mutate({
+              studentId: student.id,
+              status,
+              note: updatedNote,
+              checkInTime: existingRecord?.check_in_time || null,
+              recordId: existingRecord?.id,
+            }, {
+              onSuccess: () => {
+                closePanel();
+                toast.success('Đã lưu ghi chú!');
+              }
+            });
+          }}
+        />
+      )
+    });
   };
 
   // Daily stats calculations
@@ -333,7 +409,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
               <div
                 key={student.id}
                 className={cn(
-                  'bg-surface rounded-2xl border p-4 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between relative group',
+                  'bg-surface rounded-2xl border p-4 shadow-xs hover:shadow-sm transition-all flex flex-col justify-center relative group',
                   status === 'present' && 'border-green-200/50 bg-green-50/5',
                   status === 'absent' && 'border-rose-200/50 bg-rose-50/5',
                   status === 'late' && 'border-amber-200/50 bg-amber-50/5',
@@ -341,8 +417,9 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                   !status && 'border-outline-variant/20'
                 )}
               >
-                <div>
-                  <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  {/* Left block: Avatar & Name */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div className="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 shrink-0 bg-primary/5 flex items-center justify-center">
                       {student.profile_image_url ? (
                         <img
@@ -357,7 +434,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                       )}
                     </div>
 
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0">
                       <h4
                         className="text-[14.5px] font-bold font-playfair text-on-surface line-clamp-1 leading-tight"
                         title={student.full_name}
@@ -368,109 +445,88 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                         {student.student_code}
                       </p>
                     </div>
+                  </div>
 
-                    {status && (
-                      <span
+                  {/* Right block: Attendance Buttons & Note button */}
+                  <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleRollCallStatusChange(student.id, 'present')}
                         className={cn(
-                          'text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border shrink-0',
-                          status === 'present' && 'bg-green-50 text-green-700 border-green-200',
-                          status === 'absent' && 'bg-rose-50 text-rose-700 border-rose-200',
-                          status === 'late' && 'bg-amber-50 text-amber-700 border-amber-200',
-                          (status === 'sick' || status === 'excused') &&
-                            'bg-purple-50 text-purple-700 border-purple-200'
+                          'px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer whitespace-nowrap',
+                          status === 'present'
+                            ? 'bg-green-600 border-green-600 text-white shadow-xs'
+                            : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
                         )}
                       >
-                        {status === 'present'
-                          ? 'Có mặt'
-                          : status === 'absent'
-                          ? 'Vắng'
-                          : status === 'late'
-                          ? 'Trễ'
-                          : status === 'sick'
-                          ? 'Bệnh'
-                          : 'Phép'}
-                      </span>
-                    )}
-                  </div>
+                        Có mặt
+                      </button>
 
-                  {note && (
-                    <div className="mt-2.5 bg-surface-container-low/40 border border-outline-variant/20 rounded-xl p-2 flex gap-1.5 items-start text-xs text-on-surface-variant">
-                      <MessageSquare className="w-3 h-3 mt-0.5 text-primary shrink-0" />
-                      <span className="line-clamp-2 select-text">{note}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRollCallStatusChange(student.id, 'absent')}
+                        className={cn(
+                          'px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer whitespace-nowrap',
+                          status === 'absent'
+                            ? 'bg-rose-600 border-rose-600 text-white shadow-xs'
+                            : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
+                        )}
+                      >
+                        Vắng
+                      </button>
+
+                      <select
+                        value={status && ['late', 'sick', 'excused'].includes(status) ? status : ''}
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            handleRollCallStatusChange(student.id, e.target.value as any);
+                          }
+                        }}
+                        className={cn(
+                          'px-2 py-1.5 rounded-lg text-xs font-bold border focus:outline-none cursor-pointer bg-white text-on-surface-variant border-outline-variant/30 hover:bg-surface-container',
+                          status &&
+                            ['late', 'sick', 'excused'].includes(status) &&
+                            'bg-purple-600 border-purple-600 text-white hover:bg-purple-600'
+                        )}
+                      >
+                        <option value="" disabled className="text-on-surface-variant bg-white font-medium">
+                          Khác
+                        </option>
+                        <option value="late" className="text-on-surface bg-white font-semibold">
+                          Đi trễ
+                        </option>
+                        <option value="excused" className="text-on-surface bg-white font-semibold">
+                          Có phép
+                        </option>
+                        <option value="sick" className="text-on-surface bg-white font-semibold">
+                          Nghỉ bệnh
+                        </option>
+                      </select>
                     </div>
-                  )}
-                </div>
-
-                <div className="mt-3.5 pt-2.5 border-t border-outline-variant/10 flex items-center justify-between gap-1.5">
-                  <div className="flex items-center gap-1 flex-1">
-                    <button
-                      type="button"
-                      onClick={() => handleRollCallStatusChange(student.id, 'present')}
-                      className={cn(
-                        'flex-1 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer',
-                        status === 'present'
-                          ? 'bg-green-600 border-green-600 text-white shadow-xs'
-                          : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
-                      )}
-                    >
-                      Có mặt
-                    </button>
 
                     <button
                       type="button"
-                      onClick={() => handleRollCallStatusChange(student.id, 'absent')}
+                      onClick={() => handleOpenNotePanel(student, note || '')}
                       className={cn(
-                        'flex-1 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer',
-                        status === 'absent'
-                          ? 'bg-rose-600 border-rose-600 text-white shadow-xs'
-                          : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
+                        'p-2 border border-outline-variant/30 rounded-lg transition-colors cursor-pointer',
+                        note
+                          ? 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/15'
+                          : 'bg-white text-on-surface-variant hover:bg-surface-container'
                       )}
+                      title={note || 'Thêm ghi chú'}
                     >
-                      Vắng
+                      <MessageSquare className="w-3.5 h-3.5" />
                     </button>
-
-                    <select
-                      value={status && ['late', 'sick', 'excused'].includes(status) ? status : ''}
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          handleRollCallStatusChange(student.id, e.target.value as any);
-                        }
-                      }}
-                      className={cn(
-                        'px-1.5 py-1 rounded-lg text-xs font-bold border focus:outline-none cursor-pointer bg-white text-on-surface-variant border-outline-variant/30 hover:bg-surface-container',
-                        status &&
-                          ['late', 'sick', 'excused'].includes(status) &&
-                          'bg-purple-600 border-purple-600 text-white hover:bg-purple-600'
-                      )}
-                    >
-                      <option value="" disabled className="text-on-surface-variant bg-white font-medium">
-                        Khác
-                      </option>
-                      <option value="late" className="text-on-surface bg-white font-semibold">
-                        Đi trễ
-                      </option>
-                      <option value="excused" className="text-on-surface bg-white font-semibold">
-                        Có phép
-                      </option>
-                      <option value="sick" className="text-on-surface bg-white font-semibold">
-                        Nghỉ bệnh
-                      </option>
-                    </select>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedStudentForRollCallNote(student);
-                      setRollCallTempNote(note || '');
-                      setIsRollCallNoteModalOpen(true);
-                    }}
-                    className="p-1.5 border border-outline-variant/30 rounded-lg hover:bg-surface-container transition-colors cursor-pointer"
-                    title="Thêm ghi chú"
-                  >
-                    <Edit2 className="w-3 h-3 text-on-surface-variant" />
-                  </button>
                 </div>
+
+                {note && (
+                  <div className="mt-2 bg-surface-container-low/40 border border-outline-variant/20 rounded-xl p-2 flex gap-1.5 items-start text-xs text-on-surface-variant select-none">
+                    <MessageSquare className="w-3 h-3 mt-0.5 text-primary shrink-0" />
+                    <span className="line-clamp-2 select-text">{note}</span>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -622,11 +678,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                       <td className="px-3 py-3 text-right">
                         <button
                           type="button"
-                          onClick={() => {
-                            setSelectedStudentForRollCallNote(student);
-                            setRollCallTempNote(note || '');
-                            setIsRollCallNoteModalOpen(true);
-                          }}
+                          onClick={() => handleOpenNotePanel(student, note || '')}
                           className="p-1 border border-outline-variant/30 rounded-lg hover:bg-surface-container transition-colors cursor-pointer inline-flex"
                           title="Thêm ghi chú"
                         >
@@ -642,63 +694,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
         </div>
       )}
 
-      {/* Roll Call Note Modal */}
-      {isRollCallNoteModalOpen && selectedStudentForRollCallNote && (
-        <Modal
-          open={isRollCallNoteModalOpen}
-          onClose={() => {
-            setIsRollCallNoteModalOpen(false);
-            setSelectedStudentForRollCallNote(null);
-          }}
-          title="Thêm ghi chú điểm danh"
-          size="sm"
-        >
-          <div className="space-y-4 select-none">
-            <div className="flex items-center gap-3 bg-surface-container-low p-3 rounded-2xl">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold font-playfair text-primary">
-                {getInitials(selectedStudentForRollCallNote.full_name)}
-              </div>
-              <div>
-                <span className="text-xs text-on-surface-variant font-bold uppercase tracking-wider">
-                  Học sinh
-                </span>
-                <h4 className="text-sm font-bold text-on-surface font-inter mt-0.5">
-                  {selectedStudentForRollCallNote.full_name}
-                </h4>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-on-surface tracking-[0.01em]">
-                Nội dung ghi chú
-              </label>
-              <textarea
-                value={rollCallTempNote}
-                onChange={(e) => setRollCallTempNote(e.target.value)}
-                placeholder="Nhập ghi chú ví dụ: nghỉ ốm sốt nhẹ, phụ huynh đón sớm..."
-                className="w-full rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm p-3 text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none"
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 pt-3 border-t border-outline-variant/20">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setIsRollCallNoteModalOpen(false);
-                  setSelectedStudentForRollCallNote(null);
-                }}
-                className="rounded-xl cursor-pointer"
-              >
-                Hủy
-              </Button>
-              <Button type="button" onClick={handleSaveRollCallNote} className="rounded-xl cursor-pointer">
-                Lưu ghi chú
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
+  
     </div>
   );
 };

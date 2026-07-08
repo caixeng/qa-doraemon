@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #0ea5e9;
   --color-on-primary: #ffffff;
@@ -542,5 +544,50 @@ body.slide-panel-open {
   option {
     background-color: var(--color-surface-container-low) !important;
     color: var(--color-on-surface) !important;
+  }
+}
+
+/* ── Print Media Optimization ─────────────────────── */
+@media print {
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  /* Ẩn sidebar, topbar, mobile nav và slidepanel */
+  aside, 
+  header, 
+  .print\:hidden,
+  nav,
+  footer,
+  .mobile-bottom-nav,
+  .slide-panel-container {
+    display: none !important;
+  }
+  
+  /* Reset main layout */
+  main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    min-height: auto !important;
+  }
+  
+  /* Mở rộng container */
+  .mx-auto.max-w-7xl,
+  main .mx-auto {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Định dạng bảng in ấn */
+  table {
+    border-color: #000000 !important;
+  }
+  
+  th, td {
+    border-color: #000000 !important;
+    color: #000000 !important;
   }
 }

@@ -20,7 +20,7 @@ import { HealthRecordDetailPanel } from "../components/details/HealthRecordDetai
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useClassesList } from "../hooks/useClassesList";
 
-export function Health() {
+export function Health({ classId }: { classId?: string }) {
   const { openPanel } = useSlidePanel();
 
   // Filters state
@@ -33,10 +33,12 @@ export function Health() {
 
   // Set default selected class filter
   useEffect(() => {
-    if (selectedClassId === "all" && classesList.length > 0) {
+    if (classId) {
+      setSelectedClassId(classId);
+    } else if (selectedClassId === "all" && classesList.length > 0) {
       setSelectedClassId(classesList[0].id);
     }
-  }, [classesList]);
+  }, [classesList, classId]);
 
   // 2. Fetch students list with class details and their latest health record
   const { data: studentsResponse, isLoading: isLoadingStudents, isError: isErrorStudents, refetch: refetchStudents } = useQuery({
@@ -104,6 +106,7 @@ export function Health() {
           studentId={studentId} 
           studentsList={students}
           onUpdateSuccess={() => refetchStudents()}
+          readOnly={!classId}
         />
       )
     });
@@ -224,22 +227,27 @@ export function Health() {
   return (
     <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 space-y-4">
       {/* Header section */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Sức khỏe & Phát triển</h2>
-          <p className="hidden md:block text-[13px] md:text-[14px] text-on-surface-variant mt-1 font-inter">
-            Theo dõi chiều cao, cân nặng, lịch sử tiêm chủng và ghi chú y tế của trẻ theo định kỳ.
-          </p>
+      {!classId ? (
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Sức khỏe & Phát triển</h2>
+            <p className="hidden md:block text-[13px] md:text-[14px] text-on-surface-variant mt-1 font-inter">
+              Theo dõi chiều cao, cân nặng, lịch sử tiêm chủng và ghi chú y tế của trẻ theo định kỳ.
+            </p>
+          </div>
         </div>
-        <button
-          onClick={handleCreateRecord}
-          className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="md:hidden">Thêm</span>
-          <span className="hidden md:inline">Ghi Nhận Lượt Khám</span>
-        </button>
-      </div>
+      ) : (
+        <div className="flex justify-between items-center">
+          <h3 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider font-inter">Sức khỏe học sinh lớp</h3>
+          <button
+            onClick={handleCreateRecord}
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden md:inline">Ghi Nhận Lượt Khám</span>
+          </button>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-sm flex flex-wrap gap-2.5 md:gap-3.5 items-center">
@@ -255,21 +263,23 @@ export function Health() {
           />
         </div>
 
-        <MobileFilterToggle hasActiveFilters={selectedClassId !== 'all'}>
-          {/* Class Filter */}
-          <select
-            value={selectedClassId}
-            onChange={(e) => setSelectedClassId(e.target.value)}
-            className="w-full md:w-auto border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-all cursor-pointer font-bold text-on-surface-variant"
-          >
-            <option value="all">Tất cả lớp</option>
-            {classesList.map((c) => (
-              <option key={c.id} value={c.id}>
-                Lớp {c.name}
-              </option>
-            ))}
-          </select>
-        </MobileFilterToggle>
+        {!classId && (
+          <MobileFilterToggle hasActiveFilters={selectedClassId !== 'all'}>
+            {/* Class Filter */}
+            <select
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
+              className="w-full md:w-auto border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-all cursor-pointer font-bold text-on-surface-variant"
+            >
+              <option value="all">Tất cả lớp</option>
+              {classesList.map((c) => (
+                <option key={c.id} value={c.id}>
+                  Lớp {c.name}
+                </option>
+              ))}
+            </select>
+          </MobileFilterToggle>
+        )}
       </div>
 
       {/* Main Table view */}

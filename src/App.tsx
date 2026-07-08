@@ -18,6 +18,7 @@ const TeacherAttendance = lazy(() => import('./views/TeacherAttendance').then(m 
 const Finance = lazy(() => import('./views/Finance').then(m => ({ default: m.Finance })));
 const Classes = lazy(() => import('./views/Classes').then(m => ({ default: m.Classes })));
 const Nutrition = lazy(() => import('./views/Nutrition').then(m => ({ default: m.Nutrition })));
+const WeeklyPlans = lazy(() => import('./views/WeeklyPlans').then(m => ({ default: m.WeeklyPlans })));
 const Health = lazy(() => import('./views/Health').then(m => ({ default: m.Health })));
 const Evaluations = lazy(() => import('./views/Evaluations').then(m => ({ default: m.Evaluations })));
 const Notifications = lazy(() => import('./views/Notifications').then(m => ({ default: m.Notifications })));
@@ -68,6 +69,7 @@ export default function App() {
                   <Route path="students" element={<Students />} />
                   <Route path="classes" element={<Classes />} />
                   <Route path="nutrition" element={<Nutrition />} />
+                  <Route path="weekly-plans" element={<WeeklyPlans />} />
                   <Route path="notifications" element={<Notifications />} />
                 </Route>
 

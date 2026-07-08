@@ -42,6 +42,7 @@ const routeTitles: Record<string, string> = {
   "/attendance": "Điểm Danh",
   "/finance": "Tài Chính",
   "/nutrition": "Dinh Dưỡng",
+  "/weekly-plans": "Kế Hoạch Tuần",
   "/health": "Sức Khỏe",
   "/evaluations": "Đánh Giá Phát Triển",
   "/notifications": "Thông Báo",

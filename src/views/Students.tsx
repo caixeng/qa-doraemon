@@ -257,12 +257,15 @@ export function Students() {
                 case 'Anh chị đang học ở trường': return 'Ưu tiên 2 (Anh chị đang học ở trường)';
                 case 'HĐQT': return 'Ưu tiên 3 (HĐQT)';
                 case 'Phụ huynh cũ': return 'Ưu tiên 4 (Phụ huynh cũ)';
+                case 'Anh chị em cùng đăng ký': return 'Ưu tiên 5 (Anh chị em cùng đăng ký)';
                 default: return val;
               }
             };
+            const priorityLabel = getPriorityLabel(row.priority_status);
+            const titleText = (row as any).priority_note ? `${priorityLabel} — ${(row as any).priority_note}` : priorityLabel;
             return (
-              <span className="text-on-surface-variant font-medium text-[13px] line-clamp-1 max-w-[180px]" title={getPriorityLabel(row.priority_status)}>
-                {getPriorityLabel(row.priority_status)}
+              <span className="text-on-surface-variant font-medium text-[13px] line-clamp-1 max-w-[180px]" title={titleText}>
+                {priorityLabel}
               </span>
             );
           }
@@ -448,6 +451,7 @@ export function Students() {
               <option value="Anh chị đang học ở trường">Ưu tiên 2 (Anh chị đang học ở trường)</option>
               <option value="HĐQT">Ưu tiên 3 (HĐQT)</option>
               <option value="Phụ huynh cũ">Ưu tiên 4 (Phụ huynh cũ)</option>
+              <option value="Anh chị em cùng đăng ký">Ưu tiên 5 (Anh chị em cùng đăng ký)</option>
               <option value="none">Không ưu tiên</option>
             </select>
           )}

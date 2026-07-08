@@ -12,7 +12,7 @@ export function useClassesList() {
   const selectedAcademicYearId = useAppStore((state) => state.selectedAcademicYearId);
 
   const query = useQuery({
-    queryKey: queryKeys.classes.list(selectedAcademicYearId || undefined),
+    queryKey: queryKeys.classes.dropdownList(selectedAcademicYearId || undefined),
     queryFn: async () => {
       if (!selectedAcademicYearId) {
         return [];

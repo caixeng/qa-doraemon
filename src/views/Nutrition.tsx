@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { 
   Plus, 
@@ -21,7 +21,7 @@ import { MealPlanDetailPanel } from "../components/details/MealPlanDetailPanel";
 import { useAuthStore } from "../stores/authStore";
 import { useClassesList } from "../hooks/useClassesList";
 
-export function Nutrition() {
+export function Nutrition({ classId }: { classId?: string }) {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
   const isPrivileged = user?.role === 'admin' || user?.role === 'teacher';
@@ -29,9 +29,15 @@ export function Nutrition() {
 
   // States
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [selectedClassId, setSelectedClassId] = useState<string>("all");
+  const [selectedClassId, setSelectedClassId] = useState<string>(classId || "all");
   const [cloning, setCloning] = useState(false);
   const [showCloneConfirm, setShowCloneConfirm] = useState(false);
+
+  useEffect(() => {
+    if (classId) {
+      setSelectedClassId(classId);
+    }
+  }, [classId]);
 
   // 1. Fetch classes for creation form & filter
   const { classesList } = useClassesList();
@@ -167,6 +173,7 @@ export function Nutrition() {
           mealPlanId={planId} 
           classesList={classesList}
           onDeleteSuccess={() => refetch()}
+          readOnly={!classId}
         />
       )
     });
@@ -325,15 +332,21 @@ export function Nutrition() {
     <div className="space-y-6 print:space-y-4 print:p-0">
       {/* Header section - hidden in printing */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
-        <div>
-          <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Dinh Dưỡng & Thực Đơn</h2>
-          <p className="hidden md:block text-[13px] md:text-[14px] text-on-surface-variant mt-1 font-inter">
-            Lập kế hoạch thực đơn dinh dưỡng hàng tuần và in gửi phụ huynh học sinh.
-          </p>
-        </div>
+        {!classId ? (
+          <div>
+            <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Dinh Dưỡng & Thực Đơn</h2>
+            <p className="hidden md:block text-[13px] md:text-[14px] text-on-surface-variant mt-1 font-inter">
+              Lập kế hoạch thực đơn dinh dưỡng hàng tuần và in gửi phụ huynh học sinh.
+            </p>
+          </div>
+        ) : (
+          <div>
+            <h3 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider font-inter">Thực đơn dinh dưỡng lớp</h3>
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-2 shrink-0">
-          {isPrivileged && (
+          {classId && isPrivileged && (
             <button
               onClick={() => handleCloneLastWeek(false)}
               disabled={cloning}
@@ -354,7 +367,7 @@ export function Nutrition() {
             <span className="hidden md:inline">In Thực Đơn</span>
           </button>
 
-          {isPrivileged && (
+          {classId && isPrivileged && (
             <button
               onClick={handleCreateMealPlan}
               className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
@@ -396,18 +409,20 @@ export function Nutrition() {
           </button>
         </div>
 
-        <select
-          value={selectedClassId}
-          onChange={(e) => setSelectedClassId(e.target.value)}
-          className="w-full md:w-auto bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
-        >
-          <option value="all">Thực đơn chung toàn trường</option>
-          {classesList.map((c) => (
-            <option key={c.id} value={c.id}>
-              Thực đơn riêng lớp {c.name}
-            </option>
-          ))}
-        </select>
+        {!classId && (
+          <select
+            value={selectedClassId}
+            onChange={(e) => setSelectedClassId(e.target.value)}
+            className="w-full md:w-auto bg-surface-container-low text-on-surface py-2 px-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none transition-all text-sm font-semibold cursor-pointer"
+          >
+            <option value="all">Thực đơn chung toàn trường</option>
+            {classesList.map((c) => (
+              <option key={c.id} value={c.id}>
+                Thực đơn riêng lớp {c.name}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Print-only Header */}
@@ -430,9 +445,9 @@ export function Nutrition() {
         <div className="overflow-x-auto max-h-[650px] overflow-y-auto relative bg-surface border border-outline-variant/40 rounded-[32px] print:border-slate-300 print:rounded-none shadow-xs">
           <table className="w-full text-left text-sm border-collapse min-w-[800px]">
             <thead>
-              <tr className="bg-[#33a2f2] border-b border-sky-400 print:bg-[#33a2f2]">
-                <th className="px-3 py-3 font-extrabold text-slate-900 text-[11px] uppercase tracking-wider text-center w-[6%] sticky top-0 z-10 bg-[#33a2f2] shadow-[0_1px_0_0_#38bdf8] select-none">Bữa ăn</th>
-                <th className="px-3 py-3 font-extrabold text-slate-900 text-[11px] uppercase tracking-wider text-center w-[10%] sticky top-0 z-10 bg-[#33a2f2] shadow-[0_1px_0_0_#38bdf8] border-l border-sky-300 select-none">Thời gian</th>
+              <tr className="bg-[#33a2f2] dark:bg-slate-800 border-b border-sky-400 dark:border-slate-700 print:bg-[#33a2f2]">
+                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[11px] uppercase tracking-wider text-center w-[6%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none">Bữa ăn</th>
+                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[11px] uppercase tracking-wider text-center w-[10%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] border-l border-sky-300 dark:border-slate-700 select-none">Thời gian</th>
                 {weekDates.map((d, index) => {
                   const dayName = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][index];
                   const isToday = new Date().toDateString() === d.toDateString();
@@ -440,10 +455,10 @@ export function Nutrition() {
                     <th
                       key={index}
                       className={cn(
-                        "px-4 py-3 font-extrabold text-[11px] uppercase tracking-wider text-center border-l border-sky-300 sticky top-0 z-10 shadow-[0_1px_0_0_#38bdf8] select-none",
+                        "px-4 py-3 font-extrabold text-[11px] uppercase tracking-wider text-center border-l border-sky-300 dark:border-slate-700 sticky top-0 z-10 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none",
                         isToday 
-                          ? "bg-amber-100 text-amber-900 print:bg-amber-100" 
-                          : "bg-[#33a2f2] text-slate-900"
+                          ? "bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-200 print:bg-amber-100" 
+                          : "bg-[#33a2f2] text-slate-900 dark:bg-slate-800 dark:text-slate-200"
                       )}
                     >
                       <div className="font-bold">{dayName}</div>
@@ -453,7 +468,7 @@ export function Nutrition() {
                 })}
               </tr>
             </thead>
-            <tbody className="divide-y divide-sky-100 print:divide-slate-200">
+            <tbody className="divide-y divide-sky-100 dark:divide-slate-800/80 print:divide-slate-200">
               {MEAL_ROWS.map((row, rowIndex) => (
                 <tr 
                   key={row.mealType} 
@@ -466,11 +481,11 @@ export function Nutrition() {
                   {row.isGroupStart && (
                     <td 
                       rowSpan={row.groupSpan} 
-                      className="bg-[#99d5ff] print:bg-[#99d5ff] text-center border-r border-sky-200 print:border-slate-300 select-none align-middle w-[6%] [print-color-adjust:exact]"
+                      className="bg-[#99d5ff] dark:bg-slate-800/30 print:bg-[#99d5ff] text-center border-r border-sky-200 dark:border-slate-700/50 print:border-slate-300 select-none align-middle w-[6%] [print-color-adjust:exact]"
                       style={{ verticalAlign: 'middle' }}
                     >
                       <div 
-                        className="font-extrabold text-sky-950 text-xs tracking-widest text-center mx-auto uppercase py-4"
+                        className="font-extrabold text-sky-950 dark:text-sky-350 text-xs tracking-widest text-center mx-auto uppercase py-4"
                         style={{ 
                           writingMode: 'vertical-lr', 
                           transform: 'rotate(180deg)', 
@@ -486,14 +501,14 @@ export function Nutrition() {
                   {/* Thời gian */}
                   <td 
                     className={cn(
-                      "px-2 py-4 font-bold text-center border-r border-sky-100 print:border-slate-200 text-xs w-[10%] select-none bg-slate-50/50 print:bg-slate-50",
-                      row.mealType === 'lunch_chao' && "bg-amber-50/40 print:bg-amber-50/40"
+                      "px-2 py-4 font-bold text-center border-r border-sky-100 dark:border-slate-800/30 print:border-slate-200 text-xs w-[10%] select-none bg-slate-50/50 dark:bg-slate-900/30 print:bg-slate-50",
+                      row.mealType === 'lunch_chao' && "bg-amber-50/40 dark:bg-amber-950/20 print:bg-amber-50/40"
                     )}
                     style={{ verticalAlign: 'middle' }}
                   >
                     {row.timeLabel === 'Dành cho trẻ chưa ăn được cơm' ? (
                       <div 
-                        className="text-[10px] text-red-600 font-extrabold text-center mx-auto leading-none py-2"
+                        className="text-[10px] text-red-600 dark:text-red-400 font-extrabold text-center mx-auto leading-none py-2"
                         style={{ 
                           writingMode: 'vertical-lr', 
                           transform: 'rotate(180deg)', 
@@ -501,10 +516,10 @@ export function Nutrition() {
                           display: 'inline-block'
                         }}
                       >
-                        Dành cho trẻ chưa ăn cơm
+                        Dành cho trẻ chưa ăn được cơm
                       </div>
                     ) : (
-                      <span className="font-mono text-xs text-slate-700">{row.timeLabel}</span>
+                      <span className="font-mono text-xs text-slate-700 dark:text-slate-300">{row.timeLabel}</span>
                     )}
                   </td>
 
@@ -518,25 +533,25 @@ export function Nutrition() {
                         key={dayIndex} 
                         onClick={() => plan && handleOpenDetail(plan.id)}
                         className={cn(
-                          "px-4 py-4 text-center border-l border-sky-100 print:border-slate-200 align-top relative group min-w-[130px] transition-all",
-                          plan ? "cursor-pointer hover:bg-sky-50/30" : "hover:bg-slate-50/30",
-                          row.mealType === 'lunch_chao' && "border-t border-dashed border-sky-300! bg-amber-50/10 print:bg-amber-50/5"
+                          "px-4 py-4 text-center border-l border-sky-100 dark:border-slate-800/40 print:border-slate-200 align-top relative group min-w-[130px] transition-all",
+                          plan ? "cursor-pointer hover:bg-sky-50/30 dark:hover:bg-slate-800/20" : "hover:bg-slate-50/30 dark:hover:bg-slate-850/20",
+                          row.mealType === 'lunch_chao' && "border-t border-dashed border-sky-300! dark:border-slate-700/60 bg-amber-50/10 dark:bg-amber-950/5 print:bg-amber-50/5"
                         )}
                       >
                         {plan ? (
                           <div className="flex flex-col justify-between h-full min-h-[90px] text-left">
                             <div className="space-y-2">
-                              <p className="text-xs font-semibold text-slate-800 whitespace-pre-line leading-relaxed">
+                              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">
                                 {plan.menu_items}
                               </p>
                               {plan.calories && (
-                                <div className="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-100 print:bg-white">
+                                <div className="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/40 px-1.5 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/30 print:bg-white">
                                   <Flame className="w-2.5 h-2.5 shrink-0" />
                                   {plan.calories} kcal
                                 </div>
                               )}
                               {plan.notes && (
-                                <p className="text-[10px] text-slate-500 italic leading-tight select-text" onClick={(e) => e.stopPropagation()}>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 italic leading-tight select-text" onClick={(e) => e.stopPropagation()}>
                                   Lưu ý: {plan.notes}
                                 </p>
                               )}
@@ -544,23 +559,23 @@ export function Nutrition() {
 
                             {/* View detail button on hover (prints-hidden) */}
                             <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity mt-2 print:hidden">
-                              <span className="p-1 text-primary bg-primary/5 rounded-lg border border-primary/20 flex items-center justify-center">
+                              <span className="p-1 text-primary bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/20 dark:border-primary/30 flex items-center justify-center">
                                 <Eye className="w-3.5 h-3.5" />
                               </span>
                             </div>
                           </div>
                         ) : (
                           <div className="flex flex-col items-center justify-center min-h-[90px] h-full" onClick={(e) => e.stopPropagation()}>
-                            {isPrivileged ? (
+                            {classId && isPrivileged ? (
                               <button
                                 onClick={() => handleQuickAddClick(dateStr, row.mealType)}
-                                className="w-8 h-8 rounded-full border border-dashed border-sky-200 hover:border-primary text-sky-400 hover:text-primary hover:bg-primary/5 flex items-center justify-center transition-all cursor-pointer print:hidden"
+                                className="w-8 h-8 rounded-full border border-dashed border-sky-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary text-sky-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 flex items-center justify-center transition-all cursor-pointer print:hidden"
                                 title="Thêm thực đơn nhanh"
                               >
                                 <Plus className="w-3.5 h-3.5" />
                               </button>
                             ) : (
-                              <span className="text-xs text-slate-400/60 italic select-none">Chưa có thực đơn</span>
+                              <span className="text-xs text-slate-400/60 dark:text-slate-500/50 italic select-none">Chưa có thực đơn</span>
                             )}
                           </div>
                         )}

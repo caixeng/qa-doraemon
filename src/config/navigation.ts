@@ -14,6 +14,7 @@ import {
   BarChart3,
   Shield,
   Baby,
+  CalendarRange,
   type LucideIcon,
 } from "lucide-react";
 
@@ -36,6 +37,7 @@ export const mainNavItems: NavItem[] = [
   { to: "/teacher-attendance", label: "Điểm Danh GV", icon: ClipboardList, roles: ["admin"] },
   { to: "/finance", label: "Tài Chính", icon: CreditCard, roles: ["admin"] },
   { to: "/nutrition", label: "Dinh Dưỡng", icon: UtensilsCrossed },
+  { to: "/weekly-plans", label: "Kế Hoạch Tuần", icon: CalendarRange },
   { to: "/health", label: "Sức Khỏe", icon: HeartPulse, roles: ["admin", "teacher"] },
   { to: "/evaluations", label: "Đánh Giá", icon: Award, roles: ["admin", "teacher"] },
   { to: "/reports", label: "Báo Cáo", icon: BarChart3, roles: ["admin"] },

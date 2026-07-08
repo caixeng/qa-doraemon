@@ -26,6 +26,7 @@ export const queryKeys = {
   classes: {
     all: ['classes'] as const,
     list: (academicYearId?: string) => ['classes-list', academicYearId] as const,
+    dropdownList: (academicYearId?: string) => ['classes-dropdown-list', academicYearId] as const,
     detail: (id: string) => ['class-detail', id] as const,
     students: (classId: string) => ['students-in-class', classId] as const,
   },

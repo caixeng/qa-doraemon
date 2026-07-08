@@ -11,7 +11,9 @@ import {
   Edit2,
   MessageSquare,
   LayoutGrid,
-  Table as TableIcon
+  Table as TableIcon,
+  ArrowLeft,
+  ChevronRight
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
@@ -40,20 +42,23 @@ export function Attendance() {
     localStorage.setItem('attendance_view_mode', viewMode);
   }, [viewMode]);
   
-  // Note Modal state
-  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-  const [selectedStudentForNote, setSelectedStudentForNote] = useState<any>(null);
-  const [tempNote, setTempNote] = useState("");
+  
 
   // 1. Fetch classes list for selection
-  const { classesList, isLoading: isLoadingClasses } = useClassesList();
+  const { classesList, isLoading: isLoadingClasses, selectedAcademicYearId } = useClassesList();
 
-  // Automatically select the first class if none is selected
-  useEffect(() => {
-    if (classesList.length > 0 && !selectedClassId) {
-      setSelectedClassId(classesList[0].id);
-    }
-  }, [classesList, selectedClassId]);
+  // Query lấy thông tin chi tiết các lớp cho Dashboard BGH (sĩ số, GVCN)
+  const { data: classesOverviewResponse, isLoading: isLoadingClassesOverview } = useQuery({
+    queryKey: ['classes-attendance-overview', selectedAcademicYearId],
+    queryFn: () => api.getAll<any>(
+      'classes',
+      { page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' },
+      { filters: { academic_year_id: selectedAcademicYearId } },
+      '*, class_teachers(is_homeroom, users(full_name)), students(id)'
+    ),
+    enabled: !!selectedAcademicYearId && !selectedClassId
+  });
+  const classesOverview = classesOverviewResponse?.data?.data || [];
 
   // 2. Fetch active students in the selected class
   const { data: studentsResponse, isLoading: isLoadingStudents, isError: isErrorStudents, refetch: refetchStudents } = useQuery({
@@ -72,6 +77,14 @@ export function Attendance() {
     enabled: !!selectedClassId && !!formattedDate,
   });
   const attendanceRecords = attendanceResponse?.data?.data || [];
+
+  // Fetch tất cả điểm danh toàn trường trong ngày để hiển thị thống kê Dashboard BGH
+  const { data: allAttendanceResponse, isLoading: isLoadingAllAttendance } = useQuery({
+    queryKey: ['all-attendance-records', formattedDate],
+    queryFn: () => api.getAll<any>('attendance', { page: 1, pageSize: 2000 }, { filters: { date: formattedDate } }),
+    enabled: !selectedClassId && !!formattedDate,
+  });
+  const allAttendanceRecords = allAttendanceResponse?.data?.data || [];
 
   // Build a map of existing attendance records for fast lookup
   const attendanceMap = new Map<string, any>();
@@ -160,28 +173,7 @@ export function Attendance() {
     });
   };
 
-  const handleSaveNote = () => {
-    if (!selectedStudentForNote) return;
-    const existingRecord = attendanceMap.get(selectedStudentForNote.id);
-    
-    // Default to 'present' if there's no status yet
-    const status = existingRecord?.status || 'present';
-    
-    saveAttendanceMutation.mutate({
-      studentId: selectedStudentForNote.id,
-      status,
-      note: tempNote,
-      checkInTime: existingRecord?.check_in_time || null,
-      recordId: existingRecord?.id
-    }, {
-      onSuccess: () => {
-        setIsNoteModalOpen(false);
-        setSelectedStudentForNote(null);
-        setTempNote("");
-        toast.success('Đã lưu ghi chú!');
-      }
-    });
-  };
+  
 
   // Helper for Initials
   const getInitials = (name: string) => {
@@ -194,23 +186,42 @@ export function Attendance() {
   };
 
   // Statistics calculation
-  const totalStudents = studentsList.length;
+  const isDashboardMode = !selectedClassId;
+  
+  let totalStudents = 0;
   let presentCount = 0;
   let absentCount = 0;
   let lateCount = 0;
   let sickCount = 0;
   let excusedCount = 0;
 
-  studentsList.forEach((s) => {
-    const rec = attendanceMap.get(s.id);
-    if (rec) {
+  if (isDashboardMode) {
+    // Sĩ số toàn trường
+    classesOverview.forEach((c: any) => {
+      totalStudents += c.students?.length || 0;
+    });
+    // Điểm danh toàn trường
+    allAttendanceRecords.forEach((rec: any) => {
       if (rec.status === 'present') presentCount++;
       else if (rec.status === 'absent') absentCount++;
       else if (rec.status === 'late') lateCount++;
       else if (rec.status === 'sick') sickCount++;
       else if (rec.status === 'excused') excusedCount++;
-    }
-  });
+    });
+  } else {
+    // Sĩ số lớp được chọn
+    totalStudents = studentsList.length;
+    studentsList.forEach((s) => {
+      const rec = attendanceMap.get(s.id);
+      if (rec) {
+        if (rec.status === 'present') presentCount++;
+        else if (rec.status === 'absent') absentCount++;
+        else if (rec.status === 'late') lateCount++;
+        else if (rec.status === 'sick') sickCount++;
+        else if (rec.status === 'excused') excusedCount++;
+      }
+    });
+  }
 
   const getAttendanceBadge = (status: string) => {
     switch (status) {
@@ -271,83 +282,21 @@ export function Attendance() {
     },
     {
       key: "attendance",
-      header: "Điểm danh",
+      header: "Trạng thái",
+      align: "center",
       render: (row: any) => {
         const attendanceRecord = attendanceMap.get(row.id);
         const status = attendanceRecord?.status;
-        return (
-          <div className="flex flex-wrap items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              onClick={() => handleStatusChange(row.id, 'present')}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer select-none",
-                status === 'present'
-                  ? "bg-green-600 border-green-600 text-white shadow-sm"
-                  : "bg-white border-outline-variant/40 text-on-surface-variant hover:bg-surface-container"
-              )}
-            >
-              Có mặt
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => handleStatusChange(row.id, 'absent')}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer select-none",
-                status === 'absent'
-                  ? "bg-rose-600 border-rose-600 text-white shadow-sm"
-                  : "bg-white border-outline-variant/40 text-on-surface-variant hover:bg-surface-container"
-              )}
-            >
-              Vắng
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleStatusChange(row.id, 'late')}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer select-none",
-                status === 'late'
-                  ? "bg-amber-500 border-amber-500 text-white shadow-sm"
-                  : "bg-white border-outline-variant/40 text-on-surface-variant hover:bg-surface-container"
-              )}
-            >
-              Đi trễ
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleStatusChange(row.id, 'excused')}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer select-none",
-                status === 'excused'
-                  ? "bg-purple-600 border-purple-600 text-white shadow-sm"
-                  : "bg-white border-outline-variant/40 text-on-surface-variant hover:bg-surface-container"
-              )}
-            >
-              Có phép
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleStatusChange(row.id, 'sick')}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer select-none",
-                status === 'sick'
-                  ? "bg-violet-600 border-violet-600 text-white shadow-sm"
-                  : "bg-white border-outline-variant/40 text-on-surface-variant hover:bg-surface-container"
-              )}
-            >
-              Bệnh
-            </button>
-          </div>
+        return status ? (
+          getAttendanceBadge(status)
+        ) : (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 border border-outline-variant/30 font-semibold select-none">Chưa điểm danh</span>
         );
       }
     },
     {
       key: "note",
-      header: "Ghi chú",
+      header: "Ghi chú sức khỏe / Lý do",
       render: (row: any) => {
         const attendanceRecord = attendanceMap.get(row.id);
         const note = attendanceRecord?.note;
@@ -357,101 +306,72 @@ export function Attendance() {
             <span className="line-clamp-2 select-text">{note}</span>
           </div>
         ) : (
-          <span className="text-xs text-on-surface-variant/40 italic select-none">Chưa có ghi chú</span>
-        );
-      }
-    },
-    {
-      key: "actions",
-      header: "Thao tác",
-      align: "right",
-      render: (row: any) => {
-        const attendanceRecord = attendanceMap.get(row.id);
-        const note = attendanceRecord?.note;
-        return (
-          <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedStudentForNote(row);
-                setTempNote(note || "");
-                setIsNoteModalOpen(true);
-              }}
-              className="p-2 border border-outline-variant/40 rounded-xl hover:bg-surface-container transition-colors cursor-pointer"
-              title="Thêm ghi chú"
-            >
-              <Edit2 className="w-3.5 h-3.5 text-on-surface-variant" />
-            </button>
-          </div>
+          <span className="text-xs text-on-surface-variant/40 italic select-none">---</span>
         );
       }
     }
   ];
 
-  const isLoading = isLoadingClasses || isLoadingStudents || isLoadingAttendance;
+  const isLoading = isDashboardMode
+    ? isLoadingClasses || isLoadingClassesOverview || isLoadingAllAttendance
+    : isLoadingClasses || isLoadingStudents || isLoadingAttendance;
 
   return (
     <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12">
-      {/* Header section */}
+      {/* Back button & Header section */}
+      {!isDashboardMode && (
+        <button
+          onClick={() => setSelectedClassId("")}
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary/80 transition-all cursor-pointer mb-4 bg-primary/5 hover:bg-primary/10 px-3.5 py-2 rounded-xl border border-primary/15"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" /> Quay lại danh sách lớp
+        </button>
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
-            Điểm danh hàng ngày
+            {isDashboardMode ? "Điểm danh hàng ngày" : `Điểm danh lớp ${classesList.find(c => c.id === selectedClassId)?.name || ''}`}
           </h2>
           <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
-            Theo dõi chuyên cần, đi trễ, nghỉ phép và ghi nhận sức khỏe học sinh.
+            {isDashboardMode 
+              ? "Theo dõi chuyên cần, đi trễ, nghỉ phép và ghi nhận sức khỏe học sinh."
+              : `Xem chi tiết kết quả điểm danh của lớp ${classesList.find(c => c.id === selectedClassId)?.name || ''} trong ngày.`}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => bulkMarkMutation.mutate('present')}
-            disabled={totalStudents === 0 || bulkMarkMutation.isPending}
-            className="flex-1 md:flex-none rounded-xl text-green-700 border-green-200 hover:bg-green-50/50 cursor-pointer font-semibold"
-          >
-            Có mặt tất cả
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => bulkMarkMutation.mutate('absent')}
-            disabled={totalStudents === 0 || bulkMarkMutation.isPending}
-            className="flex-1 md:flex-none rounded-xl text-rose-700 border-rose-200 hover:bg-rose-50/50 cursor-pointer font-semibold"
-          >
-            Vắng tất cả
-          </Button>
-
-          {/* View mode toggle */}
-          <div className="flex items-center bg-surface-container border border-outline-variant/60 rounded-xl p-0.5 select-none shrink-0">
-            <button
-              type="button"
-              onClick={() => setViewMode('grid')}
-              className={cn(
-                "p-1.5 rounded-lg transition-all cursor-pointer",
-                viewMode === 'grid'
-                  ? "bg-surface text-primary shadow-sm"
-                  : "text-on-surface-variant hover:text-on-surface"
-              )}
-              title="Xem dạng lưới"
-            >
-              <LayoutGrid className="w-4.5 h-4.5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode('table')}
-              className={cn(
-                "p-1.5 rounded-lg transition-all cursor-pointer",
-                viewMode === 'table'
-                  ? "bg-surface text-primary shadow-sm"
-                  : "text-on-surface-variant hover:text-on-surface"
-              )}
-              title="Xem dạng bảng"
-            >
-              <TableIcon className="w-4.5 h-4.5" />
-            </button>
-          </div>
+          {/* View mode toggle - only shown in class details */}
+          {!isDashboardMode && (
+            <div className="flex items-center bg-surface-container border border-outline-variant/60 rounded-xl p-0.5 select-none shrink-0">
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  "p-1.5 rounded-lg transition-all cursor-pointer",
+                  viewMode === 'grid'
+                    ? "bg-surface text-primary shadow-sm"
+                    : "text-on-surface-variant hover:text-on-surface"
+                )}
+                title="Xem dạng lưới"
+              >
+                <LayoutGrid className="w-4.5 h-4.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('table')}
+                className={cn(
+                  "p-1.5 rounded-lg transition-all cursor-pointer",
+                  viewMode === 'table'
+                    ? "bg-surface text-primary shadow-sm"
+                    : "text-on-surface-variant hover:text-on-surface"
+                )}
+                title="Xem dạng bảng"
+              >
+                <TableIcon className="w-4.5 h-4.5" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -465,20 +385,22 @@ export function Attendance() {
           />
         </div>
 
-        <MobileFilterToggle>
-          <select
-            value={selectedClassId}
-            onChange={(e) => setSelectedClassId(e.target.value)}
-            className="w-full md:w-64 h-10 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm px-3 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer font-semibold text-on-surface-variant"
-          >
-            {classesList.map((c: any) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-            {classesList.length === 0 && (
-              <option value="">Không có lớp học nào</option>
-            )}
-          </select>
-        </MobileFilterToggle>
+        {selectedClassId && (
+          <MobileFilterToggle>
+            <select
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
+              className="w-full md:w-64 h-10 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm px-3 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer font-semibold text-on-surface-variant"
+            >
+              {classesList.map((c: any) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+              {classesList.length === 0 && (
+                <option value="">Không có lớp học nào</option>
+              )}
+            </select>
+          </MobileFilterToggle>
+        )}
 
         <div className="hidden md:block text-on-surface-variant/80 text-[13px] font-semibold md:ml-auto">
           Ngày hiển thị: <strong className="text-primary font-bold">{format(selectedDate, 'eeee, dd/MM/yyyy', { locale: vi })}</strong>
@@ -513,8 +435,119 @@ export function Attendance() {
         </div>
       </div>
 
-      {/* Main Student List Area */}
-      {isLoading ? (
+      {/* Main Student List Area or Classes Dashboard Overview */}
+      {isDashboardMode ? (
+        isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-surface border border-outline-variant/30 rounded-2xl p-5 shadow-2xs h-48 animate-pulse flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="h-5 bg-surface-variant/40 rounded w-1/3" />
+                  <div className="h-3 bg-surface-variant/30 rounded w-1/2" />
+                </div>
+                <div className="grid grid-cols-4 gap-2 pt-2">
+                  {[...Array(4)].map((_, j) => (
+                    <div key={j} className="h-10 bg-surface-variant/20 rounded-xl" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : classesOverview.length === 0 ? (
+          <EmptyState
+            title="Không có lớp học nào"
+            description="Không tìm thấy lớp học nào hoạt động trong năm học được chọn."
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {classesOverview.map((cls: any) => {
+              const classRecs = allAttendanceRecords.filter((r: any) => r.class_id === cls.id);
+              const total = cls.students?.length || 0;
+              const present = classRecs.filter((r: any) => r.status === 'present').length;
+              const absent = classRecs.filter((r: any) => ['absent', 'sick', 'excused'].includes(r.status)).length;
+              const late = classRecs.filter((r: any) => r.status === 'late').length;
+
+              // Badge status
+              let badgeBg = "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+              let badgeText = "Chưa điểm danh";
+              if (classRecs.length > 0) {
+                if (classRecs.length >= total && total > 0) {
+                  badgeBg = "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/30";
+                  badgeText = "Đã hoàn thành";
+                } else {
+                  badgeBg = "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/30";
+                  badgeText = `Đang điểm danh (${classRecs.length}/${total})`;
+                }
+              }
+
+              const homeroomTeacher = cls.class_teachers?.find((ct: any) => ct.is_homeroom)?.users?.full_name || 'Chưa phân công';
+              const progressPct = total > 0 ? Math.round((classRecs.length / total) * 100) : 0;
+
+              return (
+                <div
+                  key={cls.id}
+                  onClick={() => setSelectedClassId(cls.id)}
+                  className="bg-white dark:bg-slate-900 border border-outline-variant/35 rounded-2xl p-5 hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer flex flex-col justify-between h-48 group relative overflow-hidden shadow-2xs"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="text-[17px] font-black text-on-surface dark:text-white font-playfair group-hover:text-primary transition-colors">
+                          Lớp {cls.name}
+                        </h3>
+                        <p className="text-[11px] text-on-surface-variant font-medium mt-0.5">
+                          GVCN: <span className="font-semibold text-on-surface dark:text-slate-200">{homeroomTeacher}</span>
+                        </p>
+                      </div>
+                      
+                      <span className={cn("inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border uppercase tracking-wider", badgeBg)}>
+                        {badgeText}
+                      </span>
+                    </div>
+
+                    {/* Mini Stats Grid */}
+                    <div className="grid grid-cols-4 gap-2 mt-4 select-none">
+                      <div className="bg-slate-50 dark:bg-slate-800/40 p-2 rounded-xl text-center border border-outline-variant/10">
+                        <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Sĩ số</p>
+                        <p className="text-sm font-black text-on-surface dark:text-white mt-0.5">{total}</p>
+                      </div>
+                      <div className="bg-emerald-50/50 dark:bg-emerald-950/20 p-2 rounded-xl text-center border border-emerald-100/10">
+                        <p className="text-[9px] text-emerald-600 dark:text-emerald-450 font-bold uppercase tracking-wider">Có mặt</p>
+                        <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5">{present}</p>
+                      </div>
+                      <div className="bg-rose-50/50 dark:bg-rose-950/20 p-2 rounded-xl text-center border border-rose-100/10">
+                        <p className="text-[9px] text-rose-600 dark:text-rose-450 font-bold uppercase tracking-wider">Vắng</p>
+                        <p className="text-sm font-black text-rose-600 dark:text-rose-450 mt-0.5">{absent}</p>
+                      </div>
+                      <div className="bg-amber-50/50 dark:bg-amber-950/20 p-2 rounded-xl text-center border border-amber-100/10">
+                        <p className="text-[9px] text-amber-600 dark:text-amber-450 font-bold uppercase tracking-wider">Trễ</p>
+                        <p className="text-sm font-black text-amber-600 dark:text-amber-450 mt-0.5">{late}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="mt-4">
+                    <div className="flex justify-between items-center text-[10px] font-bold text-on-surface-variant mb-1">
+                      <span>Tiến độ điểm danh</span>
+                      <span>{progressPct}%</span>
+                    </div>
+                    <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                      <div 
+                        className={cn(
+                          "h-full rounded-full transition-all duration-300", 
+                          progressPct === 100 ? "bg-emerald-500" : "bg-primary"
+                        )}
+                        style={{ width: `${progressPct}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      ) : isLoading ? (
         viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
@@ -598,7 +631,11 @@ export function Attendance() {
                     </div>
 
                     {/* Status Badge */}
-                    {status && getAttendanceBadge(status)}
+                    {status ? (
+                      getAttendanceBadge(status)
+                    ) : (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 border border-outline-variant/30 font-semibold select-none">Chưa điểm danh</span>
+                    )}
                   </div>
 
                   {/* Note section */}
@@ -608,71 +645,6 @@ export function Attendance() {
                       <span className="line-clamp-2 select-text">{note}</span>
                     </div>
                   )}
-                </div>
-
-                {/* Bottom: Action Buttons */}
-                <div className="mt-4 pt-3 border-t border-outline-variant/20 flex items-center justify-between gap-1.5">
-                  <div className="flex items-center gap-1 flex-1">
-                    {/* Compact Segmented Control */}
-                    <button
-                      type="button"
-                      onClick={() => handleStatusChange(student.id, 'present')}
-                      className={cn(
-                        "flex-1 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer",
-                        status === 'present'
-                          ? "bg-green-600 border-green-600 text-white shadow-sm"
-                          : "bg-white border-outline-variant/40 text-on-surface-variant hover:bg-surface-container"
-                      )}
-                    >
-                      Có mặt
-                    </button>
-                    
-                    <button
-                      type="button"
-                      onClick={() => handleStatusChange(student.id, 'absent')}
-                      className={cn(
-                        "flex-1 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer",
-                        status === 'absent'
-                          ? "bg-rose-600 border-rose-600 text-white shadow-sm"
-                          : "bg-white border-outline-variant/40 text-on-surface-variant hover:bg-surface-container"
-                      )}
-                    >
-                      Vắng
-                    </button>
-
-                    {/* Compact Dropdown / Selector for other statuses */}
-                    <select
-                      value={status && ['late', 'sick', 'excused'].includes(status) ? status : ""}
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          handleStatusChange(student.id, e.target.value as any);
-                        }
-                      }}
-                      className={cn(
-                        "px-2 py-1.5 rounded-xl text-xs font-bold border focus:outline-none cursor-pointer bg-white text-on-surface-variant border-outline-variant/40 hover:bg-surface-container",
-                        status && ['late', 'sick', 'excused'].includes(status) && "bg-purple-600 border-purple-600 text-white hover:bg-purple-600 focus:ring-0"
-                      )}
-                    >
-                      <option value="" disabled className="text-on-surface-variant bg-white font-medium">Khác</option>
-                      <option value="late" className="text-on-surface bg-white font-semibold">Đi trễ</option>
-                      <option value="excused" className="text-on-surface bg-white font-semibold">Có phép</option>
-                      <option value="sick" className="text-on-surface bg-white font-semibold">Nghỉ bệnh</option>
-                    </select>
-                  </div>
-
-                  {/* Edit note button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedStudentForNote(student);
-                      setTempNote(note || "");
-                      setIsNoteModalOpen(true);
-                    }}
-                    className="p-2 border border-outline-variant/40 rounded-xl hover:bg-surface-container transition-colors cursor-pointer"
-                    title="Thêm ghi chú"
-                  >
-                    <Edit2 className="w-3.5 h-3.5 text-on-surface-variant" />
-                  </button>
                 </div>
               </div>
             );
@@ -687,61 +659,7 @@ export function Attendance() {
         />
       )}
 
-      {/* Note Modal */}
-      <Modal
-        open={isNoteModalOpen}
-        onClose={() => {
-          setIsNoteModalOpen(false);
-          setSelectedStudentForNote(null);
-        }}
-        title={`Thêm ghi chú điểm danh`}
-        size="sm"
-      >
-        <div className="space-y-4 select-none">
-          <div className="flex items-center gap-3 bg-surface-container-low p-3 rounded-2xl">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold font-playfair text-primary">
-              {selectedStudentForNote && getInitials(selectedStudentForNote.full_name)}
-            </div>
-            <div>
-              <span className="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Học sinh</span>
-              <h4 className="text-sm font-bold text-on-surface font-inter mt-0.5">{selectedStudentForNote?.full_name}</h4>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[13px] font-semibold text-on-surface tracking-[0.01em]">
-              Nội dung ghi chú
-            </label>
-            <textarea
-              value={tempNote}
-              onChange={(e) => setTempNote(e.target.value)}
-              placeholder="Nhập ghi chú ví dụ: nghỉ ốm sốt nhẹ, phụ huynh đón sớm..."
-              className="w-full rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm p-3 text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-3 border-t border-outline-variant/20">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setIsNoteModalOpen(false);
-                setSelectedStudentForNote(null);
-              }}
-              className="rounded-xl cursor-pointer"
-            >
-              Hủy
-            </Button>
-            <Button
-              type="button"
-              onClick={handleSaveNote}
-              className="rounded-xl cursor-pointer"
-            >
-              Lưu ghi chú
-            </Button>
-          </div>
-        </div>
-      </Modal>
+  
     </div>
   );
 }

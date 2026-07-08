@@ -5,7 +5,217 @@ import { api } from '../../../lib/api';
 import { Button, Modal, Select } from '../../ui';
 import { toast } from '../../../stores/toastStore';
 import { cn } from '../../../lib/utils';
+import { useSlidePanel } from '../../../context/SlidePanelContext';
 import type { StudentRow } from '../../../types';
+
+interface StudentTransferPanelContentProps {
+  student: StudentRow;
+  className: string;
+  classesList: any[];
+  classId: string;
+  getGradeLabel: (grade: string) => string;
+  refetchStudents: () => void;
+  closePanel: () => void;
+}
+
+const StudentTransferPanelContent: React.FC<StudentTransferPanelContentProps> = ({
+  student,
+  className,
+  classesList,
+  classId,
+  getGradeLabel,
+  refetchStudents,
+  closePanel,
+}) => {
+  const queryClient = useQueryClient();
+  const [targetClassId, setTargetClassId] = useState('');
+  const [isTransferring, setIsTransferring] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!targetClassId) return;
+    setIsTransferring(true);
+    try {
+      const res = await api.update('students', student.id, {
+        class_id: targetClassId,
+        updated_at: new Date().toISOString(),
+      });
+      if (res.error) throw new Error(res.error);
+
+      toast.success(`Chuyển lớp thành công cho học sinh ${student.full_name}!`);
+      refetchStudents();
+      queryClient.invalidateQueries({ queryKey: ['classes-list'] });
+      closePanel();
+    } catch (err) {
+      toast.error('Lỗi khi chuyển lớp học', err instanceof Error ? err.message : 'Lỗi hệ thống');
+    } finally {
+      setIsTransferring(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="p-6 space-y-5 select-none flex flex-col h-full justify-between">
+      <div className="space-y-5">
+        <div className="p-4 rounded-2xl bg-primary-container/10 border border-primary/20 space-y-2">
+          <p className="text-sm font-semibold text-on-surface">
+            Học sinh: <span className="font-bold text-primary">{student.full_name}</span>
+          </p>
+          <p className="text-xs text-on-surface-variant">
+            Lớp hiện tại: <span className="font-semibold text-on-surface">{className}</span>
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-semibold text-on-surface tracking-[0.01em]">Chọn lớp chuyển đến</label>
+          <select
+            value={targetClassId}
+            onChange={(e) => setTargetClassId(e.target.value)}
+            className="w-full h-11 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm px-3 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer font-semibold text-on-surface-variant"
+            required
+          >
+            <option value="">-- Chọn lớp học mới --</option>
+            {classesList
+              .filter((c) => c.id !== classId)
+              .map((c) => {
+                const gradeLabel = getGradeLabel(c.grade_level);
+                return (
+                  <option key={c.id} value={c.id}>
+                    {gradeLabel ? `${c.name} (Khối ${gradeLabel})` : c.name}
+                  </option>
+                );
+              })}
+          </select>
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/40">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={closePanel}
+          className="rounded-xl cursor-pointer"
+          disabled={isTransferring}
+        >
+          Hủy
+        </Button>
+        <Button
+          type="submit"
+          disabled={!targetClassId || isTransferring}
+          className="rounded-xl cursor-pointer"
+        >
+          {isTransferring ? 'Đang thực hiện...' : 'Xác nhận chuyển'}
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+interface BulkStudentTransferPanelContentProps {
+  selectedStudentIds: Set<string>;
+  className: string;
+  classesList: any[];
+  classId: string;
+  getGradeLabel: (grade: string) => string;
+  refetchStudents: () => void;
+  setSelectedStudentIds: (ids: Set<string>) => void;
+  closePanel: () => void;
+}
+
+const BulkStudentTransferPanelContent: React.FC<BulkStudentTransferPanelContentProps> = ({
+  selectedStudentIds,
+  className,
+  classesList,
+  classId,
+  getGradeLabel,
+  refetchStudents,
+  setSelectedStudentIds,
+  closePanel,
+}) => {
+  const queryClient = useQueryClient();
+  const [targetClassId, setTargetClassId] = useState('');
+  const [isTransferring, setIsTransferring] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedStudentIds.size === 0 || !targetClassId) return;
+    setIsTransferring(true);
+    try {
+      const promises = Array.from(selectedStudentIds).map((studentId) =>
+        api.update('students', studentId, {
+          class_id: targetClassId,
+          updated_at: new Date().toISOString(),
+        })
+      );
+      await Promise.all(promises);
+
+      toast.success(`Đã chuyển lớp thành công cho ${selectedStudentIds.size} học sinh!`);
+      setSelectedStudentIds(new Set());
+      refetchStudents();
+      queryClient.invalidateQueries({ queryKey: ['classes-list'] });
+      closePanel();
+    } catch (err) {
+      toast.error('Lỗi khi chuyển lớp hàng loạt', err instanceof Error ? err.message : 'Lỗi hệ thống');
+    } finally {
+      setIsTransferring(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="p-6 space-y-5 select-none flex flex-col h-full justify-between">
+      <div className="space-y-5">
+        <div className="p-4 rounded-2xl bg-primary-container/10 border border-primary/20 space-y-2">
+          <p className="text-sm font-semibold text-on-surface">
+            Số học sinh được chọn: <span className="font-bold text-primary">{selectedStudentIds.size} học sinh</span>
+          </p>
+          <p className="text-xs text-on-surface-variant">
+            Lớp hiện tại: <span className="font-semibold text-on-surface">{className}</span>
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-semibold text-on-surface tracking-[0.01em]">Chọn lớp chuyển đến</label>
+          <select
+            value={targetClassId}
+            onChange={(e) => setTargetClassId(e.target.value)}
+            className="w-full h-11 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm px-3 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer font-semibold text-on-surface-variant"
+            required
+          >
+            <option value="">-- Chọn lớp học mới --</option>
+            {classesList
+              .filter((c) => c.id !== classId)
+              .map((c) => {
+                const gradeLabel = getGradeLabel(c.grade_level);
+                return (
+                  <option key={c.id} value={c.id}>
+                    {gradeLabel ? `${c.name} (Khối ${gradeLabel})` : c.name}
+                  </option>
+                );
+              })}
+          </select>
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/40">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={closePanel}
+          className="rounded-xl cursor-pointer"
+          disabled={isTransferring}
+        >
+          Hủy
+        </Button>
+        <Button
+          type="submit"
+          disabled={!targetClassId || isTransferring}
+          className="rounded-xl cursor-pointer"
+        >
+          {isTransferring ? 'Đang thực hiện...' : 'Xác nhận chuyển'}
+        </Button>
+      </div>
+    </form>
+  );
+};
 
 interface ClassStudentsTabProps {
   classId: string;
@@ -32,64 +242,25 @@ export const ClassStudentsTab: React.FC<ClassStudentsTabProps> = ({
 }) => {
   const queryClient = useQueryClient();
 
-  // Student transfer states
-  const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const [isBulkTransferOpen, setIsBulkTransferOpen] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<StudentRow | null>(null);
-  const [targetClassId, setTargetClassId] = useState<string>('');
-  const [isTransferring, setIsTransferring] = useState(false);
+  const { openPanel, closePanel } = useSlidePanel();
 
   const handleTransferClick = (student: StudentRow) => {
-    setSelectedStudent(student);
-    setTargetClassId('');
-    setIsTransferOpen(true);
-  };
-
-  const handleTransferSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedStudent || !targetClassId) return;
-    setIsTransferring(true);
-    try {
-      const res = await api.update('students', selectedStudent.id, {
-        class_id: targetClassId,
-        updated_at: new Date().toISOString(),
-      });
-      if (res.error) throw new Error(res.error);
-
-      toast.success(`Chuyển lớp thành công cho học sinh ${selectedStudent.full_name}!`);
-      refetchStudents();
-      queryClient.invalidateQueries({ queryKey: ['classes-list'] });
-      setIsTransferOpen(false);
-    } catch (err) {
-      toast.error('Lỗi khi chuyển lớp học', err instanceof Error ? err.message : 'Lỗi hệ thống');
-    } finally {
-      setIsTransferring(false);
-    }
-  };
-
-  const handleBulkTransferSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedStudentIds.size === 0 || !targetClassId) return;
-    setIsTransferring(true);
-    try {
-      const promises = Array.from(selectedStudentIds).map((studentId) =>
-        api.update('students', studentId, {
-          class_id: targetClassId,
-          updated_at: new Date().toISOString(),
-        })
-      );
-      await Promise.all(promises);
-
-      toast.success(`Đã chuyển lớp thành công cho ${selectedStudentIds.size} học sinh!`);
-      setSelectedStudentIds(new Set());
-      refetchStudents();
-      queryClient.invalidateQueries({ queryKey: ['classes-list'] });
-      setIsBulkTransferOpen(false);
-    } catch (err) {
-      toast.error('Lỗi khi chuyển lớp hàng loạt', err instanceof Error ? err.message : 'Lỗi hệ thống');
-    } finally {
-      setIsTransferring(false);
-    }
+    openPanel({
+      title: 'Chuyển lớp học sinh',
+      icon: <ArrowRightLeft size={14} />,
+      width: 480,
+      component: (
+        <StudentTransferPanelContent 
+          student={student}
+          className={className}
+          classesList={classesList}
+          classId={classId}
+          getGradeLabel={getGradeLabel}
+          refetchStudents={refetchStudents}
+          closePanel={closePanel}
+        />
+      )
+    });
   };
 
   return (
@@ -102,8 +273,23 @@ export const ClassStudentsTab: React.FC<ClassStudentsTabProps> = ({
           <button
             type="button"
             onClick={() => {
-              setTargetClassId('');
-              setIsBulkTransferOpen(true);
+              openPanel({
+                title: 'Chuyển lớp hàng loạt',
+                icon: <ArrowRightLeft size={14} />,
+                width: 480,
+                component: (
+                  <BulkStudentTransferPanelContent 
+                    selectedStudentIds={selectedStudentIds}
+                    className={className}
+                    classesList={classesList}
+                    classId={classId}
+                    getGradeLabel={getGradeLabel}
+                    refetchStudents={refetchStudents}
+                    setSelectedStudentIds={setSelectedStudentIds}
+                    closePanel={closePanel}
+                  />
+                )
+              });
             }}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary hover:bg-primary/90 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer select-none shrink-0 whitespace-nowrap"
           >
@@ -212,123 +398,6 @@ export const ClassStudentsTab: React.FC<ClassStudentsTabProps> = ({
             </tbody>
           </table>
         </div>
-      )}
-
-      {/* Student Class Transfer Modal */}
-      {isTransferOpen && selectedStudent && (
-        <Modal
-          open={isTransferOpen}
-          onClose={() => setIsTransferOpen(false)}
-          title="Chuyển lớp học sinh"
-          size="md"
-        >
-          <form onSubmit={handleTransferSubmit} className="space-y-5 select-none">
-            <div className="p-4 rounded-2xl bg-primary-container/10 border border-primary/20 space-y-2">
-              <p className="text-sm font-semibold text-on-surface">
-                Học sinh: <span className="font-bold text-primary">{selectedStudent.full_name}</span>
-              </p>
-              <p className="text-xs text-on-surface-variant">
-                Lớp hiện tại: <span className="font-semibold text-on-surface">{className}</span>
-              </p>
-            </div>
-
-            <Select
-              label="Chọn lớp chuyển đến"
-              value={targetClassId}
-              onChange={(e) => setTargetClassId(e.target.value)}
-              options={[
-                { value: '', label: '-- Chọn lớp học mới --' },
-                ...classesList
-                  .filter((c) => c.id !== classId)
-                  .map((c) => {
-                    const gradeLabel = getGradeLabel(c.grade_level);
-                    return {
-                      value: c.id,
-                      label: gradeLabel ? `${c.name} (Khối ${gradeLabel})` : c.name,
-                    };
-                  }),
-              ]}
-              required
-            />
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/40">
-              <button
-                type="button"
-                onClick={() => setIsTransferOpen(false)}
-                className="px-4 py-2 border border-outline-variant hover:bg-surface-container rounded-xl text-sm font-semibold text-on-surface transition-all cursor-pointer"
-                disabled={isTransferring}
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                disabled={!targetClassId || isTransferring}
-                className="px-4 py-2 bg-primary text-on-primary hover:bg-primary/90 disabled:opacity-50 rounded-xl text-sm font-semibold shadow-sm transition-all cursor-pointer inline-flex items-center gap-1.5"
-              >
-                {isTransferring ? 'Đang thực hiện...' : 'Xác nhận chuyển'}
-              </button>
-            </div>
-          </form>
-        </Modal>
-      )}
-
-      {/* Student Bulk Class Transfer Modal */}
-      {isBulkTransferOpen && selectedStudentIds.size > 0 && (
-        <Modal
-          open={isBulkTransferOpen}
-          onClose={() => setIsBulkTransferOpen(false)}
-          title="Chuyển lớp hàng loạt cho học sinh"
-          size="md"
-        >
-          <form onSubmit={handleBulkTransferSubmit} className="space-y-5 select-none">
-            <div className="p-4 rounded-2xl bg-primary-container/10 border border-primary/20 space-y-2">
-              <p className="text-sm font-semibold text-on-surface">
-                Số học sinh được chọn:{' '}
-                <span className="font-bold text-primary">{selectedStudentIds.size} học sinh</span>
-              </p>
-              <p className="text-xs text-on-surface-variant">
-                Lớp hiện tại: <span className="font-semibold text-on-surface">{className}</span>
-              </p>
-            </div>
-
-            <Select
-              label="Chọn lớp chuyển đến"
-              value={targetClassId}
-              onChange={(e) => setTargetClassId(e.target.value)}
-              options={[
-                { value: '', label: '-- Chọn lớp học mới --' },
-                ...classesList
-                  .filter((c) => c.id !== classId)
-                  .map((c) => {
-                    const gradeLabel = getGradeLabel(c.grade_level);
-                    return {
-                      value: c.id,
-                      label: gradeLabel ? `${c.name} (Khối ${gradeLabel})` : c.name,
-                    };
-                  }),
-              ]}
-              required
-            />
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/40 shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsBulkTransferOpen(false)}
-                className="px-4 py-2 border border-outline-variant hover:bg-surface-container rounded-xl text-sm font-semibold text-on-surface transition-all cursor-pointer"
-                disabled={isTransferring}
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                disabled={!targetClassId || isTransferring}
-                className="px-4 py-2 bg-primary text-on-primary hover:bg-primary/90 disabled:opacity-50 rounded-xl text-sm font-semibold shadow-sm transition-all cursor-pointer inline-flex items-center gap-1.5"
-              >
-                {isTransferring ? 'Đang thực hiện...' : 'Xác nhận chuyển'}
-              </button>
-            </div>
-          </form>
-        </Modal>
       )}
     </div>
   );

@@ -4,12 +4,81 @@ import { ClipboardList, Edit2, MessageSquare, Search, Zap } from "lucide-react";
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
 import { DatePicker, Skeleton, EmptyState, ErrorState, Button, Modal, Table, MobileFilterToggle, type TableColumn } from "../components/ui";
+import { useSlidePanel } from "../context/SlidePanelContext";
 import { toast } from "../stores/toastStore";
 import { useAuthStore } from "../stores/authStore";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { queryKeys } from "../lib/queryKeys";
 import type { TeacherAttendanceStatus } from "../types";
+
+interface TeacherAttendanceNotePanelContentProps {
+  teacher: TeacherRow;
+  initialNote: string;
+  onSave: (note: string) => void;
+  closePanel: () => void;
+  getInitials: (name: string) => string;
+}
+
+const TeacherAttendanceNotePanelContent: React.FC<TeacherAttendanceNotePanelContentProps> = ({
+  teacher,
+  initialNote,
+  onSave,
+  closePanel,
+  getInitials,
+}) => {
+  const [note, setNote] = useState(initialNote);
+  
+  const handleSave = () => {
+    onSave(note);
+  };
+
+  return (
+    <div className="p-6 space-y-5 select-none flex flex-col h-full justify-between">
+      <div className="space-y-5">
+        <div className="flex items-center gap-3 bg-surface-container-low p-3 rounded-2xl">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold font-playfair text-primary">
+            {getInitials(teacher.full_name)}
+          </div>
+          <div>
+            <span className="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Giáo viên</span>
+            <h4 className="text-sm font-bold text-on-surface font-inter mt-0.5">{teacher.full_name}</h4>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-semibold text-on-surface tracking-[0.01em]">
+            Lý do / Nội dung ghi chú
+          </label>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Nhập lý do vắng, ví dụ: nghỉ ốm, xin phép việc gia đình..."
+            className="w-full rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm p-3 text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-3 border-t border-outline-variant/20">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={closePanel}
+          className="rounded-xl cursor-pointer"
+        >
+          Hủy
+        </Button>
+        <Button
+          type="button"
+          onClick={handleSave}
+          className="rounded-xl cursor-pointer"
+        >
+          Lưu ghi chú
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 interface TeacherRow {
   id: string;
@@ -51,10 +120,7 @@ export function TeacherAttendance() {
   const [search, setSearch] = useState("");
   const formattedDate = format(selectedDate, 'yyyy-MM-dd');
 
-  // Note Modal state
-  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-  const [selectedTeacherForNote, setSelectedTeacherForNote] = useState<TeacherRow | null>(null);
-  const [tempNote, setTempNote] = useState("");
+  const { openPanel, closePanel } = useSlidePanel();
 
   // 1. Fetch active teachers/staff
   const { data: teachersResponse, isLoading: isLoadingTeachers, isError: isErrorTeachers, refetch: refetchTeachers } = useQuery({
@@ -144,23 +210,37 @@ export function TeacherAttendance() {
     saveMutation.mutate({ teacherId, status, note: existingRecord?.note, recordId: existingRecord?.id });
   };
 
-  const handleSaveNote = () => {
-    if (!selectedTeacherForNote) return;
-    const existingRecord = attendanceMap.get(selectedTeacherForNote.id);
-    const status = existingRecord?.status || 'full_day';
+  const handleOpenNotePanel = (teacher: TeacherRow) => {
+    const existingRecord = attendanceMap.get(teacher.id);
+    const initialNote = existingRecord?.note || "";
 
-    saveMutation.mutate({
-      teacherId: selectedTeacherForNote.id,
-      status,
-      note: tempNote,
-      recordId: existingRecord?.id
-    }, {
-      onSuccess: () => {
-        setIsNoteModalOpen(false);
-        setSelectedTeacherForNote(null);
-        setTempNote("");
-        toast.success('Đã lưu ghi chú!');
-      }
+    openPanel({
+      title: 'Ghi chú điểm danh giáo viên',
+      icon: <MessageSquare size={14} />,
+      width: 460,
+      component: (
+        <TeacherAttendanceNotePanelContent
+          teacher={teacher}
+          initialNote={initialNote}
+          getInitials={getInitials}
+          closePanel={closePanel}
+          onSave={(updatedNote) => {
+            const status = existingRecord?.status || 'full_day';
+            saveMutation.mutate({
+              teacherId: teacher.id,
+              status,
+              note: updatedNote,
+              recordId: existingRecord?.id
+            }, {
+              onSuccess: () => {
+                closePanel();
+                toast.success('Đã lưu ghi chú!');
+                invalidate();
+              }
+            });
+          }}
+        />
+      )
     });
   };
 
@@ -254,11 +334,7 @@ export function TeacherAttendance() {
           <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
             <button
               type="button"
-              onClick={() => {
-                setSelectedTeacherForNote(row);
-                setTempNote(record?.note || "");
-                setIsNoteModalOpen(true);
-              }}
+              onClick={() => handleOpenNotePanel(row)}
               className="p-2 border border-outline-variant/40 rounded-xl hover:bg-surface-container transition-colors cursor-pointer"
               title="Thêm ghi chú"
             >
@@ -393,62 +469,6 @@ export function TeacherAttendance() {
           rowKey={(row) => row.id}
         />
       )}
-
-      {/* Note Modal */}
-      <Modal
-        open={isNoteModalOpen}
-        onClose={() => {
-          setIsNoteModalOpen(false);
-          setSelectedTeacherForNote(null);
-        }}
-        title="Thêm ghi chú điểm danh"
-        size="sm"
-      >
-        <div className="space-y-4 select-none">
-          <div className="flex items-center gap-3 bg-surface-container-low p-3 rounded-2xl">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold font-playfair text-primary">
-              {selectedTeacherForNote && getInitials(selectedTeacherForNote.full_name)}
-            </div>
-            <div>
-              <span className="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Giáo viên</span>
-              <h4 className="text-sm font-bold text-on-surface font-inter mt-0.5">{selectedTeacherForNote?.full_name}</h4>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[13px] font-semibold text-on-surface tracking-[0.01em]">
-              Lý do / Nội dung ghi chú
-            </label>
-            <textarea
-              value={tempNote}
-              onChange={(e) => setTempNote(e.target.value)}
-              placeholder="Nhập lý do vắng, ví dụ: nghỉ ốm, xin phép việc gia đình..."
-              className="w-full rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm p-3 text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[100px] resize-none"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-3 border-t border-outline-variant/20">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setIsNoteModalOpen(false);
-                setSelectedTeacherForNote(null);
-              }}
-              className="rounded-xl cursor-pointer"
-            >
-              Hủy
-            </Button>
-            <Button
-              type="button"
-              onClick={handleSaveNote}
-              className="rounded-xl cursor-pointer"
-            >
-              Lưu ghi chú
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }

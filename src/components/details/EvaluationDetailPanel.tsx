@@ -31,12 +31,14 @@ interface EvaluationDetailPanelProps {
   studentId: string;
   studentsList: any[];
   onUpdateSuccess?: () => void;
+  readOnly?: boolean;
 }
 
 export const EvaluationDetailPanel: React.FC<EvaluationDetailPanelProps> = ({
   studentId,
   studentsList,
   onUpdateSuccess,
+  readOnly = false,
 }) => {
   const queryClient = useQueryClient();
   const { openPanel, closePanel } = useSlidePanel();
@@ -176,13 +178,15 @@ export const EvaluationDetailPanel: React.FC<EvaluationDetailPanelProps> = ({
             </p>
           </div>
         </div>
-        <Button
-          onClick={handleCreateEval}
-          leftIcon={<Plus className="w-4 h-4" />}
-          className="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer shrink-0"
-        >
-          Tạo phiếu đánh giá
-        </Button>
+        {!readOnly && (
+          <Button
+            onClick={handleCreateEval}
+            leftIcon={<Plus className="w-4 h-4" />}
+            className="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer shrink-0"
+          >
+            Tạo phiếu đánh giá
+          </Button>
+        )}
       </div>
 
       {/* CONTENT */}
@@ -274,23 +278,25 @@ export const EvaluationDetailPanel: React.FC<EvaluationDetailPanelProps> = ({
                       </span>
                     </div>
                     
-                    <div className="flex items-center gap-1 select-none">
-                      <button
-                        onClick={() => handleEditEval(evalObj)}
-                        className="p-1.5 hover:bg-white rounded-lg text-on-surface-variant hover:text-on-surface transition-all cursor-pointer border border-outline-variant/20"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedEvaluation(evalObj);
-                          setIsDeleteDialogOpen(true);
-                        }}
-                        className="p-1.5 hover:bg-red-50 rounded-lg text-on-surface-variant hover:text-red-600 transition-all cursor-pointer border border-red-100"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                    {!readOnly && (
+                      <div className="flex items-center gap-1 select-none">
+                        <button
+                          onClick={() => handleEditEval(evalObj)}
+                          className="p-1.5 hover:bg-white rounded-lg text-on-surface-variant hover:text-on-surface transition-all cursor-pointer border border-outline-variant/20"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedEvaluation(evalObj);
+                            setIsDeleteDialogOpen(true);
+                          }}
+                          className="p-1.5 hover:bg-red-50 rounded-lg text-on-surface-variant hover:text-red-600 transition-all cursor-pointer border border-red-100"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-3 bg-white border border-outline-variant/20 rounded-xl space-y-1.5 text-xs">

@@ -86,7 +86,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
     try {
       const res = await api.update('students', studentId, { priority_status: priorityVal });
       if (res.error) throw new Error(res.error);
-      
+
       toast.success('Cập nhật đối tượng ưu tiên thành công!');
       queryClient.invalidateQueries({ queryKey: ['student-detail', studentId] });
       queryClient.invalidateQueries({ queryKey: ['students-list'] });
@@ -96,6 +96,29 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
       toast.error('Lỗi khi cập nhật đối tượng ưu tiên: ' + (err.message || 'Lỗi hệ thống'));
     } finally {
       setIsUpdatingStatus(false);
+    }
+  };
+
+  const [isSavingNote, setIsSavingNote] = useState(false);
+
+  const handlePriorityNoteBlur = async (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (!student) return;
+    const noteVal = e.target.value.trim() || null;
+    if (noteVal === (student.priority_note || null)) return;
+
+    setIsSavingNote(true);
+    try {
+      const res = await api.update('students', studentId, { priority_note: noteVal });
+      if (res.error) throw new Error(res.error);
+
+      toast.success('Cập nhật ghi chú ưu tiên thành công!');
+      queryClient.invalidateQueries({ queryKey: ['student-detail', studentId] });
+      queryClient.invalidateQueries({ queryKey: ['students-list'] });
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Lỗi khi cập nhật ghi chú ưu tiên: ' + (err.message || 'Lỗi hệ thống'));
+    } finally {
+      setIsSavingNote(false);
     }
   };
 
@@ -360,7 +383,20 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                         <option value="Anh chị đang học ở trường">Ưu tiên 2 (Anh chị đang học ở trường)</option>
                         <option value="HĐQT">Ưu tiên 3 (HĐQT)</option>
                         <option value="Phụ huynh cũ">Ưu tiên 4 (Phụ huynh cũ)</option>
+                        <option value="Anh chị em cùng đăng ký">Ưu tiên 5 (Anh chị em cùng đăng ký)</option>
                       </select>
+                    </div>
+                    <div className="col-span-2">
+                      <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-1">Ghi chú ưu tiên</div>
+                      <textarea
+                        key={student.id}
+                        defaultValue={student.priority_note || ''}
+                        disabled={isSavingNote}
+                        onBlur={handlePriorityNoteBlur}
+                        placeholder="Ghi chú trường hợp cụ thể (nếu có)..."
+                        rows={2}
+                        className="px-2.5 py-1.5 rounded-xl text-[13px] font-medium border bg-white text-on-surface border-outline-variant/60 hover:border-outline outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-3xs w-full resize-y"
+                      />
                     </div>
                   </>
                 )}

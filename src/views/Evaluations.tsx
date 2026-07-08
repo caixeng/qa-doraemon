@@ -16,7 +16,7 @@ import { EvaluationDetailPanel } from "../components/details/EvaluationDetailPan
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useClassesList } from "../hooks/useClassesList";
 
-export function Evaluations() {
+export function Evaluations({ classId }: { classId?: string }) {
   const { openPanel } = useSlidePanel();
 
   // Filters state
@@ -29,10 +29,12 @@ export function Evaluations() {
 
   // Set default selected class filter
   useEffect(() => {
-    if (selectedClassId === "all" && classesList.length > 0) {
+    if (classId) {
+      setSelectedClassId(classId);
+    } else if (selectedClassId === "all" && classesList.length > 0) {
       setSelectedClassId(classesList[0].id);
     }
-  }, [classesList]);
+  }, [classesList, classId]);
 
   // 2. Fetch students list with class details and their latest evaluation
   const { data: studentsResponse, isLoading: isLoadingStudents, isError: isErrorStudents, refetch: refetchStudents } = useQuery({
@@ -98,6 +100,7 @@ export function Evaluations() {
           studentId={studentId} 
           studentsList={students}
           onUpdateSuccess={() => refetchStudents()}
+          readOnly={!classId}
         />
       )
     });
@@ -210,22 +213,27 @@ export function Evaluations() {
   return (
     <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 space-y-4">
       {/* Header section */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Đánh giá Phát triển Trẻ</h2>
-          <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
-            Lập phiếu đánh giá định kỳ cho học sinh trên 5 lĩnh vực năng lực cốt lõi theo tiêu chuẩn của Bộ Giáo dục.
-          </p>
+      {!classId ? (
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Đánh giá Phát triển Trẻ</h2>
+            <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
+              Lập phiếu đánh giá định kỳ cho học sinh trên 5 lĩnh vực năng lực cốt lõi theo tiêu chuẩn của Bộ Giáo dục.
+            </p>
+          </div>
         </div>
-        <button
-          onClick={handleCreateEvaluation}
-          className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="md:hidden">Thêm</span>
-          <span className="hidden md:inline">Tạo Phiếu Đánh Giá</span>
-        </button>
-      </div>
+      ) : (
+        <div className="flex justify-between items-center">
+          <h3 className="text-sm font-bold text-on-surface-variant uppercase tracking-wider font-inter">Đánh giá phát triển lớp</h3>
+          <button
+            onClick={handleCreateEvaluation}
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden md:inline">Tạo Phiếu Đánh Giá</span>
+          </button>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-sm flex flex-wrap gap-2.5 md:gap-3.5 items-center">
@@ -241,21 +249,23 @@ export function Evaluations() {
           />
         </div>
 
-        <MobileFilterToggle hasActiveFilters={selectedClassId !== 'all'}>
-          {/* Class Filter */}
-          <select
-            value={selectedClassId}
-            onChange={(e) => setSelectedClassId(e.target.value)}
-            className="w-full md:w-auto border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-all cursor-pointer font-bold text-on-surface-variant"
-          >
-            <option value="all">Tất cả lớp</option>
-            {classesList.map((c: any) => (
-              <option key={c.id} value={c.id}>
-                Lớp {c.name}
-              </option>
-            ))}
-          </select>
-        </MobileFilterToggle>
+        {!classId && (
+          <MobileFilterToggle hasActiveFilters={selectedClassId !== 'all'}>
+            {/* Class Filter */}
+            <select
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
+              className="w-full md:w-auto border border-outline-variant/50 rounded-xl px-3.5 py-2 text-[14px] bg-transparent focus:outline-none focus:border-primary transition-all cursor-pointer font-bold text-on-surface-variant"
+            >
+              <option value="all">Tất cả lớp</option>
+              {classesList.map((c: any) => (
+                <option key={c.id} value={c.id}>
+                  Lớp {c.name}
+                </option>
+              ))}
+            </select>
+          </MobileFilterToggle>
+        )}
       </div>
 
       {/* Main Table view */}

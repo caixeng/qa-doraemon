@@ -6,7 +6,8 @@ import { Calendar, Plus, Clock } from 'lucide-react';
 import { api } from '../../lib/api';
 import { toast } from '../../stores/toastStore';
 import { useQueryClient } from '@tanstack/react-query';
-import { Table, Modal, Input } from '../ui';
+import { Table, Modal, Input, Button } from '../ui';
+import { useSlidePanel } from '../../context/SlidePanelContext';
 import type { AcademicYearRow, SchoolRow } from '../../types';
 
 const yearSchema = z.object({
@@ -16,6 +17,96 @@ const yearSchema = z.object({
 });
 
 type YearValues = z.infer<typeof yearSchema>;
+
+interface YearFormPanelContentProps {
+  schoolId: string;
+  queryClient: any;
+  closePanel: () => void;
+}
+
+const YearFormPanelContent: React.FC<YearFormPanelContentProps> = ({
+  schoolId,
+  queryClient,
+  closePanel,
+}) => {
+  const [yearLoading, setYearLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<YearValues>({
+    resolver: zodResolver(yearSchema) as any,
+  });
+
+  const onCreateYear = async (values: YearValues) => {
+    setYearLoading(true);
+    try {
+      const res = await api.create('academic_years', {
+        name: values.name,
+        start_date: values.start_date,
+        end_date: values.end_date,
+        school_id: schoolId,
+        is_current: false,
+      });
+      if (res.error) throw new Error(res.error);
+
+      toast.success('Tạo năm học mới thành công!');
+      queryClient.invalidateQueries({ queryKey: ['academic-years'] });
+      closePanel();
+    } catch (err) {
+      toast.error('Lỗi khi tạo năm học', err instanceof Error ? err.message : 'Lỗi hệ thống');
+    } finally {
+      setYearLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onCreateYear)} className="p-6 space-y-5 select-none flex flex-col h-full justify-between">
+      <div className="space-y-5">
+        <Input
+          label="Tên năm học"
+          placeholder="Ví dụ: 2026-2027"
+          error={errors.name?.message}
+          {...register('name')}
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            label="Ngày bắt đầu"
+            type="date"
+            error={errors.start_date?.message}
+            {...register('start_date')}
+          />
+          <Input
+            label="Ngày kết thúc"
+            type="date"
+            error={errors.end_date?.message}
+            {...register('end_date')}
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/40">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={closePanel}
+          className="rounded-xl cursor-pointer"
+          disabled={yearLoading}
+        >
+          Hủy
+        </Button>
+        <Button
+          type="submit"
+          disabled={yearLoading}
+          className="rounded-xl cursor-pointer bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 text-xs font-semibold shadow-sm transition-all"
+        >
+          {yearLoading ? 'Đang tạo...' : 'Tạo năm học'}
+        </Button>
+      </div>
+    </form>
+  );
+};
 
 interface YearsSettingsTabProps {
   schoolData: SchoolRow | null;
@@ -31,42 +122,22 @@ export const YearsSettingsTab: React.FC<YearsSettingsTabProps> = ({
   handleSetCurrentYear,
 }) => {
   const queryClient = useQueryClient();
-  const [isYearModalOpen, setIsYearModalOpen] = useState(false);
-  const [yearLoading, setYearLoading] = useState(false);
+  const { openPanel, closePanel } = useSlidePanel();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<YearValues>({
-    resolver: zodResolver(yearSchema) as any,
-  });
-
-  const onCreateYear = async (values: YearValues) => {
+  const handleOpenCreateYear = () => {
     if (!schoolData?.id) return;
-    setYearLoading(true);
-    try {
-      const res = await api.create('academic_years', {
-        school_id: schoolData.id,
-        name: values.name.trim(),
-        start_date: values.start_date,
-        end_date: values.end_date,
-        is_current: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
-      if (res.error) throw new Error(res.error);
-
-      toast.success('Tạo năm học mới thành công!');
-      queryClient.invalidateQueries({ queryKey: ['academic-years-settings'] });
-      setIsYearModalOpen(false);
-      reset();
-    } catch (err) {
-      toast.error('Lỗi khi tạo năm học', err instanceof Error ? err.message : 'Lỗi hệ thống');
-    } finally {
-      setYearLoading(false);
-    }
+    openPanel({
+      title: 'Tạo năm học nghiệp vụ mới',
+      icon: <Calendar size={14} />,
+      width: 480,
+      component: (
+        <YearFormPanelContent 
+          schoolId={schoolData.id}
+          queryClient={queryClient}
+          closePanel={closePanel}
+        />
+      )
+    });
   };
 
   if (isLoadingYears) {
@@ -91,7 +162,7 @@ export const YearsSettingsTab: React.FC<YearsSettingsTabProps> = ({
           </p>
         </div>
         <button
-          onClick={() => setIsYearModalOpen(true)}
+          onClick={handleOpenCreateYear}
           className="inline-flex items-center gap-1.5 px-3 py-2 bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 rounded-xl text-xs font-bold transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -166,58 +237,6 @@ export const YearsSettingsTab: React.FC<YearsSettingsTabProps> = ({
         data={academicYears}
         rowKey={(row) => row.id}
       />
-
-      {isYearModalOpen && (
-        <Modal
-          open={isYearModalOpen}
-          onClose={() => setIsYearModalOpen(false)}
-          title="Tạo năm học nghiệp vụ mới"
-          size="md"
-        >
-          <form onSubmit={handleSubmit(onCreateYear)} className="space-y-5 select-none">
-            <Input
-              label="Tên năm học"
-              placeholder="Ví dụ: 2026-2027"
-              error={errors.name?.message}
-              {...register('name')}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Ngày bắt đầu"
-                type="date"
-                error={errors.start_date?.message}
-                {...register('start_date')}
-              />
-
-              <Input
-                label="Ngày kết thúc"
-                type="date"
-                error={errors.end_date?.message}
-                {...register('end_date')}
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/40">
-              <button
-                type="button"
-                onClick={() => setIsYearModalOpen(false)}
-                className="px-4 py-2 border border-outline-variant hover:bg-surface-container rounded-xl text-sm font-semibold text-on-surface transition-all cursor-pointer"
-                disabled={yearLoading}
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                disabled={yearLoading}
-                className="px-4 py-2 bg-primary text-on-primary hover:bg-primary/90 rounded-xl text-sm font-semibold shadow-sm transition-all cursor-pointer"
-              >
-                {yearLoading ? 'Đang tạo...' : 'Tạo mới'}
-              </button>
-            </div>
-          </form>
-        </Modal>
-      )}
     </div>
   );
 };

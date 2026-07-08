@@ -285,6 +285,7 @@ export interface StudentRow {
   medical_notes: string | null;
   allergies: string | null;
   priority_status: string | null;
+  priority_note: string | null;
   registration_date: string | null;
   target_school_year: string | null;
   created_at: string;
@@ -306,6 +307,7 @@ export interface StudentInsert {
   medical_notes?: string | null;
   allergies?: string | null;
   priority_status?: string | null;
+  priority_note?: string | null;
   registration_date?: string | null;
   target_school_year?: string | null;
   created_at?: string;
@@ -327,6 +329,7 @@ export interface StudentUpdate {
   medical_notes?: string | null;
   allergies?: string | null;
   priority_status?: string | null;
+  priority_note?: string | null;
   registration_date?: string | null;
   target_school_year?: string | null;
   updated_at?: string;
@@ -649,6 +652,51 @@ export interface MealPlanUpdate {
 }
 
 // ─────────────────────────────────────────────
+// Table: weekly_plans
+// ─────────────────────────────────────────────
+
+/** Kế hoạch tuần học tập và hoạt động */
+export interface WeeklyPlanRow {
+  id: string;
+  school_id: string;
+  class_id: string | null;
+  week_start_date: string;
+  theme: string;
+  content: any;
+  created_by: string | null;
+  approver_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WeeklyPlanInsert {
+  id?: string;
+  school_id: string;
+  class_id?: string | null;
+  week_start_date: string;
+  theme: string;
+  content: any;
+  created_by?: string | null;
+  approver_name?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface WeeklyPlanUpdate {
+  id?: string;
+  school_id?: string;
+  class_id?: string | null;
+  week_start_date?: string;
+  theme?: string;
+  content?: any;
+  created_by?: string | null;
+  approver_name?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+
+// ─────────────────────────────────────────────
 // Table: notifications
 // ─────────────────────────────────────────────
 
@@ -837,6 +885,11 @@ export interface Database {
         Row: MealPlanRow;
         Insert: MealPlanInsert;
         Update: MealPlanUpdate;
+      };
+      weekly_plans: {
+        Row: WeeklyPlanRow;
+        Insert: WeeklyPlanInsert;
+        Update: WeeklyPlanUpdate;
       };
       notifications: {
         Row: NotificationRow;

@@ -8,7 +8,11 @@ import {
   Edit2,
   Trash2,
   BookOpen,
-  UserCheck
+  UserCheck,
+  UtensilsCrossed,
+  CalendarRange,
+  Heart,
+  Award
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { useSlidePanel } from '../../context/SlidePanelContext';
@@ -21,8 +25,12 @@ import type { ClassRow, StudentRow } from '../../types';
 
 import { ClassStudentsTab } from './class/ClassStudentsTab';
 import { ClassRollCallTab } from './class/ClassRollCallTab';
-import { ClassScheduleTab } from './class/ClassScheduleTab';
 import { ClassAttendanceStats } from './class/ClassAttendanceStats';
+
+const Nutrition = React.lazy(() => import('../../views/Nutrition').then(m => ({ default: m.Nutrition })));
+const WeeklyPlans = React.lazy(() => import('../../views/WeeklyPlans').then(m => ({ default: m.WeeklyPlans })));
+const Health = React.lazy(() => import('../../views/Health').then(m => ({ default: m.Health })));
+const Evaluations = React.lazy(() => import('../../views/Evaluations').then(m => ({ default: m.Evaluations })));
 
 interface ClassWithTeachers extends ClassRow {
   class_teachers?: { teacher_id: string; is_homeroom: boolean; users?: { full_name: string } }[];
@@ -46,7 +54,7 @@ export const ClassDetailPanel: React.FC<ClassDetailPanelProps> = ({
   const currentUserId = useAuthStore((state) => state.user?.id) || null;
 
   // View state
-  const [activeTab, setActiveTab] = useState<'students' | 'rollcall' | 'schedule' | 'attendance'>('students');
+  const [activeTab, setActiveTab] = useState<'students' | 'rollcall' | 'nutrition' | 'weekly-plan' | 'health' | 'evaluation' | 'attendance'>('students');
   const [selectedStudentIds, setSelectedStudentIds] = useState<Set<string>>(new Set());
 
   // Modal & Dialog states
@@ -218,24 +226,27 @@ export const ClassDetailPanel: React.FC<ClassDetailPanelProps> = ({
       </div>
 
       {/* ═══ TABS ═══ */}
-      <div className="flex px-4 border-b border-outline-variant/20 bg-white shrink-0">
+      <div className="flex px-4 border-b border-outline-variant/20 bg-white shrink-0 overflow-x-auto scrollbar-none">
         {[
           { id: 'students', label: `Học sinh (${students.length})`, icon: Users },
           { id: 'rollcall', label: 'Điểm danh', icon: ClipboardList },
-          { id: 'schedule', label: 'Lịch sinh hoạt', icon: Clock },
-          { id: 'attendance', label: 'Thống kê chuyên cần', icon: TrendingUp }
+          { id: 'nutrition', label: 'Dinh dưỡng', icon: UtensilsCrossed },
+          { id: 'weekly-plan', label: 'Kế hoạch tuần', icon: CalendarRange },
+          { id: 'health', label: 'Sức khỏe', icon: Heart },
+          { id: 'evaluation', label: 'Đánh giá', icon: Award },
+          { id: 'attendance', label: 'Chuyên cần', icon: TrendingUp }
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as 'students' | 'rollcall' | 'schedule' | 'attendance')}
+            onClick={() => setActiveTab(tab.id as any)}
             className={cn(
-              "flex-1 flex items-center justify-center gap-1.5 py-3 text-[13px] font-bold border-b-2 transition-colors cursor-pointer",
+              "flex-1 flex items-center justify-center gap-1.5 py-3 px-3 text-[13px] font-bold border-b-2 transition-colors cursor-pointer whitespace-nowrap",
               activeTab === tab.id 
                 ? "border-b-primary text-primary" 
                 : "border-b-transparent text-on-surface-variant hover:bg-surface-container-low/50"
             )}
           >
-            <tab.icon className="w-4 h-4" />
+            <tab.icon className="w-4 h-4 shrink-0" />
             {tab.label}
           </button>
         ))}
@@ -266,11 +277,36 @@ export const ClassDetailPanel: React.FC<ClassDetailPanelProps> = ({
           />
         )}
 
-        {activeTab === 'schedule' && (
-          <ClassScheduleTab
-            gradeLevel={activeClass.grade_level}
-            getGradeLabel={getGradeLabel}
-          />
+        {activeTab === 'nutrition' && (
+          <React.Suspense fallback={<div className="h-96 bg-surface border border-outline-variant/20 rounded-3xl animate-pulse" />}>
+            <Nutrition
+              classId={classId}
+            />
+          </React.Suspense>
+        )}
+
+        {activeTab === 'weekly-plan' && (
+          <React.Suspense fallback={<div className="h-96 bg-surface border border-outline-variant/20 rounded-3xl animate-pulse" />}>
+            <WeeklyPlans
+              classId={classId}
+            />
+          </React.Suspense>
+        )}
+
+        {activeTab === 'health' && (
+          <React.Suspense fallback={<div className="h-96 bg-surface border border-outline-variant/20 rounded-3xl animate-pulse" />}>
+            <Health
+              classId={classId}
+            />
+          </React.Suspense>
+        )}
+
+        {activeTab === 'evaluation' && (
+          <React.Suspense fallback={<div className="h-96 bg-surface border border-outline-variant/20 rounded-3xl animate-pulse" />}>
+            <Evaluations
+              classId={classId}
+            />
+          </React.Suspense>
         )}
 
         {activeTab === 'attendance' && (

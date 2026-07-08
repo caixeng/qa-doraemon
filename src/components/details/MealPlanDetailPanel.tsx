@@ -24,12 +24,14 @@ interface MealPlanDetailPanelProps {
   mealPlanId: string;
   classesList: any[];
   onDeleteSuccess?: () => void;
+  readOnly?: boolean;
 }
 
 export const MealPlanDetailPanel: React.FC<MealPlanDetailPanelProps> = ({
   mealPlanId,
   classesList,
   onDeleteSuccess,
+  readOnly = false,
 }) => {
   const queryClient = useQueryClient();
   const { openPanel, closePanel } = useSlidePanel();
@@ -165,24 +167,26 @@ export const MealPlanDetailPanel: React.FC<MealPlanDetailPanelProps> = ({
         </div>
         
         {/* Actions */}
-        <div className="flex items-center gap-1.5">
-          <Button
-            onClick={handleEdit}
-            variant="outline"
-            size="sm"
-            className="rounded-xl flex items-center gap-1 cursor-pointer text-xs"
-          >
-            <Edit2 className="w-3.5 h-3.5" /> Sửa
-          </Button>
-          <Button
-            onClick={() => setIsDeleteDialogOpen(true)}
-            variant="outline"
-            size="sm"
-            className="rounded-xl border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 flex items-center gap-1 cursor-pointer text-xs"
-          >
-            <Trash2 className="w-3.5 h-3.5" /> Xóa
-          </Button>
-        </div>
+        {!readOnly && (
+          <div className="flex items-center gap-1.5">
+            <Button
+              onClick={handleEdit}
+              variant="outline"
+              size="sm"
+              className="rounded-xl flex items-center gap-1 cursor-pointer text-xs"
+            >
+              <Edit2 className="w-3.5 h-3.5" /> Sửa
+            </Button>
+            <Button
+              onClick={() => setIsDeleteDialogOpen(true)}
+              variant="outline"
+              size="sm"
+              className="rounded-xl border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 flex items-center gap-1 cursor-pointer text-xs"
+            >
+              <Trash2 className="w-3.5 h-3.5" /> Xóa
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* ═══ DETAIL CONTENT ═══ */}

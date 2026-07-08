@@ -450,6 +450,7 @@ export function useStudents() {
           class_name: row.classes?.name || 'Chưa xếp lớp',
           status: statusText,
           priority_status: row.priority_status || '',
+          priority_note: row.priority_note || '',
           registration_date: row.registration_date ? new Date(row.registration_date).toLocaleDateString('vi-VN') : '',
           target_school_year: row.target_school_year || '',
           father_name: father?.full_name || '',
@@ -479,6 +480,7 @@ export function useStudents() {
         { key: 'class_name', label: 'Lớp' },
         { key: 'status', label: 'Trạng thái học sinh' },
         { key: 'priority_status', label: 'Đối tượng ưu tiên' },
+        { key: 'priority_note', label: 'Ghi chú ưu tiên' },
         { key: 'registration_date', label: 'Ngày đăng ký chờ' },
         { key: 'target_school_year', label: 'Năm học đăng ký' },
         { key: 'father_name', label: 'Họ tên bố' },
@@ -524,6 +526,7 @@ export function useStudents() {
 
       const rawStatus = row['Trạng thái'] || row['Trạng thái học sinh'];
       const priorityStatus = row['Đối tượng ưu tiên'] || row['Ưu tiên'];
+      const priorityNote = row['Ghi chú ưu tiên'];
       const rawRegDate = row['Ngày đăng ký chờ'] || row['Ngày đăng ký'];
       const targetSchoolYear = row['Năm học đăng ký'] || row['Năm học'];
 
@@ -580,6 +583,7 @@ export function useStudents() {
           enrollment_date: enrollDate,
           status: status,
           priority_status: priorityStatus ? String(priorityStatus).trim() : null,
+          priority_note: priorityNote ? String(priorityNote).trim() : null,
           registration_date: regDate,
           target_school_year: targetSchoolYear ? String(targetSchoolYear).trim() : null,
           created_at: new Date().toISOString(),

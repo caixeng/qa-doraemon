@@ -43,6 +43,7 @@ const studentFormSchema = z.object({
   medical_notes: z.string().optional().nullable(),
   allergies: z.string().optional().nullable(),
   priority_status: z.string().optional().nullable(),
+  priority_note: z.string().optional().nullable(),
   registration_date: z.string().optional().nullable(),
   target_school_year: z.string().optional().nullable(),
   guardians: z.array(guardianSchema).min(1, 'Phải có ít nhất một phụ huynh/người giám hộ'),
@@ -80,6 +81,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({
     medical_notes: student?.medical_notes || '',
     allergies: student?.allergies || '',
     priority_status: student?.priority_status || '',
+    priority_note: student?.priority_note || '',
     registration_date: student?.registration_date ? student.registration_date.split('T')[0] : '',
     target_school_year: student?.target_school_year || '',
     guardians: student?.guardians?.map((g: any) => ({
@@ -154,6 +156,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({
         medical_notes: values.medical_notes || null,
         allergies: values.allergies || null,
         priority_status: values.priority_status || null,
+        priority_note: values.priority_note || null,
         registration_date: values.registration_date || null,
         target_school_year: targetSchoolYearValue,
       };
@@ -371,7 +374,8 @@ export const StudentForm: React.FC<StudentFormProps> = ({
                           { value: 'Con GVNV', label: 'Ưu tiên 1 (Con GVNV)' },
                           { value: 'Anh chị đang học ở trường', label: 'Ưu tiên 2 (Anh chị đang học ở trường)' },
                           { value: 'HĐQT', label: 'Ưu tiên 3 (HĐQT)' },
-                          { value: 'Phụ huynh cũ', label: 'Ưu tiên 4 (Phụ huynh cũ)' }
+                          { value: 'Phụ huynh cũ', label: 'Ưu tiên 4 (Phụ huynh cũ)' },
+                          { value: 'Anh chị em cùng đăng ký', label: 'Ưu tiên 5 (Anh chị em cùng đăng ký)' }
                         ].map((opt) => {
                           const isChecked = watch('priority_status') === opt.value || (!watch('priority_status') && opt.value === '');
                           return (
@@ -401,6 +405,13 @@ export const StudentForm: React.FC<StudentFormProps> = ({
                         </p>
                       )}
                     </div>
+                    <Textarea
+                      label="Ghi chú ưu tiên"
+                      placeholder="Ghi chú trường hợp cụ thể (nếu có)..."
+                      className="sm:col-span-2"
+                      error={errors.priority_note?.message}
+                      {...register('priority_note')}
+                    />
                   </>
                 );
               }
