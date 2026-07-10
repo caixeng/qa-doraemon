@@ -6,6 +6,7 @@ import { DollarSign, Calendar, FileText, User } from 'lucide-react';
 import { Input, Select, Textarea, Button, useSlidePanel } from '../ui';
 import { toast } from '../../stores/toastStore';
 import { api } from '../../lib/api';
+import { computeFeeTotal } from '../../lib/fees';
 import { useAuthStore } from '../../stores/authStore';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -86,7 +87,12 @@ export const FeeForm: React.FC<FeeFormProps> = ({
   const discount = watch('discount') || 0;
   const paidAmount = watch('paid_amount') || 0;
 
-  const totalAmount = Number(baseAmount) + Number(mealAmount) + Number(extraAmount) - Number(discount);
+  const totalAmount = computeFeeTotal({
+    base_amount: Number(baseAmount),
+    meal_amount: Number(mealAmount),
+    extra_amount: Number(extraAmount),
+    discount: Number(discount),
+  });
 
   // Auto-adjust status based on paid amount
   useEffect(() => {

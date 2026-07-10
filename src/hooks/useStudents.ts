@@ -8,6 +8,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useAppStore } from '../stores/appStore';
 import { toast } from '../stores/toastStore';
 import { useClassesList } from './useClassesList';
+import { getVietnameseSortKeys } from '../lib/vietnameseName';
 import type { StudentRow, ClassRow, GuardianRow, GuardianInsert } from '../types';
 
 export interface StudentWithRelations extends StudentRow {
@@ -19,21 +20,6 @@ export interface ExcelStudentRow {
   [header: string]: string | number | undefined;
 }
 
-const getVietnameseSortKeys = (fullName: string) => {
-  let cleanName = (fullName || '').trim();
-  cleanName = cleanName.replace(/\s*[\(\[].*?[\)\]]\s*$/g, '').trim();
-
-  if (!cleanName) return { firstName: '', middleAndLastName: '' };
-
-  const parts = cleanName.split(/\s+/);
-  if (parts.length === 1) {
-    return { firstName: parts[0], middleAndLastName: '' };
-  }
-  const firstName = parts[parts.length - 1];
-  const middleAndLastName = parts.slice(0, parts.length - 1).join(' ');
-
-  return { firstName, middleAndLastName };
-};
 
 export function useStudents() {
   const queryClient = useQueryClient();

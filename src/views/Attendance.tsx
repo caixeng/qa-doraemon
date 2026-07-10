@@ -23,6 +23,12 @@ import { useAuthStore } from "../stores/authStore";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useClassesList } from "../hooks/useClassesList";
+import type { AttendanceRow, AttendanceInsert, StudentRow, ClassRow, AttendanceStatus } from "../types/database";
+
+interface ClassOverview extends ClassRow {
+  class_teachers?: { is_homeroom: boolean; users: { full_name: string } | null }[];
+  students?: { id: string }[];
+}
 
 export function Attendance() {
   const queryClient = useQueryClient();
@@ -50,7 +56,7 @@ export function Attendance() {
   // Query lấy thông tin chi tiết các lớp cho Dashboard BGH (sĩ số, GVCN)
   const { data: classesOverviewResponse, isLoading: isLoadingClassesOverview } = useQuery({
     queryKey: ['classes-attendance-overview', selectedAcademicYearId],
-    queryFn: () => api.getAll<any>(
+    queryFn: () => api.getAll<ClassOverview>(
       'classes',
       { page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' },
       { filters: { academic_year_id: selectedAcademicYearId } },
@@ -63,7 +69,7 @@ export function Attendance() {
   // 2. Fetch active students in the selected class
   const { data: studentsResponse, isLoading: isLoadingStudents, isError: isErrorStudents, refetch: refetchStudents } = useQuery({
     queryKey: ['students-attendance', selectedClassId],
-    queryFn: () => api.getAll<any>('students', { page: 1, pageSize: 200, sortBy: 'full_name', sortOrder: 'asc' }, { filters: { class_id: selectedClassId, status: 'active' } }),
+    queryFn: () => api.getAll<StudentRow>('students', { page: 1, pageSize: 200, sortBy: 'full_name', sortOrder: 'asc' }, { filters: { class_id: selectedClassId, status: 'active' } }),
     enabled: !!selectedClassId,
   });
   const studentsList = studentsResponse?.data?.data || [];
@@ -73,7 +79,7 @@ export function Attendance() {
 
   const { data: attendanceResponse, isLoading: isLoadingAttendance } = useQuery({
     queryKey: ['attendance-records', selectedClassId, formattedDate],
-    queryFn: () => api.getAll<any>('attendance', { page: 1, pageSize: 200 }, { filters: { class_id: selectedClassId, date: formattedDate } }),
+    queryFn: () => api.getAll<AttendanceRow>('attendance', { page: 1, pageSize: 200 }, { filters: { class_id: selectedClassId, date: formattedDate } }),
     enabled: !!selectedClassId && !!formattedDate,
   });
   const attendanceRecords = attendanceResponse?.data?.data || [];
@@ -81,14 +87,14 @@ export function Attendance() {
   // Fetch tất cả điểm danh toàn trường trong ngày để hiển thị thống kê Dashboard BGH
   const { data: allAttendanceResponse, isLoading: isLoadingAllAttendance } = useQuery({
     queryKey: ['all-attendance-records', formattedDate],
-    queryFn: () => api.getAll<any>('attendance', { page: 1, pageSize: 2000 }, { filters: { date: formattedDate } }),
+    queryFn: () => api.getAll<AttendanceRow>('attendance', { page: 1, pageSize: 2000 }, { filters: { date: formattedDate } }),
     enabled: !selectedClassId && !!formattedDate,
   });
   const allAttendanceRecords = allAttendanceResponse?.data?.data || [];
 
   // Build a map of existing attendance records for fast lookup
-  const attendanceMap = new Map<string, any>();
-  attendanceRecords.forEach((record: any) => {
+  const attendanceMap = new Map<string, AttendanceRow>();
+  attendanceRecords.forEach((record: AttendanceRow) => {
     attendanceMap.set(record.student_id, record);
   });
 
@@ -101,7 +107,7 @@ export function Attendance() {
       checkInTime?: string | null;
       recordId?: string | null;
     }) => {
-      const payload: any = {
+      const payload = {
         student_id: studentId,
         class_id: selectedClassId,
         date: formattedDate,
@@ -110,7 +116,7 @@ export function Attendance() {
         note: note !== undefined ? note : null,
         recorded_by: currentUserId,
         updated_at: new Date().toISOString(),
-      };
+      } satisfies AttendanceInsert;
 
       if (recordId) {
         return api.update('attendance', recordId, payload);
@@ -125,7 +131,7 @@ export function Attendance() {
         queryClient.invalidateQueries({ queryKey: ['attendance-records', selectedClassId, formattedDate] });
       }
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Lỗi khi lưu điểm danh', error.message || 'Lỗi hệ thống');
     }
   });
@@ -135,7 +141,7 @@ export function Attendance() {
     mutationFn: async (status: 'present' | 'absent') => {
       const promises = studentsList.map((student) => {
         const existingRecord = attendanceMap.get(student.id);
-        const payload: any = {
+        const payload = {
           student_id: student.id,
           class_id: selectedClassId,
           date: formattedDate,
@@ -143,7 +149,7 @@ export function Attendance() {
           check_in_time: status === 'present' ? '08:00:00' : null,
           recorded_by: currentUserId,
           updated_at: new Date().toISOString(),
-        };
+        } satisfies AttendanceInsert;
 
         if (existingRecord) {
           return api.update('attendance', existingRecord.id, payload);
@@ -157,7 +163,7 @@ export function Attendance() {
       toast.success('Điểm danh hàng loạt thành công!');
       queryClient.invalidateQueries({ queryKey: ['attendance-records', selectedClassId, formattedDate] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Lỗi khi điểm danh hàng loạt', error.message || 'Lỗi hệ thống');
     }
   });
@@ -197,11 +203,11 @@ export function Attendance() {
 
   if (isDashboardMode) {
     // Sĩ số toàn trường
-    classesOverview.forEach((c: any) => {
+    classesOverview.forEach((c: ClassOverview) => {
       totalStudents += c.students?.length || 0;
     });
     // Điểm danh toàn trường
-    allAttendanceRecords.forEach((rec: any) => {
+    allAttendanceRecords.forEach((rec: AttendanceRow) => {
       if (rec.status === 'present') presentCount++;
       else if (rec.status === 'absent') absentCount++;
       else if (rec.status === 'late') lateCount++;
@@ -243,13 +249,13 @@ export function Attendance() {
   const unmarkedCount = totalStudents - (presentCount + absentCount + lateCount + sickCount + excusedCount);
 
   // Define Table Columns
-  const tableColumns: TableColumn<any>[] = [
+  const tableColumns: TableColumn<StudentRow>[] = [
     {
       key: "stt",
       header: "STT",
       align: "center",
       width: "64px",
-      render: (_row: any, index: number) => (
+      render: (_row: StudentRow, index: number) => (
         <span className="font-semibold text-on-surface-variant/70">
           {index + 1}
         </span>
@@ -258,7 +264,7 @@ export function Attendance() {
     {
       key: "student",
       header: "Học sinh",
-      render: (row: any) => (
+      render: (row: StudentRow) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/45 shrink-0 bg-primary/5 flex items-center justify-center">
             {row.profile_image_url ? (
@@ -284,7 +290,7 @@ export function Attendance() {
       key: "attendance",
       header: "Trạng thái",
       align: "center",
-      render: (row: any) => {
+      render: (row: StudentRow) => {
         const attendanceRecord = attendanceMap.get(row.id);
         const status = attendanceRecord?.status;
         return status ? (
@@ -297,7 +303,7 @@ export function Attendance() {
     {
       key: "note",
       header: "Ghi chú sức khỏe / Lý do",
-      render: (row: any) => {
+      render: (row: StudentRow) => {
         const attendanceRecord = attendanceMap.get(row.id);
         const note = attendanceRecord?.note;
         return note ? (
@@ -392,7 +398,7 @@ export function Attendance() {
               onChange={(e) => setSelectedClassId(e.target.value)}
               className="w-full md:w-64 h-10 rounded-xl border border-outline-variant hover:border-outline bg-surface-container-lowest font-inter text-sm px-3 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer font-semibold text-on-surface-variant"
             >
-              {classesList.map((c: any) => (
+              {classesList.map((c: ClassRow) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
               {classesList.length === 0 && (
@@ -460,12 +466,12 @@ export function Attendance() {
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {classesOverview.map((cls: any) => {
-              const classRecs = allAttendanceRecords.filter((r: any) => r.class_id === cls.id);
+            {classesOverview.map((cls: ClassOverview) => {
+              const classRecs = allAttendanceRecords.filter((r: AttendanceRow) => r.class_id === cls.id);
               const total = cls.students?.length || 0;
-              const present = classRecs.filter((r: any) => r.status === 'present').length;
-              const absent = classRecs.filter((r: any) => ['absent', 'sick', 'excused'].includes(r.status)).length;
-              const late = classRecs.filter((r: any) => r.status === 'late').length;
+              const present = classRecs.filter((r: AttendanceRow) => r.status === 'present').length;
+              const absent = classRecs.filter((r: AttendanceRow) => ['absent', 'sick', 'excused'].includes(r.status)).length;
+              const late = classRecs.filter((r: AttendanceRow) => r.status === 'late').length;
 
               // Badge status
               let badgeBg = "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
@@ -480,7 +486,7 @@ export function Attendance() {
                 }
               }
 
-              const homeroomTeacher = cls.class_teachers?.find((ct: any) => ct.is_homeroom)?.users?.full_name || 'Chưa phân công';
+              const homeroomTeacher = cls.class_teachers?.find((ct) => ct.is_homeroom)?.users?.full_name || 'Chưa phân công';
               const progressPct = total > 0 ? Math.round((classRecs.length / total) * 100) : 0;
 
               return (

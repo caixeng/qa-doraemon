@@ -20,14 +20,7 @@ import {
 import { cn } from "../lib/utils";
 import { useStudents, type StudentWithRelations } from "../hooks/useStudents";
 
-const getVietnameseSortKeys = (fullName: string) => {
-  let cleanName = (fullName || '').trim();
-  cleanName = cleanName.replace(/\s*[\(\[].*?[\)\]]\s*$/g, '').trim();
-
-  if (!cleanName) return { firstName: '' };
-  const parts = cleanName.split(/\s+/);
-  return { firstName: parts[parts.length - 1] };
-};
+import { getVietnameseSortKeys } from "../lib/vietnameseName";
 
 export function Students() {
   const { openPanel } = useSlidePanel();

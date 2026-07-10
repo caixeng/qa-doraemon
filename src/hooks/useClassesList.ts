@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAppStore } from '../stores/appStore';
 import { queryKeys } from '../lib/queryKeys';
 import { api } from '../lib/api';
+import type { ClassRow } from '../types/database';
 import { sortClasses } from '../lib/classUtils';
 
 /**
@@ -17,7 +18,7 @@ export function useClassesList() {
       if (!selectedAcademicYearId) {
         return [];
       }
-      const response = await api.getAll<any>('classes', { page: 1, pageSize: 100 }, {
+      const response = await api.getAll<ClassRow>('classes', { page: 1, pageSize: 100 }, {
         filters: { academic_year_id: selectedAcademicYearId }
       });
       const data = response.data?.data || [];

@@ -83,53 +83,66 @@ Advisor `public_bucket_allows_listing`: ảnh trẻ em nằm trong bucket public
 ## 5. Kế hoạch thực hiện
 
 ### GĐ 1 — Vá ngay (≤ 1 ngày)
-- [ ] **1.1** Migration `023_lock_remaining_rpc.sql`: REVOKE anon trên 9 hàm mục 2.1 + guard nội bộ cho `report_*`, `generate_receipt`, `get_audit_log`, `finance_monthly_summary` + `SET search_path` cho 10 hàm + sửa policy `audit_log_insert_authenticated`
-- [ ] **1.2** `supabase migration repair` cho 020–022 (làm TRƯỚC 1.1 để push được)
-- [ ] **1.3** Bật leaked-password protection + min length ≥ 8 (Dashboard)
-- [ ] **1.4** Deploy `zalo-send` (kèm secrets) — hoặc feature-flag ẩn toàn bộ nút Zalo tới khi deploy
-- [ ] **1.5** Chuyển bucket `student-photos` sang private + signed URL; bỏ policy list trên `avatars`
+- [x] **1.1** Migration `023_lock_remaining_rpc.sql`: REVOKE anon trên 9 hàm mục 2.1 + guard nội bộ cho `report_*`, `generate_receipt`, `get_audit_log`, `finance_monthly_summary` + `SET search_path` cho 10 hàm + sửa policy `audit_log_insert_authenticated`
+- [x] **1.2** `supabase migration repair` cho 020–022 (làm TRƯỚC 1.1 để push được)
+- [x] **1.3** Bật leaked-password protection + min length ≥ 8 (Dashboard)
+- [x] **1.4** Deploy `zalo-send` (kèm secrets) — hoặc feature-flag ẩn toàn bộ nút Zalo tới khi deploy
+- [x] **1.5** Chuyển bucket `student-photos` sang private + signed URL; bỏ policy list trên `avatars`
 
 ### GĐ 2 — Tài khoản & schema (2–3 ngày)
-- [ ] **2.1** Edge Function `create-parent-account` dùng Admin API thay cho INSERT `auth.users`; mật khẩu ngẫu nhiên gửi qua Zalo/SMS thay vì `123456`
-- [ ] **2.2** Flow `must_change_password` lần đầu đăng nhập (cột flag + màn hình đổi mật khẩu + chặn route)
+- [x] **2.1** Edge Function `create-parent-account` dùng Admin API thay cho INSERT `auth.users`; mật khẩu ngẫu nhiên gửi qua Zalo/SMS thay vì `123456`
+- [x] **2.2** Flow `must_change_password` lần đầu đăng nhập (cột flag + màn hình đổi mật khẩu + chặn route)
 - [ ] **2.3** Dump các hàm chỉ có trên DB (`fix_auth_user_tokens`, nhóm `*_unaccent`…) vào migration sync để hết drift
-- [ ] **2.4** Move `unaccent` sang schema `extensions`
+- [x] **2.4** Move `unaccent` sang schema `extensions`
 
 ### GĐ 3 — Hiệu năng DB (1–2 ngày)
-- [ ] **3.1** Fix 14 `auth_rls_initplan`
-- [ ] **3.2** Gộp 35 `multiple_permissive_policies` (ưu tiên bảng mới teacher_attendance, weekly_plans)
-- [ ] **3.3** Index 13 FK
+- [x] **3.1** Fix 14 `auth_rls_initplan`
+- [x] **3.2** Gộp 35 `multiple_permissive_policies` (ưu tiên bảng mới teacher_attendance, weekly_plans)
+- [x] **3.3** Index 13 FK
 - [ ] **3.4** Rà 27 unused index sau khi có traffic thật
 
 ### GĐ 4 — Chất lượng code (liên tục, ~1 tuần rải)
 - [ ] **4.1** Giảm `any`: Attendance (23) → Health/GuardianPortal/Evaluations (14) → Teachers/Forms; chốt quy ước không thêm `any` mới trong code review
 - [ ] **4.2** Tách file >600 dòng: WeeklyPlans (854) và Finance (746) trước
 - [ ] **4.3** Test logic tiền (tính học phí, overdue) + useStudents + WeeklyPlans
-- [ ] **4.4** `manualChunks` tách vendor (react, supabase, motion) — giảm index 744KB
+- [x] **4.4** `manualChunks` tách vendor (react, supabase, motion) — giảm index 744KB
 - [ ] **4.5** Self-host font (bỏ Google CDN); pass a11y cơ bản (aria cho Modal/SlidePanel/Table, focus trap)
 
 ### GĐ 5 — Nâng cấp giao diện UI/UX (2–3 ngày, dựa trên review trực tiếp app 2026-07-10)
 
 Đánh giá chung: nền UI đã tốt — dark mode hoạt động đúng (đã đo contrast), mobile có bottom nav + skeleton, login chỉn chu, design token nhất quán. Các mục dưới là nâng cấp, không phải sửa lỗi nền tảng:
 
-- [ ] **5.1** **Ẩn/disable nút "Gửi Zalo"** (Finance, NotificationForm, FeeDetailPanel) sau feature flag tới khi `zalo-send` deploy — hiện bấm là lỗi runtime, UX xấu nhất app
+- [x] **5.1** **Ẩn/disable nút "Gửi Zalo"** (Finance, NotificationForm, FeeDetailPanel) sau feature flag tới khi `zalo-send` deploy — hiện bấm là lỗi runtime, UX xấu nhất app
 - [ ] **5.2** **Bảng → card trên mobile** cho Học sinh/Giáo viên: bảng cuộn ngang hiện tại tốn chỗ vì checkbox + STT; card 2 dòng (tên + lớp + SĐT) dễ dùng hơn. Desktop: sửa cột Địa chỉ bị cắt cụt
-- [ ] **5.3** **Avatar**: mọi học sinh đều hiển thị chữ "A" (lấy chữ cái từ "An" cuối tên) — đổi logic lấy 2 chữ cái đầu họ+tên; về sau hiển thị ảnh học sinh (kèm private bucket + signed URL ở mục 1.5)
-- [ ] **5.4** **Dashboard stat cards**: mật độ thông tin thấp (dòng "Trạng thái: Chính thức" chiếm chỗ nhưng ít giá trị) — thay bằng delta so tháng trước + click điều hướng tới màn tương ứng
-- [ ] **5.5** **Đồng nhất locale ngày tháng**: Finance đang dùng `<input type="month">` native hiện "July 2026" tiếng Anh — thay bằng DatePicker nội bộ đã có, format vi-VN toàn app
+- [x] **5.3** **Avatar**: mọi học sinh đều hiển thị chữ "A" (lấy chữ cái từ "An" cuối tên) — đổi logic lấy 2 chữ cái đầu họ+tên; về sau hiển thị ảnh học sinh (kèm private bucket + signed URL ở mục 1.5)
+- [x] **5.4** **Dashboard stat cards**: mật độ thông tin thấp (dòng "Trạng thái: Chính thức" chiếm chỗ nhưng ít giá trị) — thay bằng delta so tháng trước + click điều hướng tới màn tương ứng
+- [x] **5.5** **Đồng nhất locale ngày tháng**: Finance đang dùng `<input type="month">` native hiện "July 2026" tiếng Anh — thay bằng DatePicker nội bộ đã có, format vi-VN toàn app
 - [ ] **5.6** **Typography**: Playfair Display italic chỉ giữ cho H1/H2; label nhỏ và số liệu chuyển hết sang Inter (một số card đang serif ở size nhỏ, khó đọc với dấu tiếng Việt); self-host 2 font (gộp với 4.5)
-- [ ] **5.7** **Sửa breadcrumb topbar** wrap 2 dòng ở màn ≤1024px (hiện "Trang chủ" gãy chữ)
-- [ ] **5.8** **Micro-UX**: (a) "Tổng số: 0 học sinh" nhấp nháy số 0 khi đang tải — hiện "–" hoặc skeleton; (b) `transition-all` khi đổi theme gây flash chữ tàng hình ~300ms — giới hạn transition vào `background-color/border-color`; (c) empty-state Finance khi tháng chưa có phiếu thu → nút "Tạo phiếu thu tháng này"
+- [x] **5.7** **Sửa breadcrumb topbar** wrap 2 dòng ở màn ≤1024px (hiện "Trang chủ" gãy chữ)
+- [x] **5.8** **Micro-UX**: (a) "Tổng số: 0 học sinh" nhấp nháy số 0 khi đang tải — hiện "–" hoặc skeleton; (b) `transition-all` khi đổi theme gây flash chữ tàng hình ~300ms — giới hạn transition vào `background-color/border-color`; (c) empty-state Finance khi tháng chưa có phiếu thu → nút "Tạo phiếu thu tháng này"
 - [ ] **5.9** **A11y pass** (gộp 4.5): focus trap Modal/SlidePanel, `aria-label` cho icon button (chuông, search, theme), focus-visible ring, kiểm tra tab-order form
 
 ### GĐ 6 — Hoàn thiện tính năng (tùy chọn)
 - [ ] **6.1** Auto gửi Zalo khi điểm danh vắng (sau 1.4)
-- [ ] **6.2** Cron `mark_overdue_fees()` hằng ngày (pg_cron) + auto nhắc học phí
+- [x] **6.2** Cron `mark_overdue_fees()` hằng ngày (pg_cron) + auto nhắc học phí
 - [ ] **6.3** PWA đúng cách (khi cần offline)
 - [ ] **6.4** Dọn file giáo án PDF/docx khỏi root repo
 
 > **Ưu tiên: GĐ1 (1.2 → 1.1 → 1.3 → 1.5 → 1.4) > GĐ2 > GĐ3 > GĐ4 ≈ GĐ5 > GĐ6.** Mục 5.1 có thể làm ngay cùng GĐ1 vì là lỗi hiển thị với người dùng.
 
 ---
+
+**Ghi chú thực hiện 2026-07-10 (buổi chiều):**
+- GĐ1+GĐ3 xong toàn bộ (migration 023–027): security advisors 43 → 19 (còn lại: 17 informational về SECURITY DEFINER có guard, 1 avatars listing cho authenticated — chủ đích, 1 HIBP cần gói Pro); performance 89 → 40 (chỉ còn INFO unused_index, chờ traffic).
+- 1.3: min length 8 đã bật; **HIBP cần nâng gói Pro** — làm khi nâng cấp.
+- 1.4: cả `create-staff-account` (v3, mật khẩu ngẫu nhiên) và `zalo-send` đã deploy. Nút Zalo vẫn ẩn sau `VITE_ZALO_ENABLED` vì **chưa nhập Zalo OA token trong Cài đặt** — nhập token xong thì đặt flag true.
+- 2.1 đổi hướng: RPC `create_parent_account_by_phone` không có nơi nào gọi → **drop hẳn** (migration 028); tạo tài khoản phụ huynh sau này làm qua Edge Function khi có nhu cầu thật.
+- 2.3 (dump hàm drift thành migration sync): chưa làm — còn `fix_auth_user_tokens` và nhóm `*_unaccent` chỉ có trên DB.
+- Bug phát hiện & sửa kèm: (a) xóa đánh giá học sinh bị RLS chặn im lặng — thêm policy DELETE (026); (b) route /guardian đòi role `guardian` nhưng DB dùng `parent` → GuardianPortal không thể truy cập — đã đồng bộ; (c) cột `zalo_*` của `schools` không tồn tại trên remote dù migration 007 ghi đã apply — đã chạy lại DDL.
+- 4.1: `any` 274 → 250 (Attendance 23→0, useClassesList); tiếp tục theo file: Health/GuardianPortal/Evaluations (14 mỗi file).
+- 4.3: 15 test mới (43 tests pass) — `lib/fees.ts` (computeFeeTotal/feeRemaining/resolveFeeStatus khớp trigger DB) + `lib/vietnameseName.ts` (gộp 2 bản trùng lặp).
+- 4.4: chunk index 744KB → 349KB (gzip 222 → 108KB).
+- 5.6 (typography), 5.2 (card mobile), 5.9 (a11y pass), 4.2 (tách file lớn), 6.1, 6.3, 6.4: **chưa làm**.
+- 6.2: pg_cron `mark-overdue-fees-daily` chạy 0h giờ VN mỗi ngày (migration 029).
 
 *Cập nhật lần cuối: 2026-07-10.*
