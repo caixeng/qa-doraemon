@@ -251,8 +251,8 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
         toast.success('Cập nhật thông tin nhân sự thành công!');
       } else {
         // 1. Create the login account (Supabase Auth) — username is the phone
-        // number, default password '123456'. Must go through an Edge Function
-        // since creating auth users requires the service_role key.
+        // number, password is generated server-side. Must go through an Edge
+        // Function since creating auth users requires the service_role key.
         const { data: accountData, error: accountError } = await supabase.functions.invoke(
           'create-staff-account',
           { body: { phone: values.phone } }
@@ -266,6 +266,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
         const userRes = await api.create('users', {
           id: teacherId,
           ...userPayload,
+          must_change_password: true,
         });
         if (userRes.error) throw new Error(userRes.error);
 
@@ -281,7 +282,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
 
         toast.success(
           'Thêm nhân sự mới thành công!',
-          `Tài khoản đăng nhập: ${values.phone} — Mật khẩu: 123456`
+          `Tài khoản đăng nhập: ${values.phone} — Mật khẩu: ${accountData.generatedPassword ?? '(đã đặt trước)'}. Nhân sự sẽ được yêu cầu đổi mật khẩu ở lần đăng nhập đầu.`
         );
       }
 

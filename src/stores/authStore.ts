@@ -6,12 +6,14 @@ export interface UserProfile {
   id: string;
   email: string;
   full_name: string;
-  role: 'admin' | 'teacher' | 'staff';
+  role: 'admin' | 'teacher' | 'staff' | 'parent';
   phone: string | null;
   avatar_url: string | null;
   job_title: string | null;
   is_active: boolean;
   school_id: string;
+  /** Bắt đổi mật khẩu ở lần đăng nhập kế tiếp (tài khoản mới cấp) */
+  must_change_password?: boolean;
 }
 
 interface AuthState {

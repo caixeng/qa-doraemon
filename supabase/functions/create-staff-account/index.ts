@@ -6,12 +6,19 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const DEFAULT_PASSWORD = "123456";
 const AUTH_EMAIL_DOMAIN = "doraemon.edu.vn";
 
 interface CreateStaffAccountRequest {
   phone: string;
   password?: string;
+}
+
+// Mật khẩu ngẫu nhiên 10 ký tự, tránh ký tự dễ nhầm (0/O, 1/l/I).
+function generatePassword(): string {
+  const alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint8Array(10);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
 }
 
 Deno.serve(async (req) => {
@@ -73,9 +80,10 @@ Deno.serve(async (req) => {
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
     const authEmail = `${phone}@${AUTH_EMAIL_DOMAIN}`;
+    const password = body.password || generatePassword();
     const { data: created, error: createError } = await adminClient.auth.admin.createUser({
       email: authEmail,
-      password: body.password || DEFAULT_PASSWORD,
+      password,
       email_confirm: true,
     });
 
@@ -95,7 +103,12 @@ Deno.serve(async (req) => {
     await adminClient.rpc("fix_auth_user_tokens", { target_user_id: created.user.id });
 
     return new Response(
-      JSON.stringify({ success: true, userId: created.user.id }),
+      JSON.stringify({
+        success: true,
+        userId: created.user.id,
+        // Trả về cho admin chuyển cho nhân sự; chỉ có khi hệ thống tự sinh.
+        generatedPassword: body.password ? undefined : password,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {

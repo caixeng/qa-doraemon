@@ -16,7 +16,7 @@
 // ─────────────────────────────────────────────
 
 /** Vai trò người dùng trong hệ thống */
-export type UserRole = 'admin' | 'teacher' | 'staff';
+export type UserRole = 'admin' | 'teacher' | 'staff' | 'parent';
 
 /** Trạng thái học sinh */
 export type StudentStatus = 'active' | 'registered' | 'waiting' | 'suspended' | 'graduated' | 'transferred';
@@ -153,6 +153,7 @@ export interface UserRow {
   job_title: string | null;
   is_active: boolean;
   work_status: 'active' | 'maternity_leave' | 'inactive' | 'on_leave';
+  must_change_password: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -168,6 +169,7 @@ export interface UserInsert {
   job_title?: string | null;
   is_active?: boolean;
   work_status?: 'active' | 'maternity_leave' | 'inactive' | 'on_leave';
+  must_change_password?: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -182,6 +184,7 @@ export interface UserUpdate {
   job_title?: string | null;
   is_active?: boolean;
   work_status?: 'active' | 'maternity_leave' | 'inactive' | 'on_leave';
+  must_change_password?: boolean;
   updated_at?: string;
 }
 

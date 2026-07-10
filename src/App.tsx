@@ -102,10 +102,10 @@ export default function App() {
                   <Route path="settings" element={<Settings />} />
                 </Route>
 
-                {/* Guardian-only routes */}
+                {/* Parent/guardian-only routes (role enum trong DB là 'parent') */}
                 <Route
                   element={
-                    <ProtectedRoute allowedRoles={['guardian']}>
+                    <ProtectedRoute allowedRoles={['parent']}>
                       <AppLayout />
                     </ProtectedRoute>
                   }

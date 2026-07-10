@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type UserRole = "admin" | "teacher" | "staff" | "guardian";
+export type UserRole = "admin" | "teacher" | "staff" | "parent";
 
 export interface NavItem {
   to: string;
@@ -42,7 +42,7 @@ export const mainNavItems: NavItem[] = [
   { to: "/evaluations", label: "Đánh Giá", icon: Award, roles: ["admin", "teacher"] },
   { to: "/reports", label: "Báo Cáo", icon: BarChart3, roles: ["admin"] },
   { to: "/audit-log", label: "Nhật Ký", icon: Shield, roles: ["admin"] },
-  { to: "/guardian", label: "Cổng PH", icon: Baby, roles: ["guardian"] },
+  { to: "/guardian", label: "Cổng PH", icon: Baby, roles: ["parent"] },
 ];
 
 export const bottomNavItems: NavItem[] = [

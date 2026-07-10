@@ -2,11 +2,12 @@ import { useEffect, type ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
+import { ForcePasswordChange } from './ForcePasswordChange';
 
 interface ProtectedRouteProps {
   children: ReactNode;
   /** Roles allowed to access this route. If empty, any authenticated user can access. */
-  allowedRoles?: ('admin' | 'teacher' | 'staff' | 'guardian')[];
+  allowedRoles?: ('admin' | 'teacher' | 'staff' | 'parent')[];
 }
 
 /**
@@ -49,6 +50,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
                 job_title: profile.job_title,
                 is_active: profile.is_active,
                 school_id: profile.school_id,
+                must_change_password: profile.must_change_password ?? false,
               });
               setAccessToken(session.access_token);
             } else {
@@ -111,6 +113,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
   // Redirect to login if not authenticated
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Tài khoản mới cấp mật khẩu tạm: chặn toàn app tới khi tự đặt mật khẩu
+  if (user.must_change_password) {
+    return <ForcePasswordChange />;
   }
 
   // Check role-based access
