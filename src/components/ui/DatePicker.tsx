@@ -1,8 +1,6 @@
 import React, { useRef, useId } from 'react';
 import { Calendar } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
 
 export interface DatePickerProps {
   mode?: 'single' | 'range' | 'month';
@@ -166,17 +164,56 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             </span>
           </div>
         </div>
-      ) : (
+      ) : mode === 'month' ? (
+        // Input month native hiển thị theo locale trình duyệt ("July 2026"),
+        // nên input được làm trong suốt và đè label tiếng Việt lên trên.
         <div className="relative">
           <input
-            type={mode === 'month' ? 'month' : 'date'}
+            type="month"
             id={inputId}
             ref={inputRef}
             disabled={disabled}
             min={minDate}
             max={maxDate}
-            value={mode === 'month' ? formatMonthString(value) : formatDateString(value)}
-            onChange={mode === 'month' ? handleMonthChange : handleSingleChange}
+            value={formatMonthString(value)}
+            onChange={handleMonthChange}
+            onClick={() => !disabled && inputRef.current?.showPicker()}
+            aria-invalid={!!error}
+            aria-describedby={error ? errorId : (helperText ? helperId : undefined)}
+            className={cn(
+              "peer absolute inset-0 w-full h-full opacity-0",
+              disabled ? "cursor-not-allowed" : "cursor-pointer"
+            )}
+          />
+          <div
+            aria-hidden="true"
+            className={cn(
+              "w-full rounded-xl border bg-surface-container-lowest font-inter text-sm h-10 px-3 pl-10 text-on-surface",
+              "flex items-center pointer-events-none",
+              "peer-focus:border-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-all",
+              error ? "border-error" : "border-outline-variant",
+              disabled && "opacity-50 bg-surface-container"
+            )}
+          >
+            {formatMonthString(value)
+              ? `Tháng ${formatMonthString(value).split('-')[1]}/${formatMonthString(value).split('-')[0]}`
+              : 'Chọn tháng'}
+          </div>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
+            <Calendar className="w-4 h-4" />
+          </span>
+        </div>
+      ) : (
+        <div className="relative">
+          <input
+            type="date"
+            id={inputId}
+            ref={inputRef}
+            disabled={disabled}
+            min={minDate}
+            max={maxDate}
+            value={formatDateString(value)}
+            onChange={handleSingleChange}
             aria-invalid={!!error}
             aria-describedby={error ? errorId : (helperText ? helperId : undefined)}
             className={cn(
@@ -186,7 +223,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               disabled && "opacity-50 cursor-not-allowed bg-surface-container"
             )}
           />
-          <span 
+          <span
             onClick={handleIconClick}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
           >

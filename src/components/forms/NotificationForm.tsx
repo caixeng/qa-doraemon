@@ -13,7 +13,7 @@ import {
 } from '../ui';
 import { toast } from '../../stores/toastStore';
 import { api } from '../../lib/api';
-import { zalo } from '../../lib/zalo';
+import { zalo, zaloEnabled } from '../../lib/zalo';
 import { useAuthStore } from '../../stores/authStore';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -256,6 +256,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
         />
 
         {/* Zalo OA Send Switch */}
+        {zaloEnabled && (
         <div className="flex items-center justify-between border-t border-outline-variant/20 pt-4">
           <div className="flex flex-col gap-0.5">
             <span className="text-sm font-bold text-on-surface flex items-center gap-1.5">
@@ -278,6 +279,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
             )}
           />
         </div>
+        )}
 
           {/* Form Actions */}
           <div className="flex justify-end gap-3 pt-4 border-t border-outline-variant/40 shrink-0">

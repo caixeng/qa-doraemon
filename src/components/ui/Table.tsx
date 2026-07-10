@@ -21,6 +21,8 @@ export interface TableProps<T> {
   loading?: boolean;
   emptyTitle?: string;
   emptyDescription?: string;
+  /** Nút hành động hiển thị dưới thông báo rỗng (vd: "Tạo phiếu thu") */
+  emptyAction?: ReactNode;
   selectable?: boolean;
   selectedKeys?: Set<string>;
   onSelectionChange?: (keys: Set<string>) => void;
@@ -55,6 +57,7 @@ export function Table<T>({
   loading = false,
   emptyTitle = "Không có dữ liệu",
   emptyDescription = "Chưa có dữ liệu nào để hiển thị.",
+  emptyAction,
   selectable = false,
   selectedKeys,
   onSelectionChange,
@@ -211,6 +214,7 @@ export function Table<T>({
                     <p className="text-[11px] md:text-[14px] font-semibold">{emptyTitle}</p>
                     <p className="text-[10px] md:text-[13px] mt-0.5">{emptyDescription}</p>
                   </div>
+                  {emptyAction}
                 </div>
               </td>
             </tr>

@@ -2,6 +2,13 @@ import { supabase } from './supabase';
 
 const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/zalo-send`;
 
+/**
+ * Feature flag: the `zalo-send` Edge Function is not deployed yet, so every
+ * send fails at runtime. UI hides/disables Zalo actions until
+ * VITE_ZALO_ENABLED=true is set (after deploying the function + secrets).
+ */
+export const zaloEnabled = import.meta.env.VITE_ZALO_ENABLED === 'true';
+
 async function callZaloFunction(
   body: Record<string, unknown>,
 ): Promise<{ success: boolean; error?: string }> {

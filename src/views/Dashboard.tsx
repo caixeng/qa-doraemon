@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   MoreVertical,
   Users,
@@ -7,7 +8,8 @@ import {
   Clock,
   Calendar,
   GraduationCap,
-  User
+  User,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { supabase } from "../lib/supabase";
@@ -18,6 +20,7 @@ import { useSlidePanel } from "../context/SlidePanelContext";
 import { StudentDetailPanel } from "../components/details/StudentDetailPanel";
 
 export function Dashboard() {
+  const navigate = useNavigate();
   const today = new Date();
   const todayStr = format(today, 'yyyy-MM-dd');
 
@@ -264,87 +267,57 @@ export function Dashboard() {
         </p>
       </div>
 
-      {/* KPI Cards Grid */}
+      {/* KPI Cards Grid — mỗi card bấm được, dẫn tới tab tương ứng ở Học sinh */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-8">
-        {/* Card 1: Active */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-2.5 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[76px] md:min-h-[120px]">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Đang học</p>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[16px] md:text-[24px] font-extrabold tracking-tight text-on-surface">{counts.active}</span>
-                <span className="text-[11px] text-on-surface-variant font-semibold"> trẻ</span>
+        {([
+          {
+            label: 'Đang học', value: counts.active, unit: 'trẻ', status: 'active',
+            statusLabel: 'Chính thức', icon: <Users className="w-4 h-4" />,
+            numberClass: 'text-on-surface', iconClass: 'bg-primary/10 text-primary', footerClass: 'text-primary',
+          },
+          {
+            label: 'Đã ghi danh', value: counts.registered, unit: 'trẻ', status: 'registered',
+            statusLabel: 'Đã nhập học', icon: <UserCheck className="w-4 h-4" />,
+            numberClass: 'text-indigo-600', iconClass: 'bg-indigo-500/10 text-indigo-600', footerClass: 'text-indigo-600',
+          },
+          {
+            label: 'Hồ sơ chờ', value: counts.waiting, unit: 'hồ sơ', status: 'waiting',
+            statusLabel: 'Chờ xếp lớp', icon: <Clock className="w-4 h-4" />,
+            numberClass: 'text-amber-600', iconClass: 'bg-amber-500/10 text-amber-600', footerClass: 'text-amber-600',
+          },
+          {
+            label: 'Đăng ký năm tới', value: counts.future, unit: 'hồ sơ', status: 'future',
+            statusLabel: 'Tuyển sinh mới', icon: <Calendar className="w-4 h-4" />,
+            numberClass: 'text-emerald-600', iconClass: 'bg-emerald-500/10 text-emerald-600', footerClass: 'text-emerald-600',
+          },
+        ]).map((card) => (
+          <button
+            key={card.status}
+            type="button"
+            onClick={() => navigate(`/students?status=${card.status}`)}
+            aria-label={`${card.label}: ${card.value} ${card.unit} — xem danh sách`}
+            className="col-span-1 text-left bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-2.5 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[76px] md:min-h-[120px] cursor-pointer group hover:border-primary/40 hover:shadow-md transition-shadow focus-visible:outline-2 focus-visible:outline-primary"
+          >
+            <div className="flex justify-between items-start w-full">
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">{card.label}</p>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className={cn("text-[16px] md:text-[24px] font-extrabold tracking-tight", card.numberClass)}>{card.value}</span>
+                  <span className="text-[11px] text-on-surface-variant font-semibold"> {card.unit}</span>
+                </div>
+              </div>
+              <div className={cn("w-8.5 h-8.5 rounded-xl flex items-center justify-center shrink-0", card.iconClass)}>
+                {card.icon}
               </div>
             </div>
-            <div className="w-8.5 h-8.5 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              <Users className="w-4 h-4" />
+            <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px] w-full">
+              <span className={cn("font-extrabold", card.footerClass)}>{card.statusLabel}</span>
+              <span className="text-on-surface-variant font-semibold flex items-center gap-1 group-hover:text-primary transition-colors">
+                Xem <ArrowRight className="w-3 h-3" />
+              </span>
             </div>
-          </div>
-          <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px]">
-            <span className="text-on-surface-variant font-medium">Trạng thái</span>
-            <span className="text-primary font-extrabold">Chính thức</span>
-          </div>
-        </div>
-
-        {/* Card 2: Registered */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-2.5 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[76px] md:min-h-[120px]">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Đã ghi danh</p>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[16px] md:text-[24px] font-extrabold tracking-tight text-indigo-600">{counts.registered}</span>
-                <span className="text-[11px] text-on-surface-variant font-semibold"> trẻ</span>
-              </div>
-            </div>
-            <div className="w-8.5 h-8.5 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 shrink-0">
-              <UserCheck className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px]">
-            <span className="text-on-surface-variant font-medium">Trạng thái</span>
-            <span className="text-indigo-650 font-extrabold">Đã nhập học</span>
-          </div>
-        </div>
-
-        {/* Card 3: Waiting */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-2.5 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[76px] md:min-h-[120px]">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Hồ sơ chờ</p>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[16px] md:text-[24px] font-extrabold tracking-tight text-amber-600">{counts.waiting}</span>
-                <span className="text-[11px] text-on-surface-variant font-semibold"> hồ sơ</span>
-              </div>
-            </div>
-            <div className="w-8.5 h-8.5 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px]">
-            <span className="text-on-surface-variant font-medium">Trạng thái</span>
-            <span className="text-amber-650 font-extrabold">Chờ xếp lớp</span>
-          </div>
-        </div>
-
-        {/* Card 4: Future */}
-        <div className="col-span-1 bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-2.5 md:p-5 shadow-xs relative overflow-hidden flex flex-col justify-between min-h-[76px] md:min-h-[120px]">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Đăng ký năm tới</p>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-[16px] md:text-[24px] font-extrabold tracking-tight text-emerald-600">{counts.future}</span>
-                <span className="text-[11px] text-on-surface-variant font-semibold"> hồ sơ</span>
-              </div>
-            </div>
-            <div className="w-8.5 h-8.5 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
-              <Calendar className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px]">
-            <span className="text-on-surface-variant font-medium">Trạng thái</span>
-            <span className="text-emerald-650 font-extrabold">Tuyển sinh mới</span>
-          </div>
-        </div>
+          </button>
+        ))}
       </div>
 
       <div className="grid grid-cols-12 gap-3 md:gap-6">

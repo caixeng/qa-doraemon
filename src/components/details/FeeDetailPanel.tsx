@@ -20,7 +20,7 @@ import { FeeForm } from '../forms/FeeForm';
 import { Button, ConfirmDialog } from '../ui';
 import { toast } from '../../stores/toastStore';
 import { cn } from '../../lib/utils';
-import { zalo } from '../../lib/zalo';
+import { zalo, zaloEnabled } from '../../lib/zalo';
 import type { TuitionFeeRow, StudentRow, GuardianRow } from '../../types/database';
 
 interface FeeWithJoins extends TuitionFeeRow {
@@ -268,6 +268,7 @@ export const FeeDetailPanel: React.FC<FeeDetailPanelProps> = ({
           >
             <Check className="w-4 h-4" /> Xác nhận đã thu đủ học phí
           </Button>
+          {zaloEnabled && (
           <Button
             onClick={handleZaloReminder}
             loading={isSendingZalo}
@@ -283,6 +284,7 @@ export const FeeDetailPanel: React.FC<FeeDetailPanelProps> = ({
           >
             <MessageCircle className="w-4 h-4" /> Nhắc nợ qua Zalo
           </Button>
+          )}
         </div>
       )}
 

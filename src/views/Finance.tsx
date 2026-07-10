@@ -19,7 +19,7 @@ import { DatePicker, Table, type TableColumn, Button, useSlidePanel, ErrorState,
 import { FeeForm } from "../components/forms/FeeForm";
 import { FeeDetailPanel } from "../components/details/FeeDetailPanel";
 import { toast } from "../stores/toastStore";
-import { zalo } from "../lib/zalo";
+import { zalo, zaloEnabled } from "../lib/zalo";
 import { format } from "date-fns";
 import { useAppStore } from "../stores/appStore";
 import { useClassesList } from "../hooks/useClassesList";
@@ -481,7 +481,7 @@ export function Finance() {
             )}
 
             {/* Zalo Reminder */}
-            {row.status !== 'paid' && (
+            {zaloEnabled && row.status !== 'paid' && (
               <button
                 type="button"
                 onClick={() => handleZaloReminder(row)}
@@ -707,6 +707,11 @@ export function Finance() {
             loading={isLoading}
             emptyTitle="Không có dữ liệu phiếu thu"
             emptyDescription="Không tìm thấy phiếu thu nào khớp với bộ lọc tháng học hoặc trạng thái đã chọn."
+            emptyAction={
+              <Button size="sm" onClick={handleCreateFee} className="mt-1">
+                <Plus className="w-4 h-4" /> Tạo phiếu thu tháng này
+              </Button>
+            }
           />
           )}
         </div>

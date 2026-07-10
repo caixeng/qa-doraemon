@@ -14,7 +14,8 @@ import {
   Table,
   type TableColumn,
   ExcelImportModal,
-  MobileFilterToggle
+  MobileFilterToggle,
+  Avatar
 } from "../components/ui";
 import { cn } from "../lib/utils";
 import { useStudents, type StudentWithRelations } from "../hooks/useStudents";
@@ -123,13 +124,11 @@ export function Students() {
         sortable: true,
         render: (row: StudentWithRelations) => (
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center text-[14px] font-bold text-primary border border-primary/20 shrink-0">
-              {row.profile_image_url ? (
-                <img src={row.profile_image_url} alt={row.full_name} className="w-full h-full object-cover" />
-              ) : (
-                getVietnameseSortKeys(row.full_name).firstName.substring(0, 1).toUpperCase() || 'H'
-              )}
-            </div>
+            <Avatar
+              src={row.profile_image_url || undefined}
+              name={row.full_name}
+              size="md"
+            />
             <div className="min-w-0">
               <div className="font-semibold text-on-surface truncate">{row.full_name}</div>
               <div className="text-[12px] text-on-surface-variant font-medium flex items-center gap-2">
@@ -326,7 +325,7 @@ export function Students() {
           <div className="flex items-center gap-3">
             <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Danh sách học sinh</h2>
             <span className="text-[12px] font-extrabold text-primary bg-primary-container/20 px-3 py-1 rounded-xl">
-              Tổng số: {totalCount} học sinh
+              Tổng số: {isLoading ? '…' : totalCount} học sinh
             </span>
           </div>
           <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1">Quản lý và theo dõi thông tin chi tiết của tất cả học sinh tại trường mầm non.</p>

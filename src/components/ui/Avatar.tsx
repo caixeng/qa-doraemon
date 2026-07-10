@@ -34,10 +34,12 @@ const statusColors: Record<NonNullable<AvatarProps["status"]>, string> = {
 };
 
 function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
+  const words = name.split(" ").filter(Boolean);
+  // Chữ cái đầu của họ + tên (từ đầu và từ cuối) — tên VN đọc nhanh hơn
+  // so với lấy 2 từ đầu (toàn họ + đệm, trùng nhau hàng loạt).
+  const picked =
+    words.length > 1 ? [words[0], words[words.length - 1]] : words;
+  return picked
     .map((w) => w[0])
     .join("")
     .toUpperCase();

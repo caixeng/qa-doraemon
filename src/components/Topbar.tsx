@@ -206,7 +206,7 @@ export function Topbar({
       <div className="flex items-center gap-3 min-w-0">
         {/* Breadcrumb */}
         <div className="hidden sm:flex items-center min-w-0">
-          <div className="flex items-center gap-1 text-[12px] text-on-surface-variant">
+          <div className="flex items-center gap-1 text-[12px] text-on-surface-variant whitespace-nowrap overflow-hidden">
             <span className="hover:text-on-surface transition-colors cursor-pointer">
               Trang chủ
             </span>

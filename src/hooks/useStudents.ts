@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { supabase } from '../lib/supabase';
@@ -43,7 +44,12 @@ export function useStudents() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedClassId, setSelectedClassId] = useState<string>('all');
-  const [selectedStatus, setSelectedStatus] = useState<string>('active');
+  // Tab mặc định có thể chọn qua ?status= (Dashboard điều hướng tới đây)
+  const [searchParams] = useSearchParams();
+  const statusParam = searchParams.get('status') ?? '';
+  const [selectedStatus, setSelectedStatus] = useState<string>(
+    ['active', 'registered', 'waiting', 'future'].includes(statusParam) ? statusParam : 'active'
+  );
   const [selectedPriority, setSelectedPriority] = useState<string>('all');
   const [selectedBirthYear, setSelectedBirthYear] = useState<string>('all');
   const [pageSize, setPageSize] = useState(25);

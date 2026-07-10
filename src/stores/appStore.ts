@@ -24,14 +24,23 @@ export const useAppStore = create<AppState>()(
         set({ theme });
         // Handle class updates on html element if theme is changed
         const root = window.document.documentElement;
+
+        // Tắt transition trong lúc đổi theme: các phần tử dùng transition-all
+        // animate màu chữ/nền lệch pha nhau ~300ms gây flash "chữ tàng hình".
+        root.classList.add('theme-switching');
+
         root.classList.remove('light', 'dark');
-        
+
         if (theme === 'system') {
           const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           root.classList.add(systemTheme);
         } else {
           root.classList.add(theme);
         }
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => root.classList.remove('theme-switching'));
+        });
       },
     }),
     {
