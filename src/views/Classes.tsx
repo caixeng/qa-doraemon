@@ -155,15 +155,15 @@ export function Classes() {
   const getGradeBadge = (grade: string) => {
     switch (grade) {
       case 'nha_tre': 
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-amber-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Nhà trẻ</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-amber-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Nhà trẻ</span>;
       case 'mam': 
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-emerald-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Mầm</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-emerald-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Mầm</span>;
       case 'choi': 
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Chồi</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Chồi</span>;
       case 'la': 
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-indigo-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Lá</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-indigo-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối Lá</span>;
       default: 
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-slate-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối {grade}</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-slate-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Khối {grade}</span>;
     }
   };
 

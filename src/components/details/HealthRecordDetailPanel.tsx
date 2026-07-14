@@ -202,7 +202,7 @@ export const HealthRecordDetailPanel: React.FC<HealthRecordDetailPanelProps> = (
           <div className="p-3 rounded-xl bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/20 dark:border-blue-500/30 flex items-center gap-3">
             <Ruler className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
             <div>
-              <p className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-widest">Chiều cao</p>
+              <p className="text-[12px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-widest">Chiều cao</p>
               <h3 className="text-base font-black text-on-surface dark:text-white mt-0.5">
                 {latestRecord?.height_cm ? `${latestRecord.height_cm} cm` : '—'}
               </h3>
@@ -212,7 +212,7 @@ export const HealthRecordDetailPanel: React.FC<HealthRecordDetailPanelProps> = (
           <div className="p-3 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 dark:border-emerald-500/30 flex items-center gap-3">
             <Scale className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <div>
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-widest">Cân nặng</p>
+              <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-widest">Cân nặng</p>
               <h3 className="text-base font-black text-on-surface dark:text-white mt-0.5">
                 {latestRecord?.weight_kg ? `${latestRecord.weight_kg} kg` : '—'}
               </h3>
@@ -222,7 +222,7 @@ export const HealthRecordDetailPanel: React.FC<HealthRecordDetailPanelProps> = (
           <div className="p-3 rounded-xl bg-rose-500/10 dark:bg-rose-500/15 border border-rose-500/20 dark:border-rose-500/30 flex items-center gap-3">
             <Thermometer className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0" />
             <div>
-              <p className="text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase tracking-widest">Nhiệt độ</p>
+              <p className="text-[12px] text-rose-600 dark:text-rose-400 font-bold uppercase tracking-widest">Nhiệt độ</p>
               <h3 className="text-base font-black text-on-surface dark:text-white mt-0.5">
                 {latestRecord?.temperature ? `${latestRecord.temperature} °C` : '—'}
               </h3>
@@ -305,7 +305,7 @@ export const HealthRecordDetailPanel: React.FC<HealthRecordDetailPanelProps> = (
                         {formatDate(rec.record_date)}
                       </span>
                       <span className={cn(
-                        "px-2 py-0.5 rounded text-[10px] font-bold uppercase border",
+                        "px-2 py-0.5 rounded text-[12px] font-bold uppercase border",
                         rec.health_status === 'Bình thường'
                           ? 'bg-green-50 border-green-200 text-green-700'
                           : 'bg-amber-50 border-amber-200 text-amber-700'

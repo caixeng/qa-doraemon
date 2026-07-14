@@ -342,7 +342,7 @@ export function Topbar({
                     Thông báo
                   </h3>
                   {unreadCount > 0 && (
-                    <span className="text-[11px] font-semibold text-primary bg-primary-container px-2 py-0.5 rounded-full">
+                    <span className="text-[12px] font-semibold text-primary bg-primary-container px-2 py-0.5 rounded-full">
                       {unreadCount} mới
                     </span>
                   )}
@@ -374,7 +374,7 @@ export function Topbar({
                             <p className="text-[12px] text-on-surface-variant mt-0.5 line-clamp-2">
                               {notif.content}
                             </p>
-                            <p className="text-[11px] text-on-surface-variant/70 mt-1">
+                            <p className="text-[12px] text-on-surface-variant/70 mt-1">
                               {timeAgo(notif.sent_at || notif.created_at)}
                             </p>
                           </div>

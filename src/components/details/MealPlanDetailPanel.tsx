@@ -195,7 +195,7 @@ export const MealPlanDetailPanel: React.FC<MealPlanDetailPanelProps> = ({
         {/* Main Info */}
         <div className="bg-white p-5 rounded-2xl border border-outline-variant/40 shadow-xs space-y-5">
           <div>
-            <h4 className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">Ngày áp dụng thực đơn</h4>
+            <h4 className="text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">Ngày áp dụng thực đơn</h4>
             <div className="flex items-center gap-2 text-on-surface font-semibold text-sm">
               <Calendar className="w-4.5 h-4.5 text-primary" />
               <span className="capitalize">{formatDate(mealPlan.date)}</span>
@@ -203,7 +203,7 @@ export const MealPlanDetailPanel: React.FC<MealPlanDetailPanelProps> = ({
           </div>
 
           <div>
-            <h4 className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">Lớp áp dụng</h4>
+            <h4 className="text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">Lớp áp dụng</h4>
             <div className="flex items-center gap-2 text-on-surface font-semibold text-sm">
               <Layers className="w-4.5 h-4.5 text-primary" />
               <span>{mealPlan.classes?.name ? `Lớp ${mealPlan.classes.name}` : 'Thực đơn chung toàn trường'}</span>
@@ -212,7 +212,7 @@ export const MealPlanDetailPanel: React.FC<MealPlanDetailPanelProps> = ({
 
           {mealPlan.calories && (
             <div>
-              <h4 className="text-[11px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">Hàm lượng dinh dưỡng dự kiến</h4>
+              <h4 className="text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider mb-2">Hàm lượng dinh dưỡng dự kiến</h4>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-xs font-bold">
                 <Flame className="w-4 h-4 shrink-0" />
                 {mealPlan.calories} kcal / bé

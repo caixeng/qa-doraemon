@@ -274,7 +274,7 @@ export function TeacherAttendance() {
           <div className="min-w-0">
             <h4 className="text-[14.5px] font-bold font-playfair text-on-surface truncate leading-tight">{row.full_name}</h4>
             {row.job_title && (
-              <p className="text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5">{row.job_title}</p>
+              <p className="text-[12px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5">{row.job_title}</p>
             )}
           </div>
         </div>
@@ -422,27 +422,27 @@ export function TeacherAttendance() {
       {/* Statistics Cards */}
       <div className="flex gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-3 lg:grid-cols-6 md:gap-4 md:overflow-visible mb-4 md:mb-8">
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-slate-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Tổng số GV</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Tổng số GV</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-slate-900 dark:text-slate-50 md:mt-1 leading-none">{totalTeachers}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-emerald-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 whitespace-nowrap">Đi làm cả ngày</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 whitespace-nowrap">Đi làm cả ngày</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-emerald-600 dark:text-emerald-400 md:mt-1 leading-none">{fullDayCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-amber-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 whitespace-nowrap">Đi làm 1 buổi/giờ</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 whitespace-nowrap">Đi làm 1 buổi/giờ</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-amber-600 dark:text-amber-450 md:mt-1 leading-none">{partialCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-purple-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-400 whitespace-nowrap">Vắng có phép</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-400 whitespace-nowrap">Vắng có phép</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-purple-600 dark:text-purple-450 md:mt-1 leading-none">{excusedCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-rose-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-400 whitespace-nowrap">Vắng không phép</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-400 whitespace-nowrap">Vắng không phép</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-rose-600 dark:text-rose-450 md:mt-1 leading-none">{unexcusedCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-slate-400 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Chưa điểm danh</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Chưa điểm danh</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-slate-600 dark:text-slate-400 md:mt-1 leading-none">{unmarkedCount}</span>
         </div>
       </div>

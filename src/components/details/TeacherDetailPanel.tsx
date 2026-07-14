@@ -113,20 +113,20 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
     switch (role) {
       case 'admin':
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] bg-red-50 text-red-700 border border-red-200 font-bold uppercase tracking-wider">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[12px] bg-red-50 text-red-700 border border-red-200 font-bold uppercase tracking-wider">
             {title}
           </span>
         );
       case 'staff':
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] bg-purple-50 text-purple-700 border border-purple-200 font-bold uppercase tracking-wider">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[12px] bg-purple-50 text-purple-700 border border-purple-200 font-bold uppercase tracking-wider">
             {title}
           </span>
         );
       case 'teacher':
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] bg-blue-50 text-blue-700 border border-blue-200 font-bold uppercase tracking-wider">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[12px] bg-blue-50 text-blue-700 border border-blue-200 font-bold uppercase tracking-wider">
             {title}
           </span>
         );
@@ -209,7 +209,7 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
                 }
                 return (
                   <span className={cn(
-                    "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase border tracking-wider",
+                    "inline-flex items-center px-2 py-0.5 rounded-md text-[12px] font-extrabold uppercase border tracking-wider",
                     badgeClass
                   )}>
                     {text}
@@ -276,23 +276,23 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
               <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Lý lịch nhân sự</h4>
               <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13.5px]">
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Họ và tên</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Họ và tên</div>
                   <div className="text-on-surface font-semibold">{teacher.full_name}</div>
                 </div>
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Ngày sinh</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Ngày sinh</div>
                   <div className="text-on-surface font-semibold">{formatDate(teacher.date_of_birth)}</div>
                 </div>
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Số điện thoại</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Số điện thoại</div>
                   <div className="text-on-surface font-semibold select-all">{teacher.phone || '—'}</div>
                 </div>
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Email liên hệ</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Email liên hệ</div>
                   <div className="text-on-surface font-semibold select-all">{teacher.email}</div>
                 </div>
                 <div className="col-span-2">
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Địa chỉ liên hệ</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Địa chỉ liên hệ</div>
                   <div className="text-on-surface font-semibold leading-relaxed">{teacher.address || 'Chưa cập nhật'}</div>
                 </div>
               </div>
@@ -302,15 +302,15 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
               <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Thông tin công việc</h4>
               <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13.5px]">
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Vai trò hệ thống</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Vai trò hệ thống</div>
                   <div className="text-on-surface font-semibold capitalize">{teacher.role === 'admin' ? 'Quản trị viên / BGH' : teacher.role === 'staff' ? 'Nhân viên văn phòng / tổ bếp' : 'Giáo viên'}</div>
                 </div>
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Chức vụ hiển thị</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Chức vụ hiển thị</div>
                   <div className="text-on-surface font-semibold">{teacher.job_title || '—'}</div>
                 </div>
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Ngày cập nhật hồ sơ</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Ngày cập nhật hồ sơ</div>
                   <div className="text-on-surface font-semibold">{formatDate(teacher.updated_at)}</div>
                 </div>
               </div>
@@ -327,7 +327,7 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
               <div className="py-8 text-center border border-dashed border-outline-variant rounded-2xl text-on-surface-variant space-y-2">
                 <Layers className="w-8 h-8 mx-auto text-on-surface-variant/40" />
                 <p className="text-[13px] font-bold">Chưa phân công phụ trách lớp</p>
-                <p className="text-[11px] text-on-surface-variant/80 px-4">Nhân sự này chưa được gán phụ trách bất kỳ lớp học nào.</p>
+                <p className="text-[12px] text-on-surface-variant/80 px-4">Nhân sự này chưa được gán phụ trách bất kỳ lớp học nào.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -340,11 +340,11 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
                       <span className="font-bold text-[14px] text-on-surface">
                         Lớp {ct.classes?.name}
                       </span>
-                      <span className="text-[11px] text-on-surface-variant/80 font-semibold mt-0.5">
+                      <span className="text-[12px] text-on-surface-variant/80 font-semibold mt-0.5">
                         Khối: {getGradeName(ct.classes?.grade_level)}
                       </span>
                     </div>
-                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-100 rounded text-[10px] font-extrabold uppercase tracking-wider">
+                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-100 rounded text-[12px] font-extrabold uppercase tracking-wider">
                       Giảng dạy
                     </span>
                   </div>

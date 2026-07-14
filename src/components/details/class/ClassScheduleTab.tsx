@@ -94,7 +94,7 @@ export const ClassScheduleTab: React.FC<ClassScheduleTabProps> = ({
                 <p className="text-sm font-bold text-on-surface leading-tight">{item.activity}</p>
                 <span
                   className={cn(
-                    'inline-block text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded mt-1.5 border select-none',
+                    'inline-block text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded mt-1.5 border select-none',
                     item.type === 'study' && 'bg-primary/10 text-primary border-primary/20',
                     item.type === 'eat' && 'bg-green-50 text-green-700 border-green-200',
                     item.type === 'sleep' && 'bg-indigo-50 text-indigo-700 border-indigo-200',

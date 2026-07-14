@@ -262,7 +262,7 @@ export function Dashboard() {
         <h2 className="text-[16px] md:text-[24px] font-bold italic font-playfair text-on-surface tracking-[-0.02em] leading-tight">
           Tổng quan hôm nay
         </h2>
-        <p className="text-[11px] md:text-[16px] text-on-surface-variant font-medium mt-1 font-inter">
+        <p className="text-[12px] md:text-[16px] text-on-surface-variant font-medium mt-1 font-inter">
           {format(today, 'eeee, dd MMMM, yyyy', { locale: vi })}
         </p>
       </div>
@@ -300,17 +300,17 @@ export function Dashboard() {
           >
             <div className="flex justify-between items-start w-full">
               <div className="space-y-1">
-                <p className="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">{card.label}</p>
+                <p className="text-[12px] uppercase tracking-wider font-extrabold text-on-surface-variant">{card.label}</p>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className={cn("text-[16px] md:text-[24px] font-extrabold tracking-tight", card.numberClass)}>{card.value}</span>
-                  <span className="text-[11px] text-on-surface-variant font-semibold"> {card.unit}</span>
+                  <span className="text-[12px] text-on-surface-variant font-semibold"> {card.unit}</span>
                 </div>
               </div>
               <div className={cn("w-8.5 h-8.5 rounded-xl flex items-center justify-center shrink-0", card.iconClass)}>
                 {card.icon}
               </div>
             </div>
-            <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px] w-full">
+            <div className="mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[12px] w-full">
               <span className={cn("font-extrabold", card.footerClass)}>{card.statusLabel}</span>
               <span className="text-on-surface-variant font-semibold flex items-center gap-1 group-hover:text-primary transition-colors">
                 Xem <ArrowRight className="w-3 h-3" />
@@ -333,7 +333,7 @@ export function Dashboard() {
           {/* Custom Bar Chart View */}
           <div className="h-40 md:h-56 flex items-end justify-between gap-3 md:gap-6 pb-2 border-b border-outline-variant/30 relative select-none pl-10 md:pl-12 pr-4 mt-2">
             {/* Y Axis Labels */}
-            <div className="absolute left-0 top-0 bottom-2 flex flex-col justify-between text-[10px] text-on-surface-variant/80 w-8 text-right pr-2 font-bold font-mono select-none">
+            <div className="absolute left-0 top-0 bottom-2 flex flex-col justify-between text-[12px] text-on-surface-variant/80 w-8 text-right pr-2 font-bold font-mono select-none">
               {yIntervals.map((val, idx) => (
                 <span key={idx}>{val}</span>
               ))}
@@ -359,12 +359,12 @@ export function Dashboard() {
                   style={{ height: `${Math.max(bar.percent, 4)}%` }}
                 >
                   {bar.value > 0 && (
-                    <span className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 text-[11px] font-extrabold text-primary font-mono select-none whitespace-nowrap">
+                    <span className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 text-[12px] font-extrabold text-primary font-mono select-none whitespace-nowrap">
                       {bar.value} trẻ
                     </span>
                   )}
 
-                  <div className="absolute bottom-full mb-5 left-1/2 -translate-x-1/2 bg-slate-900/95 dark:bg-slate-100 !text-white dark:!text-slate-900 backdrop-blur-md text-[10px] font-extrabold px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none shadow-md whitespace-nowrap z-25">
+                  <div className="absolute bottom-full mb-5 left-1/2 -translate-x-1/2 bg-slate-900/95 dark:bg-slate-100 !text-white dark:!text-slate-900 backdrop-blur-md text-[12px] font-extrabold px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none shadow-md whitespace-nowrap z-25">
                     Sĩ số: {bar.value} trẻ
                   </div>
                 </div>
@@ -386,7 +386,7 @@ export function Dashboard() {
           <div className="mt-4 border border-outline-variant/30 rounded-2xl overflow-hidden bg-surface-container-low/10">
             <table className="w-full text-left border-collapse text-[13px]">
               <thead>
-                <tr className="bg-surface-container-low/40 border-b border-outline-variant/30 font-extrabold text-on-surface-variant/80 uppercase tracking-wider text-[11px]">
+                <tr className="bg-surface-container-low/40 border-b border-outline-variant/30 font-extrabold text-on-surface-variant/80 uppercase tracking-wider text-[12px]">
                   <th className="p-3 pl-5">Nhóm lớp</th>
                   <th className="p-3 text-center">Tổng sĩ số</th>
                   <th className="p-3 text-center text-primary">Nam (Bé trai)</th>
@@ -437,12 +437,12 @@ export function Dashboard() {
                         <p className="text-[11.5px] text-on-surface-variant mt-1 font-semibold">
                           SĐT: {getPrimaryPhone(student.guardians)}
                         </p>
-                        <p className="text-[10px] text-on-surface-variant/70 mt-1 font-mono">
+                        <p className="text-[12px] text-on-surface-variant/70 mt-1 font-mono">
                           Đăng ký: {formatRegDate(student)}
                         </p>
                       </div>
                       {student.priority_status && student.priority_status !== 'none' && (
-                        <span className="text-[9px] uppercase tracking-wider font-extrabold bg-amber-550/10 text-amber-700 px-2 py-0.5 rounded-full font-inter">
+                        <span className="text-[12px] uppercase tracking-wider font-extrabold bg-amber-550/10 text-amber-700 px-2 py-0.5 rounded-full font-inter">
                           Ưu tiên
                         </span>
                       )}

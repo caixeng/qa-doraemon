@@ -67,7 +67,7 @@ export function MobileMoreSheet({ isOpen, onClose }: MobileMoreSheetProps) {
                     <div className="w-12 h-12 rounded-2xl bg-surface-container-low flex items-center justify-center text-on-surface-variant">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-[11px] font-semibold text-on-surface-variant text-center leading-tight">
+                    <span className="text-[12px] font-semibold text-on-surface-variant text-center leading-tight">
                       {item.label}
                     </span>
                   </button>

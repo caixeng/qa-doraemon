@@ -44,7 +44,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="text-[10px] md:text-[13px] font-semibold text-on-surface tracking-[0.01em]"
+            className="text-[12px] md:text-[13px] font-semibold text-on-surface tracking-[0.01em]"
           >
             {label}
           </label>
@@ -94,13 +94,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && (
-          <p id={errorId} className="text-[10px] md:text-[12px] text-error font-medium" role="alert">
+          <p id={errorId} className="text-[12px] md:text-[12px] text-error font-medium" role="alert">
             {error}
           </p>
         )}
 
         {!error && helperText && (
-          <p id={helperId} className="text-[10px] md:text-[12px] text-on-surface-variant">
+          <p id={helperId} className="text-[12px] md:text-[12px] text-on-surface-variant">
             {helperText}
           </p>
         )}

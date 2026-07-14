@@ -75,7 +75,7 @@ export const ClassAttendanceStats: React.FC<ClassAttendanceStatsProps> = ({ clas
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 select-none">
             <div className="bg-green-50/40 border border-green-100 rounded-2xl p-4 shadow-sm">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-green-700">
+              <span className="text-[12px] font-bold uppercase tracking-wider text-green-700">
                 Tỷ lệ đi học đầy đủ
               </span>
               <div className="flex items-baseline gap-2 mt-1.5">
@@ -85,7 +85,7 @@ export const ClassAttendanceStats: React.FC<ClassAttendanceStatsProps> = ({ clas
             </div>
 
             <div className="bg-amber-50/40 border border-amber-100 rounded-2xl p-4 shadow-sm">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 font-semibold">
+              <span className="text-[12px] font-bold uppercase tracking-wider text-amber-700 font-semibold">
                 Tỷ lệ đi học trễ
               </span>
               <div className="flex items-baseline gap-2 mt-1.5">
@@ -95,7 +95,7 @@ export const ClassAttendanceStats: React.FC<ClassAttendanceStatsProps> = ({ clas
             </div>
 
             <div className="bg-rose-50/40 border border-rose-100 rounded-2xl p-4 shadow-sm">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700 font-semibold">
+              <span className="text-[12px] font-bold uppercase tracking-wider text-rose-700 font-semibold">
                 Tỷ lệ vắng/nghỉ
               </span>
               <div className="flex items-baseline gap-2 mt-1.5">

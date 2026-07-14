@@ -85,7 +85,7 @@ export function CardHeader({
           </h3>
         )}
         {subtitle && (
-          <p className="text-[10px] md:text-[13px] text-on-surface-variant mt-0.5 truncate">
+          <p className="text-[12px] md:text-[13px] text-on-surface-variant mt-0.5 truncate">
             {subtitle}
           </p>
         )}
@@ -104,7 +104,7 @@ export function CardBody({
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("text-[10px] md:text-[14px] text-on-surface", className)} {...props}>
+    <div className={cn("text-[12px] md:text-[14px] text-on-surface", className)} {...props}>
       {children}
     </div>
   );

@@ -133,12 +133,12 @@ export function Health({ classId }: { classId?: string }) {
       header: "Học sinh",
       render: (row: any) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-red-50 text-red-500 border border-red-100 flex items-center justify-center font-bold text-[11px] shrink-0 font-playfair">
+          <div className="w-8 h-8 rounded-full bg-red-50 text-red-500 border border-red-100 flex items-center justify-center font-bold text-[12px] shrink-0 font-playfair">
             {row.full_name?.substring(0, 2).toUpperCase() || 'HS'}
           </div>
           <div>
             <p className="font-bold text-[14px] text-on-surface leading-tight font-inter">{row.full_name}</p>
-            <p className="text-[11px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-0.5 select-all">
+            <p className="text-[12px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-0.5 select-all">
               {row.student_code}
             </p>
           </div>
@@ -185,10 +185,10 @@ export function Health({ classId }: { classId?: string }) {
         const val = row.latest_health_record?.health_status;
         return val ? (
           <span className={cn(
-            "inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold border uppercase tracking-wider",
+            "inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold border uppercase tracking-wider",
             val === 'Bình thường' 
-              ? "bg-emerald-600 text-white font-extrabold px-2 py-0.5 rounded text-[11px] tracking-wide shadow-2xs select-none" 
-              : "bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded text-[11px] tracking-wide shadow-2xs select-none"
+              ? "bg-emerald-600 text-white font-extrabold px-2 py-0.5 rounded text-[12px] tracking-wide shadow-2xs select-none" 
+              : "bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded text-[12px] tracking-wide shadow-2xs select-none"
           )}>
             {val}
           </span>
@@ -201,7 +201,7 @@ export function Health({ classId }: { classId?: string }) {
       render: (row: any) => {
         const hasWarning = row.allergies || row.medical_notes;
         return hasWarning ? (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs max-w-[150px] truncate select-none" title={row.allergies || row.medical_notes}>
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs max-w-[150px] truncate select-none" title={row.allergies || row.medical_notes}>
             <ShieldAlert className="w-3.5 h-3.5 text-white shrink-0" />
             {row.allergies || row.medical_notes}
           </span>

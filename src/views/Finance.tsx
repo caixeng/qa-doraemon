@@ -318,26 +318,26 @@ export function Finance() {
     switch (status) {
       case 'paid':
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] bg-emerald-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] bg-emerald-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
             Đã đóng
           </span>
         );
       case 'partial':
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
             Đóng một phần
           </span>
         );
       case 'overdue':
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
             Quá hạn
           </span>
         );
       case 'pending':
       default:
         return (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] bg-amber-500 text-white font-extrabold tracking-wide shadow-2xs select-none">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] bg-amber-500 text-white font-extrabold tracking-wide shadow-2xs select-none">
             Chờ thanh toán
           </span>
         );
@@ -392,12 +392,12 @@ export function Finance() {
       header: "Học sinh",
       render: (row) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center text-primary font-bold text-[11px] shrink-0 font-playfair">
+          <div className="w-8 h-8 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center text-primary font-bold text-[12px] shrink-0 font-playfair">
             {row.students?.full_name?.substring(0, 2).toUpperCase() || 'HS'}
           </div>
           <div>
             <p className="font-bold text-[14px] text-on-surface leading-tight font-inter">{row.students?.full_name}</p>
-            <p className="text-[11px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-0.5 select-all">
+            <p className="text-[12px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-0.5 select-all">
               {row.students?.student_code}
             </p>
           </div>
@@ -554,7 +554,7 @@ export function Finance() {
         <div className="bg-surface-container-lowest rounded-2xl p-3 md:p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between min-h-[76px] md:min-h-[120px] relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <p className="text-[9px] md:text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Dự kiến thu (Tháng {currentMonth}/{currentYear})</p>
+              <p className="text-[12px] md:text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider">Dự kiến thu (Tháng {currentMonth}/{currentYear})</p>
               <h3 className="text-[16px] md:text-[22px] font-extrabold tracking-tight text-on-surface mt-1">
                 {aggregates.expected.toLocaleString('vi-VN')} ₫
               </h3>
@@ -563,7 +563,7 @@ export function Finance() {
               <TrendingUp className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
             </div>
           </div>
-          <div className="mt-2 md:mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[10px] md:text-[11px] text-emerald-600 font-bold">
+          <div className="mt-2 md:mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[12px] md:text-[12px] text-emerald-600 font-bold">
             <span>Sĩ số đóng phí</span>
             <span>{totalCount} học sinh</span>
           </div>
@@ -573,7 +573,7 @@ export function Finance() {
         <div className="bg-surface-container-lowest rounded-2xl p-3 md:p-5 shadow-xs border border-outline-variant/30 flex flex-col justify-between min-h-[76px] md:min-h-[120px] relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <p className="text-[9px] md:text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Đã thực thu</p>
+              <p className="text-[12px] md:text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider">Đã thực thu</p>
               <h3 className="text-[16px] md:text-[22px] font-extrabold tracking-tight text-green-600 mt-1">
                 {aggregates.paid.toLocaleString('vi-VN')} ₫
               </h3>
@@ -582,7 +582,7 @@ export function Finance() {
               <TrendingUp className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
             </div>
           </div>
-          <div className="mt-2 md:mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[10px] md:text-[11px] text-on-surface-variant font-bold">
+          <div className="mt-2 md:mt-3 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[12px] md:text-[12px] text-on-surface-variant font-bold">
             <span>Tỷ lệ hoàn thành</span>
             <span className="text-green-600 font-extrabold">
               Đạt {aggregates.expected > 0 ? Math.round((aggregates.paid / aggregates.expected) * 100) : 0}% kế hoạch
@@ -594,7 +594,7 @@ export function Finance() {
         <div className="bg-red-50/50 dark:bg-red-950/5 rounded-2xl p-3 md:p-5 shadow-xs border border-red-200/50 dark:border-red-900/20 flex flex-col justify-between min-h-[76px] md:min-h-[120px] relative overflow-hidden">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <p className="text-[9px] md:text-[10px] font-extrabold text-red-750 dark:text-red-400 uppercase tracking-wider">Còn nợ / Chưa thanh toán</p>
+              <p className="text-[12px] md:text-[12px] font-extrabold text-red-750 dark:text-red-400 uppercase tracking-wider">Còn nợ / Chưa thanh toán</p>
               <h3 className="text-[16px] md:text-[22px] font-extrabold tracking-tight text-red-600 dark:text-red-400 mt-1">
                 {aggregates.remaining.toLocaleString('vi-VN')} ₫
               </h3>
@@ -603,7 +603,7 @@ export function Finance() {
               <AlertCircle className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
             </div>
           </div>
-          <div className="mt-2 md:mt-3 pt-2 border-t border-red-200/30 dark:border-red-900/10 flex items-center justify-between text-[10px] md:text-[11px] text-red-700 dark:text-red-400 font-bold">
+          <div className="mt-2 md:mt-3 pt-2 border-t border-red-200/30 dark:border-red-900/10 flex items-center justify-between text-[12px] md:text-[12px] text-red-700 dark:text-red-400 font-bold">
             <span>Chưa hoàn thành</span>
             <span>
               {aggregates.unpaidCount} học sinh ({aggregates.overdueCount} quá hạn)
@@ -630,9 +630,9 @@ export function Finance() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-outline-variant/30" />
-                <XAxis dataKey="month" className="text-[11px] font-bold text-on-surface-variant" />
+                <XAxis dataKey="month" className="text-[12px] font-bold text-on-surface-variant" />
                 <YAxis
-                  className="text-[11px] font-bold text-on-surface-variant"
+                  className="text-[12px] font-bold text-on-surface-variant"
                   tickFormatter={(tick) => `${(tick / 1000000).toFixed(0)}M`}
                 />
                 <Tooltip

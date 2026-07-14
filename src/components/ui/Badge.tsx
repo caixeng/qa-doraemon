@@ -24,8 +24,8 @@ const dotColors: Record<NonNullable<BadgeProps["variant"]>, string> = {
 };
 
 const sizeStyles: Record<NonNullable<BadgeProps["size"]>, string> = {
-  sm: "text-[9px] md:text-[11px] px-1.5 md:px-2 py-0.5 gap-1",
-  md: "text-[10px] md:text-[12px] px-2 md:px-2.5 py-0.5 md:py-1 gap-1 md:gap-1.5",
+  sm: "text-[12px] md:text-[12px] px-1.5 md:px-2 py-0.5 gap-1",
+  md: "text-[12px] md:text-[12px] px-2 md:px-2.5 py-0.5 md:py-1 gap-1 md:gap-1.5",
 };
 
 export function Badge({

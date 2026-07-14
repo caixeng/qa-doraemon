@@ -296,11 +296,11 @@ export const FeeDetailPanel: React.FC<FeeDetailPanelProps> = ({
           <div className="flex justify-between items-start pb-4 border-b border-outline-variant/20">
             <div>
               <h3 className="text-sm font-extrabold uppercase tracking-widest text-primary">TRƯỜNG MẦM NON DORAEMON</h3>
-              <p className="text-[10px] text-on-surface-variant font-medium mt-1">Đường 3/2, Quận 10, TP. Hồ Chí Minh</p>
-              <p className="text-[10px] text-on-surface-variant font-medium">Hotline: 0909 123 456</p>
+              <p className="text-[12px] text-on-surface-variant font-medium mt-1">Đường 3/2, Quận 10, TP. Hồ Chí Minh</p>
+              <p className="text-[12px] text-on-surface-variant font-medium">Hotline: 0909 123 456</p>
             </div>
             <div className="text-right">
-              <span className="text-[11px] font-bold text-on-surface-variant/80 uppercase tracking-wider block">HÓA ĐƠN HỌC PHÍ</span>
+              <span className="text-[12px] font-bold text-on-surface-variant/80 uppercase tracking-wider block">HÓA ĐƠN HỌC PHÍ</span>
               <span className="text-xs font-mono font-bold text-primary mt-1 block">#FP-{fee.id?.substring(0, 8).toUpperCase()}</span>
             </div>
           </div>
@@ -334,7 +334,7 @@ export const FeeDetailPanel: React.FC<FeeDetailPanelProps> = ({
             <div className="border border-outline-variant/30 rounded-xl overflow-hidden">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-outline-variant/30 font-bold text-on-surface-variant/80 text-[11px] uppercase tracking-wider">
+                  <tr className="bg-slate-50 border-b border-outline-variant/30 font-bold text-on-surface-variant/80 text-[12px] uppercase tracking-wider">
                     <th className="px-4 py-2.5">Khoản mục thu</th>
                     <th className="px-4 py-2.5 text-right">Số tiền (VNĐ)</th>
                   </tr>
@@ -399,13 +399,13 @@ export const FeeDetailPanel: React.FC<FeeDetailPanelProps> = ({
           <div className="grid grid-cols-2 gap-6 pt-10 text-[12px] text-center select-none font-medium">
             <div>
               <p className="font-bold uppercase tracking-wider text-on-surface-variant/80">Người nộp tiền</p>
-              <p className="text-[10px] text-on-surface-variant/60 mt-1">(Ký, ghi rõ họ tên)</p>
+              <p className="text-[12px] text-on-surface-variant/60 mt-1">(Ký, ghi rõ họ tên)</p>
               <div className="h-16"></div>
               <p className="font-bold text-on-surface">....................................................</p>
             </div>
             <div>
               <p className="font-bold uppercase tracking-wider text-on-surface-variant/80">Người thu tiền (Kế toán)</p>
-              <p className="text-[10px] text-on-surface-variant/60 mt-1">(Ký, ghi rõ họ tên)</p>
+              <p className="text-[12px] text-on-surface-variant/60 mt-1">(Ký, ghi rõ họ tên)</p>
               <div className="h-16"></div>
               <p className="font-bold text-primary">{fee.users?.full_name || 'Kế toán trường'}</p>
             </div>

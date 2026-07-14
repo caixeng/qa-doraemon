@@ -168,7 +168,7 @@ export function Table<T>({
                 key={col.key}
                 style={col.width ? { width: col.width } : undefined}
                 className={cn(
-                  "px-2 py-2 md:px-4 md:py-3 text-[9px] md:text-[12.5px] font-extrabold text-on-surface-variant uppercase tracking-[0.06em] sticky top-0 z-10 bg-surface-container shadow-[0_1px_0_0_var(--color-outline-variant)]",
+                  "px-2 py-2 md:px-4 md:py-3 text-[12px] md:text-[12.5px] font-extrabold text-on-surface-variant uppercase tracking-[0.06em] sticky top-0 z-10 bg-surface-container shadow-[0_1px_0_0_var(--color-outline-variant)]",
                   alignClass(col.align),
                   col.sortable && "cursor-pointer select-none hover:text-on-surface"
                 )}
@@ -211,8 +211,8 @@ export function Table<T>({
                     <Inbox className="w-5 h-5 md:w-7 md:h-7" />
                   </div>
                   <div className="text-center">
-                    <p className="text-[11px] md:text-[14px] font-semibold">{emptyTitle}</p>
-                    <p className="text-[10px] md:text-[13px] mt-0.5">{emptyDescription}</p>
+                    <p className="text-[12px] md:text-[14px] font-semibold">{emptyTitle}</p>
+                    <p className="text-[12px] md:text-[13px] mt-0.5">{emptyDescription}</p>
                   </div>
                   {emptyAction}
                 </div>
@@ -251,7 +251,7 @@ export function Table<T>({
                     <td
                       key={col.key}
                       className={cn(
-                        "px-2 py-2 md:px-4 md:py-3 text-[10px] md:text-[14px] text-on-surface",
+                        "px-2 py-2 md:px-4 md:py-3 text-[12px] md:text-[14px] text-on-surface",
                         alignClass(col.align)
                       )}
                     >

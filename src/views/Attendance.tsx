@@ -232,15 +232,15 @@ export function Attendance() {
   const getAttendanceBadge = (status: string) => {
     switch (status) {
       case 'present':
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-emerald-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Có mặt</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-emerald-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Có mặt</span>;
       case 'absent':
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Vắng</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Vắng</span>;
       case 'late':
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-amber-500 text-white font-extrabold tracking-wide shadow-2xs select-none">Đi trễ</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-amber-500 text-white font-extrabold tracking-wide shadow-2xs select-none">Đi trễ</span>;
       case 'sick':
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Nghỉ bệnh</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Nghỉ bệnh</span>;
       case 'excused':
-        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Có phép</span>;
+        return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">Có phép</span>;
       default:
         return null;
     }
@@ -279,7 +279,7 @@ export function Attendance() {
             <h4 className="text-[14.5px] font-bold font-playfair text-on-surface truncate leading-tight" title={row.full_name}>
               {row.full_name}
             </h4>
-            <p className="text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5 select-all">
+            <p className="text-[12px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5 select-all">
               {row.student_code}
             </p>
           </div>
@@ -296,7 +296,7 @@ export function Attendance() {
         return status ? (
           getAttendanceBadge(status)
         ) : (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 border border-outline-variant/30 font-semibold select-none">Chưa điểm danh</span>
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] bg-slate-100 dark:bg-slate-800 text-slate-500 border border-outline-variant/30 font-semibold select-none">Chưa điểm danh</span>
         );
       }
     },
@@ -416,27 +416,27 @@ export function Attendance() {
       {/* Statistics Cards */}
       <div className="flex gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-3 lg:grid-cols-6 md:gap-4 md:overflow-visible mb-4 md:mb-8">
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-slate-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Tổng sĩ số</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Tổng sĩ số</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-slate-900 dark:text-slate-50 md:mt-1 leading-none">{totalStudents}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-emerald-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 whitespace-nowrap">Có mặt</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 whitespace-nowrap">Có mặt</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-emerald-600 dark:text-emerald-400 md:mt-1 leading-none">{presentCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-rose-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-400 whitespace-nowrap">Vắng mặt</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-400 whitespace-nowrap">Vắng mặt</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-rose-600 dark:text-rose-450 md:mt-1 leading-none">{absentCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-amber-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 whitespace-nowrap">Đi trễ</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 whitespace-nowrap">Đi trễ</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-amber-600 dark:text-amber-450 md:mt-1 leading-none">{lateCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-purple-500 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-400 whitespace-nowrap">Có phép / Bệnh</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-400 whitespace-nowrap">Có phép / Bệnh</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-purple-600 dark:text-purple-450 md:mt-1 leading-none">{excusedCount + sickCount}</span>
         </div>
         <div className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-1 md:items-stretch md:px-4 md:py-4 md:bg-surface md:rounded-2xl md:border md:border-outline-variant/65 md:border-l-4 md:border-l-slate-400 md:shadow-2xs md:flex-col md:justify-between md:min-h-[92px]">
-          <span className="text-[9px] md:text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Chưa điểm danh</span>
+          <span className="text-[12px] md:text-[12px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Chưa điểm danh</span>
           <span className="text-[15px] md:text-[28px] font-black font-playfair text-slate-600 dark:text-slate-400 md:mt-1 leading-none">{unmarkedCount}</span>
         </div>
       </div>
@@ -501,12 +501,12 @@ export function Attendance() {
                         <h3 className="text-[17px] font-black text-on-surface dark:text-white font-playfair group-hover:text-primary transition-colors">
                           Lớp {cls.name}
                         </h3>
-                        <p className="text-[11px] text-on-surface-variant font-medium mt-0.5">
+                        <p className="text-[12px] text-on-surface-variant font-medium mt-0.5">
                           GVCN: <span className="font-semibold text-on-surface dark:text-slate-200">{homeroomTeacher}</span>
                         </p>
                       </div>
                       
-                      <span className={cn("inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border uppercase tracking-wider", badgeBg)}>
+                      <span className={cn("inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold border uppercase tracking-wider", badgeBg)}>
                         {badgeText}
                       </span>
                     </div>
@@ -514,19 +514,19 @@ export function Attendance() {
                     {/* Mini Stats Grid */}
                     <div className="grid grid-cols-4 gap-2 mt-4 select-none">
                       <div className="bg-slate-50 dark:bg-slate-800/40 p-2 rounded-xl text-center border border-outline-variant/10">
-                        <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Sĩ số</p>
+                        <p className="text-[12px] text-slate-500 font-bold uppercase tracking-wider">Sĩ số</p>
                         <p className="text-sm font-black text-on-surface dark:text-white mt-0.5">{total}</p>
                       </div>
                       <div className="bg-emerald-50/50 dark:bg-emerald-950/20 p-2 rounded-xl text-center border border-emerald-100/10">
-                        <p className="text-[9px] text-emerald-600 dark:text-emerald-450 font-bold uppercase tracking-wider">Có mặt</p>
+                        <p className="text-[12px] text-emerald-600 dark:text-emerald-450 font-bold uppercase tracking-wider">Có mặt</p>
                         <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5">{present}</p>
                       </div>
                       <div className="bg-rose-50/50 dark:bg-rose-950/20 p-2 rounded-xl text-center border border-rose-100/10">
-                        <p className="text-[9px] text-rose-600 dark:text-rose-450 font-bold uppercase tracking-wider">Vắng</p>
+                        <p className="text-[12px] text-rose-600 dark:text-rose-450 font-bold uppercase tracking-wider">Vắng</p>
                         <p className="text-sm font-black text-rose-600 dark:text-rose-450 mt-0.5">{absent}</p>
                       </div>
                       <div className="bg-amber-50/50 dark:bg-amber-950/20 p-2 rounded-xl text-center border border-amber-100/10">
-                        <p className="text-[9px] text-amber-600 dark:text-amber-450 font-bold uppercase tracking-wider">Trễ</p>
+                        <p className="text-[12px] text-amber-600 dark:text-amber-450 font-bold uppercase tracking-wider">Trễ</p>
                         <p className="text-sm font-black text-amber-600 dark:text-amber-450 mt-0.5">{late}</p>
                       </div>
                     </div>
@@ -534,7 +534,7 @@ export function Attendance() {
 
                   {/* Progress bar */}
                   <div className="mt-4">
-                    <div className="flex justify-between items-center text-[10px] font-bold text-on-surface-variant mb-1">
+                    <div className="flex justify-between items-center text-[12px] font-bold text-on-surface-variant mb-1">
                       <span>Tiến độ điểm danh</span>
                       <span>{progressPct}%</span>
                     </div>
@@ -631,7 +631,7 @@ export function Attendance() {
                       <h4 className="text-[16px] font-bold font-playfair text-on-surface line-clamp-1 leading-tight" title={student.full_name}>
                         {student.full_name}
                       </h4>
-                      <p className="text-[11px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-1 select-all">
+                      <p className="text-[12px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-1 select-all">
                         {student.student_code}
                       </p>
                     </div>
@@ -640,7 +640,7 @@ export function Attendance() {
                     {status ? (
                       getAttendanceBadge(status)
                     ) : (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 border border-outline-variant/30 font-semibold select-none">Chưa điểm danh</span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-slate-100 dark:bg-slate-800 text-slate-500 border border-outline-variant/30 font-semibold select-none">Chưa điểm danh</span>
                     )}
                   </div>
 

@@ -400,7 +400,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({
                         })}
                       </div>
                       {errors.priority_status?.message && (
-                        <p className="text-[11px] font-bold text-error mt-1">
+                        <p className="text-[12px] font-bold text-error mt-1">
                           {errors.priority_status.message}
                         </p>
                       )}
@@ -482,7 +482,7 @@ export const StudentForm: React.FC<StudentFormProps> = ({
                         type="button"
                         onClick={() => handleSetPrimary(index)}
                         className={cn(
-                          "flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer",
+                          "flex items-center gap-1 text-[12px] font-bold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer",
                           isPrimary
                             ? "bg-green-50 text-green-700 border-green-200"
                             : "bg-transparent text-on-surface-variant hover:text-on-surface border-outline-variant"

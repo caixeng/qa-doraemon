@@ -715,11 +715,11 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
             <tr>
               <td className="w-1/2 p-3 align-top border-r border-slate-900">
                 <div className="font-extrabold text-[12px] uppercase">TRƯỜNG MẦM NON DORAEMON</div>
-                <div className="text-[11px] font-semibold mt-1">Khối: {getGradeLevelName()} - Lớp: {getClassName()}</div>
+                <div className="text-[12px] font-semibold mt-1">Khối: {getGradeLevelName()} - Lớp: {getClassName()}</div>
               </td>
               <td className="w-1/2 p-3 align-top text-center">
                 <div className="font-black text-[13px] uppercase tracking-wide">KẾ HOẠCH TUẦN: {theme.toUpperCase()}</div>
-                <div className="text-[11px] font-medium italic mt-1">Thời gian thực hiện: {weekDates[0].toLocaleDateString('vi-VN')} - {weekDates[5].toLocaleDateString('vi-VN')}</div>
+                <div className="text-[12px] font-medium italic mt-1">Thời gian thực hiện: {weekDates[0].toLocaleDateString('vi-VN')} - {weekDates[5].toLocaleDateString('vi-VN')}</div>
               </td>
             </tr>
           </tbody>
@@ -731,23 +731,23 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
         <div className="h-96 bg-surface dark:bg-slate-900 border border-outline-variant/20 rounded-3xl animate-pulse shadow-xs" />
       ) : (
         <div className="overflow-x-auto max-h-[700px] overflow-y-auto relative bg-surface dark:bg-slate-900 border border-outline-variant/40 rounded-[28px] print:border-slate-900 print:rounded-none shadow-xs">
-          <table className="w-full text-left text-sm border-collapse min-w-[900px] print:text-[10px] print:text-slate-900">
+          <table className="w-full text-left text-sm border-collapse min-w-[900px] print:text-[12px] print:text-slate-900">
             <thead>
               <tr className="bg-slate-100 dark:bg-slate-800 border-b border-outline-variant/60 dark:border-slate-700 print:bg-white print:border-slate-900">
-                <th className="px-3 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[11px] uppercase tracking-wider text-center w-[8%] sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thời gian</th>
-                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[11px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 2</th>
-                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[11px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 3</th>
-                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[11px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 4</th>
-                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[11px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 5</th>
-                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[11px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 6</th>
-                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[11px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 7</th>
+                <th className="px-3 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[12px] uppercase tracking-wider text-center w-[8%] sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thời gian</th>
+                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[12px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 2</th>
+                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[12px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 3</th>
+                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[12px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 4</th>
+                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[12px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 5</th>
+                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[12px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 6</th>
+                <th className="px-4 py-3 font-extrabold text-on-surface dark:text-slate-200 text-[12px] uppercase tracking-wider text-center border-l border-outline-variant/40 dark:border-slate-700 sticky top-0 z-10 bg-slate-100 dark:bg-slate-800 print:bg-white print:text-slate-900 print:border-l print:border-slate-900 select-none shadow-[0_1px_0_0_rgba(0,0,0,0.05)] print:shadow-none">Thứ 7</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant/30 dark:divide-slate-800/80 print:divide-slate-900">
               {rows.map((row) => (
                 <tr key={row.id} className="hover:bg-slate-50/20 dark:hover:bg-slate-800/20 transition-colors print:hover:bg-transparent">
                   {/* Cột thời gian (cột 1) */}
-                  <td className="px-2 py-4 text-center border-r border-outline-variant/30 dark:border-slate-800/60 print:border-slate-900 font-mono text-xs text-on-surface dark:text-slate-350 select-none align-middle font-bold print:text-[9px] print:text-slate-900">
+                  <td className="px-2 py-4 text-center border-r border-outline-variant/30 dark:border-slate-800/60 print:border-slate-900 font-mono text-xs text-on-surface dark:text-slate-350 select-none align-middle font-bold print:text-[12px] print:text-slate-900">
                     <div>{row.time}</div>
                   </td>
 
@@ -763,10 +763,10 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
                       )}
                     >
                       <div className="flex flex-col items-center justify-center space-y-1">
-                        <div className="text-xs font-black uppercase tracking-wider text-primary dark:text-blue-400 print:text-slate-900 print:text-[10px]">
+                        <div className="text-xs font-black uppercase tracking-wider text-primary dark:text-blue-400 print:text-slate-900 print:text-[12px]">
                           {row.name}
                         </div>
-                        <div className="text-xs font-medium text-on-surface-variant dark:text-slate-300 text-left whitespace-pre-line leading-relaxed max-w-3xl mx-auto print:text-slate-800 print:text-[9px]">
+                        <div className="text-xs font-medium text-on-surface-variant dark:text-slate-300 text-left whitespace-pre-line leading-relaxed max-w-3xl mx-auto print:text-slate-800 print:text-[12px]">
                           {row.commonContent}
                         </div>
                       </div>
@@ -793,7 +793,7 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
                           )}
                         >
                           <div className="flex flex-col justify-between h-full min-h-[75px] text-left">
-                            <p className="text-xs font-semibold text-on-surface dark:text-slate-200 whitespace-pre-line leading-relaxed print:text-[9px] print:text-slate-900">
+                            <p className="text-xs font-semibold text-on-surface dark:text-slate-200 whitespace-pre-line leading-relaxed print:text-[12px] print:text-slate-900">
                               {text}
                             </p>
 
@@ -820,17 +820,17 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
       <div className="hidden print:block w-full text-slate-900 font-inter mt-8 select-none">
         <div className="flex justify-around text-center text-xs font-bold">
           <div className="w-1/2 flex flex-col items-center">
-            <span className="uppercase text-[11px]">NGƯỜI LẬP</span>
-            <span className="text-[10px] font-normal text-slate-500 italic mt-0.5">(Ký, ghi rõ họ tên)</span>
+            <span className="uppercase text-[12px]">NGƯỜI LẬP</span>
+            <span className="text-[12px] font-normal text-slate-500 italic mt-0.5">(Ký, ghi rõ họ tên)</span>
             <div className="h-16"></div> {/* Khoảng trống cho chữ ký */}
-            <span className="text-[11px] font-bold mt-2">{user?.full_name || "Lê Thị Chung"}</span>
+            <span className="text-[12px] font-bold mt-2">{user?.full_name || "Lê Thị Chung"}</span>
           </div>
           
           <div className="w-1/2 flex flex-col items-center">
-            <span className="uppercase text-[11px]">NGƯỜI DUYỆT</span>
-            <span className="text-[10px] font-normal text-slate-500 italic mt-0.5">(Ký, ghi rõ họ tên)</span>
+            <span className="uppercase text-[12px]">NGƯỜI DUYỆT</span>
+            <span className="text-[12px] font-normal text-slate-500 italic mt-0.5">(Ký, ghi rõ họ tên)</span>
             <div className="h-16"></div>
-            <span className="text-[11px] font-bold mt-2">{approverName || "Hiệu Trưởng Nguyễn Thị Thu"}</span>
+            <span className="text-[12px] font-bold mt-2">{approverName || "Hiệu Trưởng Nguyễn Thị Thu"}</span>
           </div>
         </div>
       </div>

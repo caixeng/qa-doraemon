@@ -26,7 +26,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       {children}
       <div
         className={cn(
-          'absolute z-[1080] scale-95 opacity-0 pointer-events-none group-hover:scale-100 group-hover:opacity-100 transition-all duration-150 px-2.5 py-1.5 text-[11px] font-bold text-white bg-slate-900 rounded-lg shadow-md whitespace-nowrap',
+          'absolute z-[1080] scale-95 opacity-0 pointer-events-none group-hover:scale-100 group-hover:opacity-100 transition-all duration-150 px-2.5 py-1.5 text-[12px] font-bold text-white bg-slate-900 rounded-lg shadow-md whitespace-nowrap',
           positionClasses[position]
         )}
       >

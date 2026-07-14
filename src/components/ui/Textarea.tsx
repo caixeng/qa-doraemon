@@ -50,13 +50,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {label && (
             <label
               htmlFor={textareaId}
-              className="text-[10px] md:text-[13px] font-semibold text-on-surface tracking-[0.01em]"
+              className="text-[12px] md:text-[13px] font-semibold text-on-surface tracking-[0.01em]"
             >
               {label}
             </label>
           )}
           {showCharacterCount && maxLength && (
-            <span className="text-[9px] md:text-[11px] text-on-surface-variant font-medium ml-auto">
+            <span className="text-[12px] md:text-[12px] text-on-surface-variant font-medium ml-auto">
               {charCount}/{maxLength}
             </span>
           )}
@@ -91,13 +91,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         />
 
         {error && (
-          <p id={errorId} className="text-[10px] md:text-[12px] text-error font-medium" role="alert">
+          <p id={errorId} className="text-[12px] md:text-[12px] text-error font-medium" role="alert">
             {error}
           </p>
         )}
 
         {!error && helperText && (
-          <p id={helperId} className="text-[10px] md:text-[12px] text-on-surface-variant">
+          <p id={helperId} className="text-[12px] md:text-[12px] text-on-surface-variant">
             {helperText}
           </p>
         )}

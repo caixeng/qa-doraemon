@@ -238,12 +238,12 @@ export const NotificationDetailPanel: React.FC<NotificationDetailPanelProps> = (
         {/* Metadata Badges */}
         <div className="bg-white p-5 rounded-2xl border border-outline-variant/40 shadow-xs flex flex-wrap gap-4">
           <div className="flex flex-col gap-1 pr-4 border-r border-outline-variant/20 min-w-[120px]">
-            <span className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Phân loại</span>
+            <span className="text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider">Phân loại</span>
             <div className="pt-0.5">{getTypeBadge(notification.type)}</div>
           </div>
 
           <div className="flex flex-col gap-1 pr-4 border-r border-outline-variant/20 min-w-[150px]">
-            <span className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Đối tượng nhận</span>
+            <span className="text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider">Đối tượng nhận</span>
             <span className="text-sm font-semibold text-on-surface flex items-center gap-1.5 pt-0.5">
               <Users className="w-4 h-4 text-primary" />
               {getTargetLabel(notification.target, notification.target_id)}
@@ -251,7 +251,7 @@ export const NotificationDetailPanel: React.FC<NotificationDetailPanelProps> = (
           </div>
 
           <div className="flex flex-col gap-1 min-w-[150px]">
-            <span className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Thời gian gửi</span>
+            <span className="text-[12px] font-extrabold text-on-surface-variant uppercase tracking-wider">Thời gian gửi</span>
             <span className="text-sm font-semibold text-on-surface flex items-center gap-1.5 pt-0.5">
               <Calendar className="w-4 h-4 text-primary" />
               {new Date(notification.sent_at || notification.created_at).toLocaleString('vi-VN')}

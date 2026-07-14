@@ -171,7 +171,7 @@ export const WeeklyPlanForm: React.FC<WeeklyPlanFormProps> = ({
                 <div key={day} className={dayKey === day ? "ring-2 ring-primary/40 rounded-2xl p-1 bg-primary/5" : ""}>
                   <label className="block text-xs font-bold uppercase tracking-wider text-on-surface mb-1.5 px-1 flex items-center justify-between">
                     <span>{getDayLabel(day)}</span>
-                    {dayKey === day && <span className="text-[10px] text-primary font-black uppercase tracking-widest bg-primary/10 px-1.5 py-0.5 rounded-md">Đang chọn</span>}
+                    {dayKey === day && <span className="text-[12px] text-primary font-black uppercase tracking-widest bg-primary/10 px-1.5 py-0.5 rounded-md">Đang chọn</span>}
                   </label>
                   <textarea
                     {...register(day as any)}

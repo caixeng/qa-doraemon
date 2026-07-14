@@ -227,19 +227,19 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-green-50 text-green-700 border border-green-200 font-bold uppercase tracking-wider">Đang học</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] bg-green-50 text-green-700 border border-green-200 font-bold uppercase tracking-wider">Đang học</span>;
       case 'registered':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-purple-50 text-purple-700 border border-purple-200 font-bold uppercase tracking-wider">Đã ghi danh</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] bg-purple-50 text-purple-700 border border-purple-200 font-bold uppercase tracking-wider">Đã ghi danh</span>;
       case 'waiting':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-amber-50 text-amber-700 border border-amber-200 font-bold uppercase tracking-wider">Danh sách chờ</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] bg-amber-50 text-amber-700 border border-amber-200 font-bold uppercase tracking-wider">Danh sách chờ</span>;
       case 'suspended':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-amber-50 text-amber-700 border border-amber-200 font-bold uppercase tracking-wider">Tạm nghỉ</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] bg-amber-50 text-amber-700 border border-amber-200 font-bold uppercase tracking-wider">Tạm nghỉ</span>;
       case 'graduated':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-blue-50 text-blue-700 border border-blue-200 font-bold uppercase tracking-wider">Đã tốt nghiệp</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] bg-blue-50 text-blue-700 border border-blue-200 font-bold uppercase tracking-wider">Đã tốt nghiệp</span>;
       case 'transferred':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-gray-50 text-gray-600 border border-gray-200 font-bold uppercase tracking-wider">Đã chuyển trường</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] bg-gray-50 text-gray-600 border border-gray-200 font-bold uppercase tracking-wider">Đã chuyển trường</span>;
       default:
-        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] bg-gray-50 text-gray-600 border border-gray-200 font-bold uppercase tracking-wider">{status}</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[12px] bg-gray-50 text-gray-600 border border-gray-200 font-bold uppercase tracking-wider">{status}</span>;
     }
   };
 
@@ -268,7 +268,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                 disabled={isUpdatingStatus}
                 onChange={(e) => handleStatusChange(e.target.value)}
                 className={cn(
-                  "px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider border cursor-pointer outline-none transition-all shadow-3xs",
+                  "px-2 py-0.5 rounded-md text-[12px] font-bold uppercase tracking-wider border cursor-pointer outline-none transition-all shadow-3xs",
                   student.status === 'active' && "bg-emerald-50 text-emerald-700 border-emerald-250 hover:bg-emerald-100",
                   student.status === 'registered' && "bg-purple-50 text-purple-700 border-purple-250 hover:bg-purple-100",
                   (student.status === 'waiting' && student.target_school_year !== '2027-2028') && "bg-amber-50 text-amber-700 border-amber-250 hover:bg-amber-100",
@@ -343,35 +343,35 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
               <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Thông tin trẻ</h4>
               <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13.5px]">
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Ngày sinh</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Ngày sinh</div>
                   <div className="text-on-surface font-semibold">{formatDate(student.date_of_birth)}</div>
                 </div>
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Giới tính</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Giới tính</div>
                   <div className="text-on-surface font-semibold">{student.gender === 'male' ? 'Nam' : 'Nữ'}</div>
                 </div>
                 <div className="col-span-2">
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Địa chỉ liên hệ</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Địa chỉ liên hệ</div>
                   <div className="text-on-surface font-semibold leading-relaxed">{student.address || 'Chưa cập nhật'}</div>
                 </div>
                 <div>
-                  <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Tháng nhập học dự kiến</div>
+                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Tháng nhập học dự kiến</div>
                   <div className="text-on-surface font-semibold">{formatEnrollmentDate(student.enrollment_date)}</div>
                 </div>
                 {(student.status === 'waiting' || student.status === 'registered') && (
                   <>
                     <div>
-                      <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">
+                      <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">
                         {student.status === 'waiting' ? 'Ngày đăng ký chờ' : 'Ngày ghi danh'}
                       </div>
                       <div className="text-on-surface font-semibold">{formatDate(student.registration_date) || '—'}</div>
                     </div>
                     <div>
-                      <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-0.5">Năm học đăng ký</div>
+                      <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Năm học đăng ký</div>
                       <div className="text-on-surface font-semibold">{student.target_school_year || '—'}</div>
                     </div>
                     <div className="col-span-2">
-                      <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-1">Đối tượng ưu tiên</div>
+                      <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-1">Đối tượng ưu tiên</div>
                       <select
                         value={student.priority_status || ''}
                         disabled={isUpdatingStatus}
@@ -387,7 +387,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                       </select>
                     </div>
                     <div className="col-span-2">
-                      <div className="text-on-surface-variant/80 text-[11px] font-bold uppercase tracking-wider mb-1">Ghi chú ưu tiên</div>
+                      <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-1">Ghi chú ưu tiên</div>
                       <textarea
                         key={student.id}
                         defaultValue={student.priority_note || ''}
@@ -413,7 +413,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                         {guardian.full_name}
                       </span>
                       <span className={cn(
-                        "px-2 py-0.5 text-[10px] font-bold rounded border uppercase tracking-wider",
+                        "px-2 py-0.5 text-[12px] font-bold rounded border uppercase tracking-wider",
                         guardian.is_primary 
                           ? "bg-green-50 text-green-700 border-green-200" 
                           : "bg-surface-container text-on-surface-variant border-outline-variant"
@@ -462,7 +462,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                 <div className="flex justify-between items-center text-[13.5px]">
                   <span className="text-on-surface-variant font-bold">Dị ứng thức ăn / thuốc:</span>
                   <span className={cn(
-                    "font-bold px-2 py-0.5 rounded text-[11px] uppercase tracking-wider border",
+                    "font-bold px-2 py-0.5 rounded text-[12px] uppercase tracking-wider border",
                     student.allergies 
                       ? "bg-red-100 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900/30" 
                       : "bg-green-100 text-green-700 border-green-200 dark:bg-green-950/40 dark:text-green-400 dark:border-green-900/30"
@@ -502,7 +502,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
               <div className="py-8 text-center border border-dashed border-outline-variant rounded-2xl text-on-surface-variant space-y-2">
                 <DollarSign className="w-8 h-8 mx-auto text-on-surface-variant/40" />
                 <p className="text-[13px] font-bold">Chưa có thông tin học phí</p>
-                <p className="text-[11px] text-on-surface-variant/80 px-4">Bản ghi thu học phí sẽ hiển thị khi phòng kế toán lập phiếu thu cho học sinh.</p>
+                <p className="text-[12px] text-on-surface-variant/80 px-4">Bản ghi thu học phí sẽ hiển thị khi phòng kế toán lập phiếu thu cho học sinh.</p>
               </div>
             ) : (
               <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1">
@@ -528,12 +528,12 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                           <span className="font-bold text-[14px] text-on-surface">
                             Học phí Tháng {fee.month}/{fee.year}
                           </span>
-                          <div className="text-[11px] text-on-surface-variant/70 font-bold mt-0.5">
+                          <div className="text-[12px] text-on-surface-variant/70 font-bold mt-0.5">
                             Năm học: {fee.academic_years?.name}
                           </div>
                         </div>
                         <span className={cn(
-                          "px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border",
+                          "px-2.5 py-0.5 rounded-lg text-[12px] font-bold uppercase tracking-wider border",
                           isPaid ? "bg-green-100 text-green-700 border-green-200" 
                             : isPartial ? "bg-amber-100 text-amber-700 border-amber-200"
                             : isOverdue ? "bg-red-100 text-red-700 border-red-200"
@@ -572,7 +572,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                         )}
                       </div>
                       {fee.note && (
-                        <p className="text-[11px] text-on-surface-variant/80 italic mt-1 font-semibold bg-white/70 p-2 rounded border border-outline-variant/15">
+                        <p className="text-[12px] text-on-surface-variant/80 italic mt-1 font-semibold bg-white/70 p-2 rounded border border-outline-variant/15">
                           Ghi chú: {fee.note}
                         </p>
                       )}

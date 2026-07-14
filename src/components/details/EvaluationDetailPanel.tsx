@@ -196,7 +196,7 @@ export const EvaluationDetailPanel: React.FC<EvaluationDetailPanelProps> = ({
         {latestEval ? (
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6 bg-white border border-outline-variant/40 rounded-3xl p-5 items-center shadow-2xs">
             <div className="md:col-span-2 h-60 w-full flex flex-col items-center justify-center">
-              <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant mb-2">
+              <h4 className="text-[12px] font-extrabold uppercase tracking-widest text-on-surface-variant mb-2">
                 Mạng nhện năng lực 5 chiều
               </h4>
               <ResponsiveContainer width="100%" height="100%">
@@ -229,7 +229,7 @@ export const EvaluationDetailPanel: React.FC<EvaluationDetailPanelProps> = ({
                       </span>
                     </div>
                     {item.note && (
-                      <p className="text-[10px] text-on-surface-variant font-medium italic mt-0.5">
+                      <p className="text-[12px] text-on-surface-variant font-medium italic mt-0.5">
                         "{item.note}"
                       </p>
                     )}
@@ -308,14 +308,14 @@ export const EvaluationDetailPanel: React.FC<EvaluationDetailPanelProps> = ({
                       {evalObj.overall_comment}
                     </p>
                     {evalObj.recommendation && (
-                      <p className="text-[11px] text-on-surface-variant/80 italic mt-1 font-semibold border-t border-dashed border-outline-variant/20 pt-1.5">
+                      <p className="text-[12px] text-on-surface-variant/80 italic mt-1 font-semibold border-t border-dashed border-outline-variant/20 pt-1.5">
                         <span className="font-bold text-primary">Định hướng giáo dục: </span>
                         {evalObj.recommendation}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-[10px] text-on-surface-variant/70 pt-1 flex justify-between items-center font-medium">
+                  <div className="text-[12px] text-on-surface-variant/70 pt-1 flex justify-between items-center font-medium">
                     <span>Giáo viên đánh giá: <span className="font-bold text-on-surface">{evalObj.users?.full_name || 'Hệ thống'}</span></span>
                     <span>Được ghi lúc: {new Date(evalObj.created_at).toLocaleString('vi-VN')}</span>
                   </div>

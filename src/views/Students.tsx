@@ -199,7 +199,7 @@ export function Students() {
             return (
               <div>
                 <span className="font-semibold text-on-surface">{name}</span>
-                <span className="text-[11px] bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded ml-2 font-medium">{relation}</span>
+                <span className="text-[12px] bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded ml-2 font-medium">{relation}</span>
               </div>
             );
           }

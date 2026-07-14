@@ -76,7 +76,7 @@ function SidebarNavItem({
           {item.badge && (
             <span
               className={cn(
-                "text-[10px] font-bold rounded-full leading-none",
+                "text-[12px] font-bold rounded-full leading-none",
                 collapsed
                   ? "absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center bg-error text-on-error"
                   : "px-2 py-0.5 bg-error text-on-error"
@@ -171,7 +171,7 @@ function SidebarContent({
                 <h1 className="text-[17px] font-bold italic font-playfair leading-tight text-on-surface truncate">
                   Doraemon
                 </h1>
-                <p className="text-[11px] font-medium tracking-[0.04em] text-on-surface-variant truncate">
+                <p className="text-[12px] font-medium tracking-[0.04em] text-on-surface-variant truncate">
                   Trường Mầm Non
                 </p>
               </motion.div>

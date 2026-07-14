@@ -45,7 +45,7 @@ export function MobileBottomNav() {
             {({ isActive }) => (
               <>
                 <Icon className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
-                <span className="text-[9px] font-semibold truncate max-w-full px-1">
+                <span className="text-[12px] font-semibold truncate max-w-full px-1">
                   {item.label}
                 </span>
               </>
@@ -60,7 +60,7 @@ export function MobileBottomNav() {
         className="flex-1 flex flex-col items-center justify-center gap-0.5 text-on-surface-variant cursor-pointer"
       >
         <LayoutGrid className="w-4 h-4" />
-        <span className="text-[9px] font-semibold">Quản lý</span>
+        <span className="text-[12px] font-semibold">Quản lý</span>
       </button>
     </nav>
   );

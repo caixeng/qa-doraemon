@@ -197,7 +197,7 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
               <FileSpreadsheet className="w-5 h-5 text-primary" />
               <div>
                 <div className="text-[13px] font-bold text-on-surface truncate max-w-xs md:max-w-md">{file?.name}</div>
-                <div className="text-[11px] text-on-surface-variant font-medium">Tìm thấy {previewData.length} dòng dữ liệu</div>
+                <div className="text-[12px] text-on-surface-variant font-medium">Tìm thấy {previewData.length} dòng dữ liệu</div>
               </div>
             </div>
             <Button onClick={resetModal} variant="outline" size="sm" className="px-3 py-1">

@@ -446,8 +446,8 @@ export function Nutrition({ classId }: { classId?: string }) {
           <table className="w-full text-left text-sm border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-[#33a2f2] dark:bg-slate-800 border-b border-sky-400 dark:border-slate-700 print:bg-[#33a2f2]">
-                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[11px] uppercase tracking-wider text-center w-[6%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none">Bữa ăn</th>
-                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[11px] uppercase tracking-wider text-center w-[10%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] border-l border-sky-300 dark:border-slate-700 select-none">Thời gian</th>
+                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[12px] uppercase tracking-wider text-center w-[6%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none">Bữa ăn</th>
+                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[12px] uppercase tracking-wider text-center w-[10%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] border-l border-sky-300 dark:border-slate-700 select-none">Thời gian</th>
                 {weekDates.map((d, index) => {
                   const dayName = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][index];
                   const isToday = new Date().toDateString() === d.toDateString();
@@ -455,14 +455,14 @@ export function Nutrition({ classId }: { classId?: string }) {
                     <th
                       key={index}
                       className={cn(
-                        "px-4 py-3 font-extrabold text-[11px] uppercase tracking-wider text-center border-l border-sky-300 dark:border-slate-700 sticky top-0 z-10 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none",
+                        "px-4 py-3 font-extrabold text-[12px] uppercase tracking-wider text-center border-l border-sky-300 dark:border-slate-700 sticky top-0 z-10 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none",
                         isToday 
                           ? "bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-200 print:bg-amber-100" 
                           : "bg-[#33a2f2] text-slate-900 dark:bg-slate-800 dark:text-slate-200"
                       )}
                     >
                       <div className="font-bold">{dayName}</div>
-                      <div className="text-[10px] opacity-80 mt-0.5 font-medium">{d.toLocaleDateString('vi-VN')}</div>
+                      <div className="text-[12px] opacity-80 mt-0.5 font-medium">{d.toLocaleDateString('vi-VN')}</div>
                     </th>
                   );
                 })}
@@ -508,7 +508,7 @@ export function Nutrition({ classId }: { classId?: string }) {
                   >
                     {row.timeLabel === 'Dành cho trẻ chưa ăn được cơm' ? (
                       <div 
-                        className="text-[10px] text-red-600 dark:text-red-400 font-extrabold text-center mx-auto leading-none py-2"
+                        className="text-[12px] text-red-600 dark:text-red-400 font-extrabold text-center mx-auto leading-none py-2"
                         style={{ 
                           writingMode: 'vertical-lr', 
                           transform: 'rotate(180deg)', 
@@ -545,13 +545,13 @@ export function Nutrition({ classId }: { classId?: string }) {
                                 {plan.menu_items}
                               </p>
                               {plan.calories && (
-                                <div className="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/40 px-1.5 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/30 print:bg-white">
+                                <div className="inline-flex items-center gap-0.5 text-[12px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/40 px-1.5 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/30 print:bg-white">
                                   <Flame className="w-2.5 h-2.5 shrink-0" />
                                   {plan.calories} kcal
                                 </div>
                               )}
                               {plan.notes && (
-                                <p className="text-[10px] text-slate-500 dark:text-slate-400 italic leading-tight select-text" onClick={(e) => e.stopPropagation()}>
+                                <p className="text-[12px] text-slate-500 dark:text-slate-400 italic leading-tight select-text" onClick={(e) => e.stopPropagation()}>
                                   Lưu ý: {plan.notes}
                                 </p>
                               )}
@@ -590,7 +590,7 @@ export function Nutrition({ classId }: { classId?: string }) {
       )}
 
       {/* Footer notes on printed menu */}
-      <div className="hidden print:flex justify-between items-center text-[10px] text-slate-500 mt-8 border-t border-slate-200 pt-4 font-inter">
+      <div className="hidden print:flex justify-between items-center text-[12px] text-slate-500 mt-8 border-t border-slate-200 pt-4 font-inter">
         <div className="text-left font-bold text-slate-700">
           TRƯỜNG MẦM NON DORAEMON
         </div>

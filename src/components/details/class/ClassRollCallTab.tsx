@@ -343,7 +343,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
       {/* Daily statistics row */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 select-none">
         <div className="bg-surface-container-low/50 rounded-xl border border-outline-variant/20 p-3 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+          <span className="text-[12px] font-bold uppercase tracking-wider text-on-surface-variant">
             Tổng sĩ số
           </span>
           <span className="block text-xl font-bold font-playfair text-on-surface mt-1">
@@ -351,19 +351,19 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
           </span>
         </div>
         <div className="bg-green-50/30 rounded-xl border border-green-100 p-3 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-green-700">Có mặt</span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-green-700">Có mặt</span>
           <span className="block text-xl font-bold font-playfair text-green-700 mt-1">
             {rcPresentCount}
           </span>
         </div>
         <div className="bg-rose-50/30 rounded-xl border border-rose-100 p-3 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700">Vắng</span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-rose-700">Vắng</span>
           <span className="block text-xl font-bold font-playfair text-rose-700 mt-1">
             {rcAbsentCount}
           </span>
         </div>
         <div className="bg-amber-50/30 rounded-xl border border-amber-100 p-3 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 font-semibold">
+          <span className="text-[12px] font-bold uppercase tracking-wider text-amber-700 font-semibold">
             Đi trễ
           </span>
           <span className="block text-xl font-bold font-playfair text-amber-700 mt-1">
@@ -371,7 +371,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
           </span>
         </div>
         <div className="bg-purple-50/30 rounded-xl border border-purple-100 p-3 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 font-semibold">
+          <span className="text-[12px] font-bold uppercase tracking-wider text-purple-700 font-semibold">
             Phép/Bệnh
           </span>
           <span className="block text-xl font-bold font-playfair text-purple-700 mt-1">
@@ -379,7 +379,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
           </span>
         </div>
         <div className="bg-slate-50/50 rounded-xl border border-slate-200/40 p-3 shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Chưa báo</span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500">Chưa báo</span>
           <span className="block text-xl font-bold font-playfair text-slate-600 mt-1">
             {rcUnmarkedCount}
           </span>
@@ -441,7 +441,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                       >
                         {student.full_name}
                       </h4>
-                      <p className="text-[10px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5">
+                      <p className="text-[12px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5">
                         {student.student_code}
                       </p>
                     </div>
@@ -574,7 +574,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <span className="text-[10px] font-bold text-primary font-playfair">
+                              <span className="text-[12px] font-bold text-primary font-playfair">
                                 {getInitials(student.full_name)}
                               </span>
                             )}
@@ -586,7 +586,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                             >
                               {student.full_name}
                             </h4>
-                            <p className="text-[9px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5">
+                            <p className="text-[12px] font-semibold text-on-surface-variant/60 uppercase tracking-widest mt-0.5">
                               {student.student_code}
                             </p>
                           </div>
@@ -598,7 +598,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                             type="button"
                             onClick={() => handleRollCallStatusChange(student.id, 'present')}
                             className={cn(
-                              'px-2 py-1 rounded-full text-[10px] font-bold transition-all border cursor-pointer select-none',
+                              'px-2 py-1 rounded-full text-[12px] font-bold transition-all border cursor-pointer select-none',
                               status === 'present'
                                 ? 'bg-green-600 border-green-600 text-white shadow-xs'
                                 : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
@@ -611,7 +611,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                             type="button"
                             onClick={() => handleRollCallStatusChange(student.id, 'absent')}
                             className={cn(
-                              'px-2 py-1 rounded-full text-[10px] font-bold transition-all border cursor-pointer select-none',
+                              'px-2 py-1 rounded-full text-[12px] font-bold transition-all border cursor-pointer select-none',
                               status === 'absent'
                                 ? 'bg-rose-600 border-rose-600 text-white shadow-xs'
                                 : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
@@ -624,7 +624,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                             type="button"
                             onClick={() => handleRollCallStatusChange(student.id, 'late')}
                             className={cn(
-                              'px-2 py-1 rounded-full text-[10px] font-bold transition-all border cursor-pointer select-none',
+                              'px-2 py-1 rounded-full text-[12px] font-bold transition-all border cursor-pointer select-none',
                               status === 'late'
                                 ? 'bg-amber-500 border-amber-500 text-white shadow-xs'
                                 : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
@@ -637,7 +637,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                             type="button"
                             onClick={() => handleRollCallStatusChange(student.id, 'excused')}
                             className={cn(
-                              'px-2 py-1 rounded-full text-[10px] font-bold transition-all border cursor-pointer select-none',
+                              'px-2 py-1 rounded-full text-[12px] font-bold transition-all border cursor-pointer select-none',
                               status === 'excused'
                                 ? 'bg-purple-600 border-purple-600 text-white shadow-xs'
                                 : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
@@ -650,7 +650,7 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                             type="button"
                             onClick={() => handleRollCallStatusChange(student.id, 'sick')}
                             className={cn(
-                              'px-2 py-1 rounded-full text-[10px] font-bold transition-all border cursor-pointer select-none',
+                              'px-2 py-1 rounded-full text-[12px] font-bold transition-all border cursor-pointer select-none',
                               status === 'sick'
                                 ? 'bg-violet-600 border-violet-600 text-white shadow-xs'
                                 : 'bg-white border-outline-variant/30 text-on-surface-variant hover:bg-surface-container'
@@ -663,14 +663,14 @@ export const ClassRollCallTab: React.FC<ClassRollCallTabProps> = ({
                       <td className="px-3 py-3">
                         {note ? (
                           <div
-                            className="flex items-start gap-1 text-[11px] text-on-surface-variant max-w-[200px]"
+                            className="flex items-start gap-1 text-[12px] text-on-surface-variant max-w-[200px]"
                             title={note}
                           >
                             <MessageSquare className="w-3 h-3 text-primary shrink-0 mt-0.5" />
                             <span className="line-clamp-1 select-text">{note}</span>
                           </div>
                         ) : (
-                          <span className="text-[10px] text-on-surface-variant/40 italic select-none">
+                          <span className="text-[12px] text-on-surface-variant/40 italic select-none">
                             Chưa có ghi chú
                           </span>
                         )}

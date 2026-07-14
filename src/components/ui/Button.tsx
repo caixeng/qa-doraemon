@@ -25,7 +25,7 @@ const variantStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
 };
 
 const sizeStyles: Record<NonNullable<ButtonProps["size"]>, string> = {
-  sm: "h-8 px-2.5 md:px-3 text-[11px] md:text-[13px] gap-1 md:gap-1.5 rounded-md",
+  sm: "h-8 px-2.5 md:px-3 text-[12px] md:text-[13px] gap-1 md:gap-1.5 rounded-md",
   md: "h-9 md:h-10 px-3 md:px-4 text-[12px] md:text-[14px] gap-1.5 md:gap-2 rounded-lg",
   lg: "h-10 md:h-12 px-4 md:px-6 text-[13px] md:text-[15px] gap-2 md:gap-2.5 rounded-xl",
 };

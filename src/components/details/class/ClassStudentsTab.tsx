@@ -309,7 +309,7 @@ export const ClassStudentsTab: React.FC<ClassStudentsTabProps> = ({
         <div className="py-12 text-center border border-dashed border-outline-variant rounded-2xl text-on-surface-variant space-y-2">
           <Users className="w-8 h-8 mx-auto text-on-surface-variant/40" />
           <p className="text-[13px] font-bold">Lớp chưa có học sinh</p>
-          <p className="text-[11px] text-on-surface-variant/80 px-4">
+          <p className="text-[12px] text-on-surface-variant/80 px-4">
             Hãy xếp lớp cho trẻ từ mục chờ xếp lớp ngoài trang quản lý chính.
           </p>
         </div>

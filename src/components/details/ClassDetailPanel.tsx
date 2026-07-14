@@ -171,7 +171,7 @@ export const ClassDetailPanel: React.FC<ClassDetailPanelProps> = ({
               <h2 className="text-[18px] font-bold text-on-surface leading-tight font-playfair italic">
                 Lớp {activeClass.name}
               </h2>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] bg-secondary-container/40 text-on-secondary-container border border-outline-variant/20 font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[12px] bg-secondary-container/40 text-on-secondary-container border border-outline-variant/20 font-bold uppercase tracking-wider">
                 Khối {getGradeLabel(activeClass.grade_level)}
               </span>
             </div>
@@ -206,14 +206,14 @@ export const ClassDetailPanel: React.FC<ClassDetailPanelProps> = ({
 
       {/* Teachers in charge */}
       <div className="px-6 py-3 bg-slate-50 border-b border-outline-variant/20 flex flex-col gap-2 shrink-0">
-        <span className="text-[10px] font-extrabold uppercase tracking-widest text-on-surface-variant/80">Giáo viên phụ trách lớp</span>
+        <span className="text-[12px] font-extrabold uppercase tracking-widest text-on-surface-variant/80">Giáo viên phụ trách lớp</span>
         <div className="flex flex-wrap gap-2">
           {activeClass.class_teachers?.map((ct) => (
             <div key={ct.teacher_id} className="flex items-center gap-1.5 bg-white border border-outline-variant/30 px-3 py-1.5 rounded-xl text-xs font-semibold text-on-surface shadow-2xs">
               <UserCheck className="w-3.5 h-3.5 text-primary shrink-0" />
               {ct.users?.full_name}
               {ct.is_homeroom && (
-                <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-1 py-0.5 rounded font-extrabold uppercase tracking-wider ml-1">
+                <span className="text-[12px] bg-primary/10 text-primary border border-primary/20 px-1 py-0.5 rounded font-extrabold uppercase tracking-wider ml-1">
                   Chủ nhiệm
                 </span>
               )}

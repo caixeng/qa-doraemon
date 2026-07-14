@@ -250,7 +250,7 @@ export const MealPlanForm: React.FC<MealPlanFormProps> = ({
           {/* Quick Suggestions Section */}
           {SUGGESTIONS[selectedMealType] && (
             <div className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-3">
-              <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
+              <span className="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
                 💡 Nhấp chọn nhanh món ăn gợi ý:
               </span>
               <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto pr-1">

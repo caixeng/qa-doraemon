@@ -127,12 +127,12 @@ export function Evaluations({ classId }: { classId?: string }) {
       header: "Học sinh",
       render: (row: any) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary/5 text-primary border border-primary/20 flex items-center justify-center font-bold text-[11px] shrink-0 font-playfair">
+          <div className="w-8 h-8 rounded-full bg-primary/5 text-primary border border-primary/20 flex items-center justify-center font-bold text-[12px] shrink-0 font-playfair">
             {row.full_name?.substring(0, 2).toUpperCase() || 'HS'}
           </div>
           <div>
             <p className="font-bold text-[14px] text-on-surface leading-tight font-inter">{row.full_name}</p>
-            <p className="text-[11px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-0.5 select-all">
+            <p className="text-[12px] font-semibold text-on-surface-variant/70 uppercase tracking-widest mt-0.5 select-all">
               {row.student_code}
             </p>
           </div>

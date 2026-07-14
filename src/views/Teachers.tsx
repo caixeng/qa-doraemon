@@ -42,20 +42,20 @@ const getRoleBadge = (row: TeacherRow) => {
   switch (row.role) {
     case 'admin':
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-rose-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
           {title}
         </span>
       );
     case 'staff':
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
           {title}
         </span>
       );
     case 'teacher':
     default:
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
           {title}
         </span>
       );
@@ -187,7 +187,7 @@ export function Teachers() {
             {row.avatar_url ? (
               <img src={row.avatar_url} alt={row.full_name} className="w-full h-full object-cover" />
             ) : (
-              <span className="text-[11px] font-bold text-primary font-playfair">
+              <span className="text-[12px] font-bold text-primary font-playfair">
                 {getInitials(row.full_name)}
               </span>
             )}
@@ -491,7 +491,7 @@ export function Teachers() {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-outline-variant/10 flex items-center justify-between text-[12px] text-on-surface-variant/80">
-                  <span className="font-bold uppercase tracking-wider text-[10px]">Phụ trách lớp</span>
+                  <span className="font-bold uppercase tracking-wider text-[12px]">Phụ trách lớp</span>
                   <span className={cn(
                     "font-bold truncate max-w-[150px]",
                     classes ? "text-primary" : "italic text-on-surface-variant/40"
