@@ -205,18 +205,6 @@ export function Students() {
           }
         },
         {
-          key: "parent_citizen_id" as keyof StudentWithRelations,
-          header: "CCCD Bố/Mẹ",
-          render: (row: StudentWithRelations) => {
-            const primaryGuardian = row.guardians?.find((g) => g.is_primary) || row.guardians?.[0];
-            return (
-              <span className="text-on-surface-variant font-medium text-[13px] font-mono">
-                {primaryGuardian?.citizen_id || '—'}
-              </span>
-            );
-          }
-        },
-        {
           key: "parent_phone" as keyof StudentWithRelations,
           header: "SĐT (Zalo)",
           render: (row: StudentWithRelations) => {
@@ -260,6 +248,18 @@ export function Students() {
                 {priorityLabel}
               </span>
             );
+          }
+        },
+        {
+          key: "priority_note" as keyof StudentWithRelations,
+          header: "Ghi chú",
+          render: (row: StudentWithRelations) => {
+            const note = (row as any).priority_note as string | null;
+            return note ? (
+              <span className="text-on-surface-variant font-medium text-[13px] line-clamp-2 max-w-[200px]" title={note}>
+                {note}
+              </span>
+            ) : <span className="text-on-surface-variant/40">—</span>;
           }
         }
       );
