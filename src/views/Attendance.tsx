@@ -400,7 +400,7 @@ export function Attendance() {
 
         <div className="flex items-center gap-2 shrink-0">
           {/* DatePicker inline on mobile */}
-          <div className="w-[145px] sm:w-64 shrink-0">
+          <div className="w-[125px] sm:w-64 shrink-0">
             <DatePicker
               value={selectedDate}
               onChange={(date) => date && setSelectedDate(date)}

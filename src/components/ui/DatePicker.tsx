@@ -215,7 +215,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             aria-invalid={!!error}
             aria-describedby={error ? errorId : (helperText ? helperId : undefined)}
             className={cn(
-              "w-full rounded-xl border bg-surface-container-lowest font-inter text-[11px] sm:text-[12.5px] font-semibold h-8.5 sm:h-9 px-1.5 sm:px-2.5 pl-7 sm:pl-8.5 text-on-surface",
+              "w-full rounded-xl border bg-surface-container-lowest font-inter text-[10px] sm:text-[12.5px] font-bold h-8 sm:h-9 pr-0.5 pl-5.5 sm:pl-8 text-on-surface",
               "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all",
               error ? "border-error" : "border-outline-variant hover:border-outline",
               disabled && "opacity-50 cursor-not-allowed bg-surface-container"
@@ -223,9 +223,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           />
           <span
             onClick={handleIconClick}
-            className="absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
+            className="absolute left-1.5 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
           >
-            <Calendar className="w-3.5 h-3.5" />
+            <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
           </span>
         </div>
       )}

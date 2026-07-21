@@ -383,16 +383,16 @@ export function Students() {
       </div>
 
       {/* Filters & Search */}
-      <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-xs flex flex-wrap gap-2.5 md:gap-3.5 items-center">
+      <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-xs flex flex-wrap gap-2 md:gap-3.5 items-center mb-3 md:mb-4">
         {/* Search Input */}
         <div className="relative flex-1 min-w-0 md:flex-none md:w-64">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-on-surface-variant" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm theo tên học sinh, mã số..."
-            className="w-full pl-10 pr-4 py-2 border border-outline-variant/50 rounded-xl text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors"
+            className="w-full pl-8.5 pr-3 py-1.5 border border-outline-variant/50 rounded-xl text-[12.5px] md:text-[14px] bg-transparent focus:outline-none focus:border-primary transition-colors h-8.5 md:h-10 font-medium"
           />
         </div>
 
