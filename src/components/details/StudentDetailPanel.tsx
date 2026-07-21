@@ -11,7 +11,9 @@ import {
   Trash2, 
   AlertTriangle, 
   BadgeIcon as IdCard,
-  X
+  X,
+  ChevronDown,
+  Check
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { useSlidePanel } from '../../context/SlidePanelContext';
@@ -38,6 +40,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
 
   const handleStatusChange = async (newStatus: string) => {
     if (!student) return;
@@ -264,33 +267,71 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
               {student.full_name}
             </h2>
 
-            {/* Row 2: Mã HS • Lớp • Trạng thái (Nhỏ nhắn bên dưới tên) */}
+            {/* Row 2: Mã HS • Lớp • Trạng thái Mini Badge */}
             <div className="flex items-center gap-1.5 mt-1 flex-wrap text-[11.5px] text-on-surface-variant font-medium">
               <span>Mã HS: <strong className="text-on-surface font-semibold">{student.student_code}</strong></span>
               <span>•</span>
               <span>Lớp: <strong className="text-on-surface font-semibold">{student.classes?.name || 'Chưa xếp lớp'}</strong></span>
               <span>•</span>
-              <select
-                value={student.status === 'waiting' && student.target_school_year === '2027-2028' ? 'future' : student.status}
-                disabled={isUpdatingStatus}
-                onChange={(e) => handleStatusChange(e.target.value)}
-                className={cn(
-                  "px-1.5 py-0.5 rounded-md text-[10px] font-bold border cursor-pointer outline-none transition-all shadow-3xs shrink-0 inline-block leading-tight",
-                  student.status === 'active' && "bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800",
-                  student.status === 'registered' && "bg-purple-50 text-purple-700 border-purple-300 hover:bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800",
-                  (student.status === 'waiting' && student.target_school_year !== '2027-2028') && "bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800",
-                  (student.status === 'waiting' && student.target_school_year === '2027-2028') && "bg-pink-50 text-pink-700 border-pink-300 hover:bg-pink-100 dark:bg-pink-950/60 dark:text-pink-300 dark:border-pink-800",
-                  student.status === 'graduated' && "bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800",
-                  student.status === 'transferred' && "bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700"
-                )}
-              >
-                <option value="active">Đang học</option>
-                <option value="registered">Đã ghi danh</option>
-                <option value="waiting">Danh sách chờ</option>
-                <option value="future">Đăng ký năm tới</option>
-                <option value="graduated">Đã tốt nghiệp</option>
-                <option value="transferred">Đã chuyển trường</option>
-              </select>
+              
+              {/* Custom Mini Popover Badge Dropdown */}
+              {(() => {
+                const statusOptions = [
+                  { value: 'active', label: 'Đang học', color: 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300' },
+                  { value: 'registered', label: 'Đã ghi danh', color: 'bg-purple-50 text-purple-700 border-purple-300 hover:bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300' },
+                  { value: 'waiting', label: 'Danh sách chờ', color: 'bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300' },
+                  { value: 'future', label: 'Đăng ký năm tới', color: 'bg-pink-50 text-pink-700 border-pink-300 hover:bg-pink-100 dark:bg-pink-950/60 dark:text-pink-300' },
+                  { value: 'graduated', label: 'Đã tốt nghiệp', color: 'bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300' },
+                  { value: 'transferred', label: 'Đã chuyển trường', color: 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300' },
+                ];
+                const currentStatusKey = student.status === 'waiting' && student.target_school_year === '2027-2028' ? 'future' : student.status;
+                const currentOpt = statusOptions.find(o => o.value === currentStatusKey) || statusOptions[0];
+
+                return (
+                  <div className="relative inline-block">
+                    <button
+                      type="button"
+                      disabled={isUpdatingStatus}
+                      onClick={() => setIsStatusMenuOpen(!isStatusMenuOpen)}
+                      className={cn(
+                        "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border cursor-pointer transition-all shadow-3xs leading-none select-none active:scale-95",
+                        currentOpt.color
+                      )}
+                    >
+                      <span>{currentOpt.label}</span>
+                      <ChevronDown className="w-2.5 h-2.5 opacity-70 shrink-0" />
+                    </button>
+
+                    {isStatusMenuOpen && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setIsStatusMenuOpen(false)} 
+                        />
+                        <div className="absolute left-0 top-full mt-1.5 w-36 bg-surface border border-outline-variant/60 rounded-xl shadow-lg z-50 py-1 text-xs font-semibold animate-in fade-in zoom-in-95 duration-150">
+                          {statusOptions.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => {
+                                setIsStatusMenuOpen(false);
+                                handleStatusChange(opt.value);
+                              }}
+                              className={cn(
+                                "w-full text-left px-3 py-1.5 hover:bg-surface-container transition-colors flex items-center justify-between text-[11px]",
+                                currentStatusKey === opt.value ? "text-primary font-bold bg-primary/5" : "text-on-surface-variant"
+                              )}
+                            >
+                              <span>{opt.label}</span>
+                              {currentStatusKey === opt.value && <Check className="w-3 h-3 text-primary" />}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
