@@ -62,7 +62,7 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
     };
 
-    // Fetch danh sách người dùng đang online thực tế
+    // Fetch danh sách người dùng đang online thực tế (hoặc fallback)
     const fetchOnline = async () => {
       try {
         const cutoff = new Date(Date.now() - ONLINE_WINDOW_MS).toISOString();
@@ -76,21 +76,48 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
 
         const { data, error } = await query;
-        if (error || !data) return;
-
+        
         if (cancelled) return;
 
-        const users: OnlineUser[] = data.map((r: any) => ({
-          id: r.user_id,
-          full_name: r.full_name || 'Người dùng',
-          avatar_url: r.avatar_url || undefined,
-          role: r.role || undefined,
-          school_id: r.school_id || undefined,
-        }));
+        if (!error && data && data.length > 0) {
+          const users: OnlineUser[] = data.map((r: any) => ({
+            id: r.user_id,
+            full_name: r.full_name || 'Người dùng',
+            avatar_url: r.avatar_url || undefined,
+            role: r.role || undefined,
+            school_id: r.school_id || undefined,
+          }));
 
-        setOnlineUsers(users);
+          // Đảm bảo currentUser luôn nằm ở đầu danh sách online
+          if (!users.some(u => u.id === currentUser.id)) {
+            users.unshift({
+              id: currentUser.id,
+              full_name: currentUser.full_name || 'Người dùng',
+              avatar_url: currentUser.avatar_url || undefined,
+              role: currentUser.role || undefined,
+              school_id: currentUser.school_id || undefined,
+            });
+          }
+
+          setOnlineUsers(users);
+        } else {
+          // Fallback: Luôn hiển thị tối thiểu currentUser đang đăng nhập
+          setOnlineUsers([{
+            id: currentUser.id,
+            full_name: currentUser.full_name || 'Người dùng',
+            avatar_url: currentUser.avatar_url || undefined,
+            role: currentUser.role || undefined,
+            school_id: currentUser.school_id || undefined,
+          }]);
+        }
       } catch (err) {
-        // Fallback
+        setOnlineUsers([{
+          id: currentUser.id,
+          full_name: currentUser.full_name || 'Người dùng',
+          avatar_url: currentUser.avatar_url || undefined,
+          role: currentUser.role || undefined,
+          school_id: currentUser.school_id || undefined,
+        }]);
       }
     };
 

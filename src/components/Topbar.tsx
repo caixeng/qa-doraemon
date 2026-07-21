@@ -158,8 +158,16 @@ export function Topbar({
 
   // Realtime Online Presence từ PresenceContext (chuẩn qlda-ddcn-ht)
   const { onlineUsers } = usePresence();
-  const otherOnlineUsers = onlineUsers.filter((u: any) => u.id !== currentUser?.id);
-  const visibleOnlineUsers = otherOnlineUsers.slice(0, 4);
+  const displayOnlineUsers = onlineUsers.length > 0 
+    ? onlineUsers 
+    : (currentUser ? [{
+        id: currentUser.id,
+        full_name: currentUser.full_name || 'Người dùng',
+        avatar_url: currentUser.avatar_url || undefined,
+        role: currentUser.role || undefined,
+        school_id: currentUser.school_id || undefined,
+      }] : []);
+  const visibleOnlineUsers = displayOnlineUsers.slice(0, 4);
 
   const notifRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -268,7 +276,7 @@ export function Topbar({
       {/* ── Right section ───────────────── */}
       <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
         {/* Online Users Avatar Stack & Realtime Presence Dropdown */}
-        {onlineUsers.length > 0 && (
+        {displayOnlineUsers.length > 0 && (
           <div className="relative group/online flex items-center gap-1.5 md:gap-2 mr-1 md:mr-3 border-r border-outline-variant/40 pr-3 md:pr-4 h-10 select-none cursor-pointer">
             {/* Avatar stack */}
             <div className="flex -space-x-1.5 md:-space-x-2">
@@ -276,7 +284,7 @@ export function Topbar({
                 <div 
                   key={u.id} 
                   className="relative transition-transform duration-200 hover:-translate-y-0.5 hover:z-10"
-                  title={`${u.full_name} - Đang hoạt động`}
+                  title={`${u.full_name}${currentUser && u.id === currentUser.id ? ' (Bạn)' : ''} - Đang hoạt động`}
                 >
                   <Avatar
                     src={u.avatar_url}
@@ -292,7 +300,7 @@ export function Topbar({
             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
               <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                {onlineUsers.length} online
+                {displayOnlineUsers.length} online
               </span>
             </div>
 
@@ -300,11 +308,11 @@ export function Topbar({
             <div className="absolute top-full right-0 pt-2 w-60 opacity-0 invisible group-hover/online:opacity-100 group-hover/online:visible transition-all duration-200 z-50 pointer-events-none group-hover/online:pointer-events-auto">
               <div className="bg-surface border border-outline-variant/60 rounded-xl shadow-xl overflow-hidden p-2 text-xs">
                 <div className="px-2 py-1.5 border-b border-outline-variant/30 font-bold text-primary flex items-center justify-between text-[11px]">
-                  <span>Đang trực tuyến ({onlineUsers.length})</span>
+                  <span>Đang trực tuyến ({displayOnlineUsers.length})</span>
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 </div>
                 <div className="max-h-48 overflow-y-auto pt-1 space-y-1">
-                  {onlineUsers.map((u: any) => (
+                  {displayOnlineUsers.map((u: any) => (
                     <div key={u.id} className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-container transition-colors">
                       <Avatar src={u.avatar_url} name={u.full_name} size="xs" status="online" />
                       <div className="min-w-0 flex-1">
