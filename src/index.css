@@ -133,10 +133,11 @@
 @layer base {
   html,
   body {
-    min-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
   }
 
   body {
@@ -145,12 +146,13 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Thu nhỏ giao diện qua transform scale — thay thế zoom: 80% để vừa khít màn hình */
+  /* Thu nhỏ giao diện qua transform scale — 80% vừa khít màn hình */
   #root {
     width: calc(100% / var(--zoom-scale, 0.8));
-    min-height: calc(100vh / var(--zoom-scale, 0.8));
+    height: calc(100% / var(--zoom-scale, 0.8));
     transform: scale(var(--zoom-scale, 0.8));
     transform-origin: 0 0;
+    overflow: hidden;
   }
 }
 

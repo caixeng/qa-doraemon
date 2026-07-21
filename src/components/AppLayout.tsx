@@ -19,7 +19,7 @@ export function AppLayout() {
   const { user } = useAuthStore();
 
   return (
-    <div className="flex bg-background min-h-screen font-inter text-on-surface">
+    <div className="flex bg-background h-full w-full font-inter text-on-surface overflow-hidden">
       {/* Sidebar (desktop only) */}
       <Sidebar
         collapsed={sidebarCollapsed}
@@ -54,7 +54,7 @@ export function AppLayout() {
       {/* Main Content */}
       <main
         className={cn(
-          "flex-1 pt-14 md:pt-[96px] min-h-screen px-3 md:px-8 pb-36 md:pb-8 transition-all duration-300",
+          "flex-1 pt-14 md:pt-[96px] h-full overflow-y-auto px-3 md:px-8 pb-32 md:pb-8 transition-all duration-300 [-webkit-overflow-scrolling:touch]",
           sidebarCollapsed ? "md:ml-[72px]" : "md:ml-[280px]"
         )}
       >
