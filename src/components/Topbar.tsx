@@ -21,6 +21,7 @@ import { Avatar } from "./ui/Avatar";
 import { useAppStore } from "../stores/appStore";
 import { useAuthStore } from "../stores/authStore";
 import { useTheme, PRIMARY_COLORS } from "../context/ThemeContext";
+import { usePresence } from "../context/PresenceContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import { subscribeToTable } from "../lib/supabase";
@@ -155,24 +156,10 @@ export function Topbar({
     }
   }, [yearsList, selectedAcademicYearId, setSelectedAcademicYearId]);
 
-  // Fetch users for online status display
-  const { data: onlineUsersResponse } = useQuery({
-    queryKey: ['online-users', currentUser?.school_id],
-    queryFn: () => {
-      if (!currentUser?.school_id) return { data: { data: [], count: 0 } };
-      return api.getAll<any>(
-        'users',
-        { page: 1, pageSize: 30 },
-        { filters: { school_id: currentUser.school_id, is_active: true } }
-      );
-    },
-    enabled: !!currentUser?.school_id
-  });
-  
-  const onlineUsersList = onlineUsersResponse?.data?.data || [];
-  const otherOnlineUsers = onlineUsersList
-    .filter((u: any) => u.id !== currentUser?.id)
-    .slice(0, 4); // Show max 4 users
+  // Realtime Online Presence từ PresenceContext (chuẩn qlda-ddcn-ht)
+  const { onlineUsers } = usePresence();
+  const otherOnlineUsers = onlineUsers.filter((u: any) => u.id !== currentUser?.id);
+  const visibleOnlineUsers = otherOnlineUsers.slice(0, 4);
 
   const notifRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -280,14 +267,15 @@ export function Topbar({
 
       {/* ── Right section ───────────────── */}
       <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
-        {/* Online Users Avatar Stack */}
-        {otherOnlineUsers.length > 0 && (
-          <div className="flex items-center gap-1.5 md:gap-2 mr-1 md:mr-3 border-r border-outline-variant/40 pr-3 md:pr-4 h-10 select-none">
+        {/* Online Users Avatar Stack & Realtime Presence Dropdown */}
+        {onlineUsers.length > 0 && (
+          <div className="relative group/online flex items-center gap-1.5 md:gap-2 mr-1 md:mr-3 border-r border-outline-variant/40 pr-3 md:pr-4 h-10 select-none cursor-pointer">
+            {/* Avatar stack */}
             <div className="flex -space-x-1.5 md:-space-x-2">
-              {otherOnlineUsers.map((u: any) => (
+              {visibleOnlineUsers.map((u: any) => (
                 <div 
                   key={u.id} 
-                  className="relative group transition-transform duration-200 hover:-translate-y-0.5 hover:z-10"
+                  className="relative transition-transform duration-200 hover:-translate-y-0.5 hover:z-10"
                   title={`${u.full_name} - Đang hoạt động`}
                 >
                   <Avatar
@@ -299,9 +287,38 @@ export function Topbar({
                 </div>
               ))}
             </div>
-            <span className="hidden sm:inline text-[11px] font-bold text-on-surface-variant/80 pl-1 md:pl-2">
-              +{otherOnlineUsers.length} online
-            </span>
+
+            {/* Badge đếm số người online với chấm xanh pulse */}
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                {onlineUsers.length} online
+              </span>
+            </div>
+
+            {/* Hover Menu danh sách chi tiết người dùng online */}
+            <div className="absolute top-full right-0 pt-2 w-60 opacity-0 invisible group-hover/online:opacity-100 group-hover/online:visible transition-all duration-200 z-50 pointer-events-none group-hover/online:pointer-events-auto">
+              <div className="bg-surface border border-outline-variant/60 rounded-xl shadow-xl overflow-hidden p-2 text-xs">
+                <div className="px-2 py-1.5 border-b border-outline-variant/30 font-bold text-primary flex items-center justify-between text-[11px]">
+                  <span>Đang trực tuyến ({onlineUsers.length})</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </div>
+                <div className="max-h-48 overflow-y-auto pt-1 space-y-1">
+                  {onlineUsers.map((u: any) => (
+                    <div key={u.id} className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-container transition-colors">
+                      <Avatar src={u.avatar_url} name={u.full_name} size="xs" status="online" />
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold text-on-surface truncate text-[11.5px]">
+                          {u.full_name} {currentUser && u.id === currentUser.id && <span className="text-primary font-bold">(Bạn)</span>}
+                        </div>
+                        <div className="text-[10px] text-on-surface-variant truncate uppercase font-medium">{u.role || 'thành viên'}</div>
+                      </div>
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full shrink-0"></span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

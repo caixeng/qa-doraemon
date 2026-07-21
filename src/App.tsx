@@ -7,6 +7,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastContainer, ViewSkeleton } from './components/ui';
 import { SlidePanelProvider } from './context/SlidePanelContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { PresenceProvider } from './context/PresenceContext';
 
 // Lazy load views for optimal bundle size
 const Login = lazy(() => import('./views/Login').then(m => ({ default: m.Login })));
@@ -43,9 +44,10 @@ export default function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-          <SlidePanelProvider>
-            <ToastContainer />
-          <BrowserRouter>
+          <PresenceProvider>
+            <SlidePanelProvider>
+              <ToastContainer />
+            <BrowserRouter>
             <Suspense fallback={<ViewSkeleton />}>
               <Routes>
                 {/* Public routes */}
@@ -113,6 +115,7 @@ export default function App() {
             </Suspense>
           </BrowserRouter>
           </SlidePanelProvider>
+          </PresenceProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </ErrorBoundary>
