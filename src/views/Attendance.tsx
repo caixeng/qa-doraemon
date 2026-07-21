@@ -375,7 +375,7 @@ export function Attendance() {
     : isLoadingClasses || isLoadingStudents || isLoadingAttendance;
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 pt-2 md:pt-0">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-32 md:pb-12 pt-2 md:pt-0">
       {/* Back button & Header section */}
       {!isDashboardMode && (
         <button

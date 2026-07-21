@@ -54,7 +54,7 @@ export function AppLayout() {
       {/* Main Content */}
       <main
         className={cn(
-          "flex-1 pt-14 md:pt-[96px] min-h-screen px-3 md:px-8 pb-14 md:pb-8 overflow-y-auto transition-all duration-300",
+          "flex-1 pt-14 md:pt-[96px] min-h-screen px-3 md:px-8 pb-32 md:pb-8 overflow-y-auto transition-all duration-300 [-webkit-overflow-scrolling:touch]",
           sidebarCollapsed ? "md:ml-[72px]" : "md:ml-[280px]"
         )}
       >

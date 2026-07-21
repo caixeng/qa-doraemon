@@ -248,7 +248,7 @@ export function Classes() {
   ];
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 space-y-4 pt-2 md:pt-0">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-32 md:pb-12 space-y-4 pt-2 md:pt-0">
       {/* Header section */}
       <div className="flex justify-between items-center gap-3 mt-2 md:mt-0 mb-4 md:mb-6">
         <div className="min-w-0">

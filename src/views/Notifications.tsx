@@ -218,7 +218,7 @@ export function Notifications() {
   };
 
   return (
-    <div className="space-y-4 md:space-y-6 pt-2 md:pt-0">
+    <div className="space-y-4 md:space-y-6 pt-2 md:pt-0 pb-32 md:pb-12">
       {/* Header section */}
       <div className="flex justify-between items-center gap-3 mt-2 md:mt-0 mb-3 md:mb-6">
         <div className="min-w-0">

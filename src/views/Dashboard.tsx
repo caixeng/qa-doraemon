@@ -256,7 +256,7 @@ export function Dashboard() {
   }
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 pt-2 md:pt-0">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-32 md:pb-12 pt-2 md:pt-0">
       {/* Dashboard Welcome Header */}
       <div className="flex justify-between items-center gap-2 mt-2 md:mt-0 mb-4 md:mb-8">
         <h2 className="text-[18px] sm:text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface tracking-[-0.02em] leading-tight">
