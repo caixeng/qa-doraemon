@@ -149,7 +149,32 @@
     width: calc(100% / var(--zoom-scale, 0.8));
     height: calc(100% / var(--zoom-scale, 0.8));
     transform: scale(var(--zoom-scale, 0.8));
-    transform-origin: top left;
+    transform-origin: 0 0;
+  }
+
+  /* On mobile devices (<= 768px): Disable transform scale to enable 100% smooth native touch scrolling */
+  @media (max-width: 768px) {
+    html {
+      height: auto !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    body {
+      height: auto !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      position: relative !important;
+    }
+
+    #root {
+      width: 100% !important;
+      height: auto !important;
+      min-height: 100vh !important;
+      transform: none !important;
+    }
   }
 }
 
