@@ -159,19 +159,32 @@
   transition: none !important;
 }
 
-/* Login inputs always render light, independent of the app's dark-mode overrides above */
-.login-input {
-  background-color: #f1f5f9 !important;
+/* Ensure inputs with bg-transparent never render a solid rectangular background box */
+input.bg-transparent,
+input[class*="bg-transparent"] {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-/* Force light autofill background, overriding the browser's dark-mode autofill styling */
-.login-input:-webkit-autofill,
-.login-input:-webkit-autofill:hover,
-.login-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #0f172a;
-  -webkit-box-shadow: 0 0 0px 1000px #f1f5f9 inset;
-  box-shadow: 0 0 0px 1000px #f1f5f9 inset;
+/* Force clean autofill background matching current theme */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-on-surface, #0f172a) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-surface, #ffffff) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-surface, #ffffff) inset !important;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-on-surface, #f8fafc) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-surface, #1f2332) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-surface, #1f2332) inset !important;
 }
 
 .dark {
