@@ -256,15 +256,15 @@ export function Dashboard() {
   }
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 pt-2 md:pt-0">
       {/* Dashboard Welcome Header */}
-      <div className="mb-4 md:mb-8">
-        <h2 className="text-[16px] md:text-[24px] font-bold italic font-playfair text-on-surface tracking-[-0.02em] leading-tight">
+      <div className="flex justify-between items-center gap-2 mt-2 md:mt-0 mb-4 md:mb-8">
+        <h2 className="text-[18px] sm:text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface tracking-[-0.02em] leading-tight">
           Tổng quan hôm nay
         </h2>
-        <p className="text-[12px] md:text-[16px] text-on-surface-variant font-medium mt-1 font-inter">
-          {format(today, 'eeee, dd MMMM, yyyy', { locale: vi })}
-        </p>
+        <span className="text-[11px] sm:text-[13px] md:text-[15px] text-on-surface-variant font-medium bg-surface-container/60 px-2.5 py-1 rounded-lg border border-outline-variant/30 whitespace-nowrap">
+          {format(today, 'eeee, dd/MM/yyyy', { locale: vi })}
+        </span>
       </div>
 
       {/* KPI Cards Grid — mỗi card bấm được, dẫn tới tab tương ứng ở Học sinh */}

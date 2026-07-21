@@ -218,24 +218,26 @@ export function Notifications() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6 pt-2 md:pt-0">
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-[18px] md:text-2xl font-bold tracking-tight text-on-surface">Thông Báo</h1>
-          <p className="hidden md:block text-sm text-on-surface-variant">
+      <div className="flex justify-between items-center gap-3 mt-2 md:mt-0 mb-3 md:mb-6">
+        <div className="min-w-0">
+          <h2 className="text-[18px] sm:text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
+            Thông báo
+          </h2>
+          <p className="hidden md:block text-xs md:text-sm text-on-surface-variant mt-1 font-inter">
             Quản lý thông báo chung của trường, thông báo theo lớp và tương tác với phụ huynh qua Zalo OA.
           </p>
         </div>
 
-        <div className="flex gap-1.5 md:gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {notifications.some(n => !n.is_read) && (
             <button
               onClick={handleMarkAllRead}
-              className="inline-flex items-center justify-center gap-1 md:gap-2 bg-surface hover:bg-surface-container border border-outline-variant/40 w-8 h-8 md:w-auto md:px-4 md:py-2.5 rounded-lg md:rounded-xl text-[13px] md:text-sm font-semibold text-on-surface transition-all cursor-pointer"
-              title="Đọc tất cả"
+              className="inline-flex items-center justify-center p-2 md:px-4 md:py-2 bg-surface hover:bg-surface-container border border-outline-variant/40 rounded-xl text-[13px] font-semibold text-on-surface transition-all cursor-pointer shrink-0"
+              title="Đọc tất cả thông báo"
             >
-              <MailOpen className="w-3.5 h-3.5 md:w-4 md:h-4 text-on-surface-variant" />
+              <MailOpen className="w-4.5 h-4.5 md:w-4 md:h-4 text-on-surface-variant" />
               <span className="hidden md:inline">Đọc Tất Cả</span>
             </button>
           )}
@@ -243,10 +245,10 @@ export function Notifications() {
           {isPrivileged && (
             <button
               onClick={handleCreateNotification}
-              className="inline-flex items-center justify-center gap-1 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-2.5 md:px-4 h-8 md:h-auto md:py-2.5 rounded-lg md:rounded-xl text-[12px] md:text-sm font-semibold shadow-sm transition-all cursor-pointer"
+              className="bg-primary text-on-primary p-2 md:px-4 md:py-2 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-sm hover:shadow-md cursor-pointer duration-200 shrink-0"
+              title="Soạn thông báo mới"
             >
-              <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
-              <span className="md:hidden">Soạn</span>
+              <Plus className="w-4.5 h-4.5 md:w-4 md:h-4" />
               <span className="hidden md:inline">Soạn Thông Báo</span>
             </button>
           )}

@@ -334,9 +334,9 @@ export function Attendance() {
         </button>
       )}
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2.5 md:gap-4 mt-2 md:mt-0 mb-4 md:mb-6">
-        <div>
-          <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
+      <div className="flex justify-between items-center gap-2 mt-2 md:mt-0 mb-4 md:mb-6">
+        <div className="min-w-0">
+          <h2 className="text-[17px] sm:text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
             {isDashboardMode ? "Điểm danh hàng ngày" : `Điểm danh lớp ${classesList.find(c => c.id === selectedClassId)?.name || ''}`}
           </h2>
           <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1 font-inter">
@@ -346,7 +346,16 @@ export function Attendance() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+        <div className="flex items-center gap-2 shrink-0">
+          {/* DatePicker inline on mobile */}
+          <div className="w-[145px] sm:w-64 shrink-0">
+            <DatePicker
+              value={selectedDate}
+              onChange={(date) => date && setSelectedDate(date)}
+              maxDate={format(new Date(), 'yyyy-MM-dd')}
+            />
+          </div>
+
           {/* View mode toggle - only shown in class details */}
           {!isDashboardMode && (
             <div className="flex items-center bg-surface-container border border-outline-variant/60 rounded-xl p-0.5 select-none shrink-0">
@@ -381,17 +390,9 @@ export function Attendance() {
         </div>
       </div>
 
-      {/* Filter and Date selection panel */}
-      <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-sm flex flex-wrap md:flex-nowrap gap-2.5 md:gap-3.5 items-center mb-5">
-        <div className="w-[180px] sm:w-64 shrink-0">
-          <DatePicker
-            value={selectedDate}
-            onChange={(date) => date && setSelectedDate(date)}
-            maxDate={format(new Date(), 'yyyy-MM-dd')}
-          />
-        </div>
-
-        {selectedClassId && (
+      {/* Class filter panel if selected */}
+      {selectedClassId && (
+        <div className="mb-4">
           <MobileFilterToggle>
             <select
               value={selectedClassId}
@@ -406,12 +407,8 @@ export function Attendance() {
               )}
             </select>
           </MobileFilterToggle>
-        )}
-
-        <div className="hidden md:block text-on-surface-variant/80 text-[13px] font-semibold md:ml-auto">
-          Ngày hiển thị: <strong className="text-primary font-bold">{format(selectedDate, 'eeee, dd/MM/yyyy', { locale: vi })}</strong>
         </div>
-      </div>
+      )}
 
       {/* Statistics Cards */}
       <div className="flex gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-3 lg:grid-cols-6 md:gap-4 md:overflow-visible mb-4 md:mb-8">
