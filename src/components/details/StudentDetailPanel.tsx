@@ -268,13 +268,13 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                 disabled={isUpdatingStatus}
                 onChange={(e) => handleStatusChange(e.target.value)}
                 className={cn(
-                  "px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider border cursor-pointer outline-none transition-all shadow-3xs max-w-fit shrink-0",
-                  student.status === 'active' && "bg-emerald-50 text-emerald-700 border-emerald-250 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800",
-                  student.status === 'registered' && "bg-purple-50 text-purple-700 border-purple-250 hover:bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800",
-                  (student.status === 'waiting' && student.target_school_year !== '2027-2028') && "bg-amber-50 text-amber-700 border-amber-250 hover:bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800",
-                  (student.status === 'waiting' && student.target_school_year === '2027-2028') && "bg-pink-50 text-pink-700 border-pink-250 hover:bg-pink-100 dark:bg-pink-950/60 dark:text-pink-300 dark:border-pink-800",
-                  student.status === 'graduated' && "bg-blue-50 text-blue-700 border-blue-250 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800",
-                  student.status === 'transferred' && "bg-slate-50 text-slate-700 border-slate-250 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700"
+                  "px-1.5 py-0.5 rounded-md text-[9.5px] font-extrabold uppercase tracking-wide h-5 leading-none border cursor-pointer outline-none transition-all shadow-2xs max-w-fit shrink-0 select-none",
+                  student.status === 'active' && "bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-700",
+                  student.status === 'registered' && "bg-purple-50 text-purple-700 border-purple-300 hover:bg-purple-100 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-700",
+                  (student.status === 'waiting' && student.target_school_year !== '2027-2028') && "bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-700",
+                  (student.status === 'waiting' && student.target_school_year === '2027-2028') && "bg-pink-50 text-pink-700 border-pink-300 hover:bg-pink-100 dark:bg-pink-950/80 dark:text-pink-300 dark:border-pink-700",
+                  student.status === 'graduated' && "bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100 dark:bg-blue-950/80 dark:text-blue-300 dark:border-blue-700",
+                  student.status === 'transferred' && "bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700"
                 )}
               >
                 <option value="active">Đang học</option>
