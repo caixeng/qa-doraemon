@@ -248,21 +248,23 @@ export function Classes() {
   ];
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 space-y-4">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 space-y-4 pt-2 md:pt-0">
       {/* Header section */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Quản lý Lớp học</h2>
+      <div className="flex justify-between items-center gap-3 mt-2 md:mt-0 mb-4 md:mb-6">
+        <div className="min-w-0">
+          <h2 className="text-[18px] sm:text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
+            Quản lý Lớp học
+          </h2>
           <p className="hidden md:block text-[13px] md:text-[14px] text-on-surface-variant mt-1">
             Danh sách các lớp học, phân công giáo viên và quản lý học sinh theo lớp năm học {currentYearName}.
           </p>
         </div>
         <button
           onClick={handleCreateClass}
-          className="inline-flex items-center justify-center gap-1.5 md:gap-2 bg-primary text-on-primary hover:bg-primary/90 px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+          className="bg-primary text-on-primary p-2 md:px-4 md:py-2 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-sm cursor-pointer whitespace-nowrap shrink-0"
+          title="Tạo Lớp Mới"
         >
-          <Plus className="w-4 h-4" />
-          <span className="md:hidden">Thêm</span>
+          <Plus className="w-4.5 h-4.5 md:w-4 md:h-4" />
           <span className="hidden md:inline">Tạo Lớp Mới</span>
         </button>
       </div>

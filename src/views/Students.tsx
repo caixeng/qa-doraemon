@@ -311,39 +311,46 @@ export function Students() {
   const tableColumns = getTableColumns();
 
   return (
-    <div className="animate-in fade-in duration-300 space-y-4">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Danh sách học sinh</h2>
-            <span className="text-[12px] font-extrabold text-primary bg-primary-container/20 px-3 py-1 rounded-xl">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 pt-2 md:pt-0">
+      {/* Header section */}
+      <div className="flex justify-between items-center gap-3 mt-2 md:mt-0 mb-4 md:mb-6">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+            <h2 className="text-[18px] sm:text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
+              Danh sách học sinh
+            </h2>
+            <span className="text-[11px] md:text-[12px] font-extrabold text-primary bg-primary/10 px-2.5 py-0.5 rounded-lg whitespace-nowrap">
               Tổng số: {isLoading ? '…' : totalCount} học sinh
             </span>
           </div>
-          <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1">Quản lý và theo dõi thông tin chi tiết của tất cả học sinh tại trường mầm non.</p>
+          <p className="hidden md:block text-[14px] md:text-[16px] text-on-surface-variant mt-1">
+            Quản lý và theo dõi thông tin chi tiết của tất cả học sinh tại trường mầm non.
+          </p>
         </div>
-        <div className="flex items-center gap-3 flex-wrap">
+
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleExportExcel}
-            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
+            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap"
+            title="Xuất Excel"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-            Xuất Excel
+            <span>Xuất Excel</span>
           </button>
           <button
             onClick={() => setIsImportOpen(true)}
-            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
+            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap"
+            title="Nhập Excel"
           >
             <Plus className="w-4 h-4 text-primary" />
-            Nhập Excel
+            <span>Nhập Excel</span>
           </button>
           <button
             onClick={handleCreateStudent}
-            className="bg-primary text-on-primary px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-1.5 md:gap-2 hover:bg-primary/90 transition-all shadow-sm hover:shadow-md cursor-pointer duration-200 whitespace-nowrap shrink-0"
+            className="bg-primary text-on-primary p-2 md:px-4 md:py-2 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-sm hover:shadow-md cursor-pointer duration-200 shrink-0"
+            title="Thêm học sinh mới"
           >
-            <Plus className="w-4 h-4" />
-            <span className="md:hidden">Thêm</span>
+            <Plus className="w-4.5 h-4.5 md:w-4 md:h-4" />
             <span className="hidden md:inline">Thêm học sinh mới</span>
           </button>
         </div>

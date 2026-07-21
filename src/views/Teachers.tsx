@@ -270,27 +270,31 @@ export function Teachers() {
   ];
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 pt-2 md:pt-0">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div>
-          <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">Danh sách cán bộ, giáo viên, nhân viên</h2>
+      <div className="flex justify-between items-center gap-3 mt-2 md:mt-0 mb-4 md:mb-6">
+        <div className="min-w-0">
+          <h2 className="text-[18px] sm:text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
+            Danh sách cán bộ, giáo viên, nhân viên
+          </h2>
         </div>
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleExportExcel}
-            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
+            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap"
+            title="Xuất Excel"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-            Xuất Excel
+            <span>Xuất Excel</span>
           </button>
           <button
             onClick={() => setIsImportOpen(true)}
-            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap shrink-0"
+            className="hidden md:inline-flex border border-outline-variant hover:bg-surface-container-high px-3.5 py-2 rounded-xl text-[13px] font-semibold items-center gap-2 transition-all cursor-pointer text-on-surface-variant whitespace-nowrap"
+            title="Nhập Excel"
           >
             <Plus className="w-4 h-4 text-primary" />
-            Nhập Excel
+            <span>Nhập Excel</span>
           </button>
 
           {/* View Mode Switcher Toggle */}
@@ -298,9 +302,9 @@ export function Teachers() {
             <button 
               onClick={() => setViewMode('grid')}
               className={cn(
-                "p-2 rounded-lg transition-all cursor-pointer",
+                "p-1.5 md:p-2 rounded-lg transition-all cursor-pointer",
                 viewMode === 'grid' 
-                  ? "bg-white text-primary shadow-sm" 
+                  ? "bg-surface text-primary shadow-sm" 
                   : "text-on-surface-variant hover:text-on-surface"
               )}
               title="Xem dạng lưới"
@@ -310,9 +314,9 @@ export function Teachers() {
             <button 
               onClick={() => setViewMode('table')}
               className={cn(
-                "p-2 rounded-lg transition-all cursor-pointer",
+                "p-1.5 md:p-2 rounded-lg transition-all cursor-pointer",
                 viewMode === 'table' 
-                  ? "bg-white text-primary shadow-sm" 
+                  ? "bg-surface text-primary shadow-sm" 
                   : "text-on-surface-variant hover:text-on-surface"
               )}
               title="Xem dạng bảng"
@@ -323,10 +327,10 @@ export function Teachers() {
 
           <button
             onClick={handleCreateTeacher}
-            className="bg-primary text-on-primary px-3.5 md:px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-1.5 md:gap-2 hover:bg-primary/90 transition-colors shadow-sm cursor-pointer whitespace-nowrap shrink-0"
+            className="bg-primary text-on-primary p-2 md:px-4 md:py-2 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors shadow-sm cursor-pointer whitespace-nowrap shrink-0"
+            title="Thêm nhân sự mới"
           >
-            <Plus className="w-4 h-4" />
-            <span className="md:hidden">Thêm</span>
+            <Plus className="w-4.5 h-4.5 md:w-4 md:h-4" />
             <span className="hidden md:inline">Thêm nhân sự mới</span>
           </button>
         </div>
