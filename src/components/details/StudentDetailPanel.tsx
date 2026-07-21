@@ -258,23 +258,23 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
               </div>
             )}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-[18px] font-bold text-on-surface leading-tight font-playfair italic">
-                {student.full_name}
-              </h2>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-[17px] sm:text-[19px] font-bold text-on-surface leading-tight font-playfair italic truncate" title={student.full_name}>
+              {student.full_name}
+            </h2>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               <select
                 value={student.status === 'waiting' && student.target_school_year === '2027-2028' ? 'future' : student.status}
                 disabled={isUpdatingStatus}
                 onChange={(e) => handleStatusChange(e.target.value)}
                 className={cn(
-                  "px-2 py-0.5 rounded-md text-[12px] font-bold uppercase tracking-wider border cursor-pointer outline-none transition-all shadow-3xs",
-                  student.status === 'active' && "bg-emerald-50 text-emerald-700 border-emerald-250 hover:bg-emerald-100",
-                  student.status === 'registered' && "bg-purple-50 text-purple-700 border-purple-250 hover:bg-purple-100",
-                  (student.status === 'waiting' && student.target_school_year !== '2027-2028') && "bg-amber-50 text-amber-700 border-amber-250 hover:bg-amber-100",
-                  (student.status === 'waiting' && student.target_school_year === '2027-2028') && "bg-pink-50 text-pink-700 border-pink-250 hover:bg-pink-100",
-                  student.status === 'graduated' && "bg-blue-50 text-blue-700 border-blue-250 hover:bg-blue-100",
-                  student.status === 'transferred' && "bg-slate-50 text-slate-700 border-slate-250 hover:bg-slate-100"
+                  "px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider border cursor-pointer outline-none transition-all shadow-3xs max-w-fit shrink-0",
+                  student.status === 'active' && "bg-emerald-50 text-emerald-700 border-emerald-250 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800",
+                  student.status === 'registered' && "bg-purple-50 text-purple-700 border-purple-250 hover:bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800",
+                  (student.status === 'waiting' && student.target_school_year !== '2027-2028') && "bg-amber-50 text-amber-700 border-amber-250 hover:bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800",
+                  (student.status === 'waiting' && student.target_school_year === '2027-2028') && "bg-pink-50 text-pink-700 border-pink-250 hover:bg-pink-100 dark:bg-pink-950/60 dark:text-pink-300 dark:border-pink-800",
+                  student.status === 'graduated' && "bg-blue-50 text-blue-700 border-blue-250 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800",
+                  student.status === 'transferred' && "bg-slate-50 text-slate-700 border-slate-250 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700"
                 )}
               >
                 <option value="active">Đang học</option>
@@ -284,10 +284,10 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                 <option value="graduated">Đã tốt nghiệp</option>
                 <option value="transferred">Đã chuyển trường</option>
               </select>
+              <span className="text-[12px] text-on-surface-variant font-medium truncate">
+                Mã HS: <strong className="text-on-surface font-semibold">{student.student_code}</strong> • Lớp: <strong className="text-on-surface font-semibold">{student.classes?.name || 'Chưa xếp lớp'}</strong>
+              </span>
             </div>
-            <p className="text-[12px] text-on-surface-variant font-medium mt-1">
-              Mã HS: {student.student_code} • Lớp: {student.classes?.name || 'Chưa xếp lớp'}
-            </p>
           </div>
         </div>
         
