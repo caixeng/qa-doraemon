@@ -401,10 +401,9 @@ export function Students() {
             >
               <option value="all">Tất cả các lớp</option>
               {classesList.map((c: any) => {
-                const gradeName = getGradeName(c.grade_level);
                 return (
                   <option key={c.id} value={c.id}>
-                    {c.name}{gradeName ? ` (${gradeName})` : ''}
+                    {c.name}
                   </option>
                 );
               })}
@@ -491,10 +490,9 @@ export function Students() {
               >
                 <option value="">-- Chọn lớp học --</option>
                 {classesList.map((c) => {
-                  const gradeLabel = c.grade_level === 'nha_tre' ? 'Nhà trẻ' : c.grade_level === 'mam' ? 'Mầm' : c.grade_level === 'choi' ? 'Chồi' : c.grade_level === 'la' ? 'Lá' : '';
                   return (
                     <option key={c.id} value={c.id}>
-                      {gradeLabel ? `${c.name} (${gradeLabel})` : c.name}
+                      {c.name}
                     </option>
                   );
                 })}

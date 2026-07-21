@@ -309,16 +309,9 @@ export const StudentForm: React.FC<StudentFormProps> = ({
               options={[
                 { value: '', label: 'Chưa xếp lớp' },
                 ...classesList.map((c) => {
-                  const gradeLabels: Record<string, string> = {
-                    nha_tre: 'Nhà trẻ',
-                    mam: 'Mầm',
-                    choi: 'Chồi',
-                    la: 'Lá'
-                  };
-                  const gradeLabel = c.grade_level ? gradeLabels[c.grade_level] : null;
                   return {
                     value: c.id,
-                    label: gradeLabel ? `${c.name} (${gradeLabel})` : c.name,
+                    label: c.name,
                   };
                 }),
               ]}

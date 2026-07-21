@@ -152,6 +152,25 @@ export function Topbar({
     }
   }, [yearsList, selectedAcademicYearId, setSelectedAcademicYearId]);
 
+  // Fetch users for online status display
+  const { data: onlineUsersResponse } = useQuery({
+    queryKey: ['online-users', currentUser?.school_id],
+    queryFn: () => {
+      if (!currentUser?.school_id) return { data: { data: [], count: 0 } };
+      return api.getAll<any>(
+        'users',
+        { page: 1, pageSize: 30 },
+        { filters: { school_id: currentUser.school_id, is_active: true } }
+      );
+    },
+    enabled: !!currentUser?.school_id
+  });
+  
+  const onlineUsersList = onlineUsersResponse?.data?.data || [];
+  const otherOnlineUsers = onlineUsersList
+    .filter((u: any) => u.id !== currentUser?.id)
+    .slice(0, 4); // Show max 4 users
+
   const notifRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -231,12 +250,9 @@ export function Topbar({
         <h2 className="sm:hidden text-[14px] font-bold font-playfair text-on-surface truncate">
           {pageTitle}
         </h2>
-      </div>
 
-      {/* ── Right section ───────────────── */}
-      <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
-        {/* Academic Year Selector — icon-only on mobile, icon + label from md: up */}
-        <div className="relative flex items-center justify-center w-8 h-8 md:w-auto md:justify-start md:gap-1.5 md:px-3 md:py-1.5 md:h-10 bg-surface-container border border-outline-variant/60 rounded-full select-none">
+        {/* Academic Year Selector — Moved to left section for better layout hierarchy */}
+        <div className="relative flex items-center justify-center w-8 h-8 md:w-auto md:justify-start md:gap-1.5 md:px-3 md:py-1.5 md:h-10 bg-surface-container border border-outline-variant/60 rounded-full select-none shrink-0 ml-2">
           <Calendar className="w-4 h-4 text-primary shrink-0 pointer-events-none" />
           <span className="hidden md:inline text-xs font-bold text-on-surface truncate max-w-[140px] pointer-events-none">
             {yearsList.find((y: any) => y.id === selectedAcademicYearId)?.name || 'Chọn năm học'}
@@ -257,40 +273,35 @@ export function Topbar({
             ))}
           </select>
         </div>
+      </div>
 
-        {/* Search */}
-        <div className="relative hidden md:block">
-          <div
-            className={cn(
-              "flex items-center h-10 rounded-full bg-surface-container",
-              "border border-transparent transition-all duration-200",
-              "focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20",
-              "w-48 lg:w-64 xl:w-80"
-            )}
-          >
-            <Search className="absolute left-3 w-4 h-4 text-on-surface-variant" />
-            <input
-              type="text"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Tìm kiếm..."
-              className="w-full h-full bg-transparent border-none focus:outline-none pl-10 pr-4 text-[13px] text-on-surface placeholder:text-on-surface-variant/60 rounded-full"
-            />
-            {searchValue && (
-              <button
-                onClick={() => setSearchValue("")}
-                className="absolute right-3 p-0.5 rounded-full text-on-surface-variant hover:text-on-surface"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
+      {/* ── Right section ───────────────── */}
+      <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
+        {/* Online Users Avatar Stack */}
+        {otherOnlineUsers.length > 0 && (
+          <div className="flex items-center gap-1.5 md:gap-2 mr-1 md:mr-3 border-r border-outline-variant/40 pr-3 md:pr-4 h-10 select-none">
+            <div className="flex -space-x-2 md:-space-x-3 overflow-hidden">
+              {otherOnlineUsers.map((u: any) => (
+                <div 
+                  key={u.id} 
+                  className="relative group transition-transform duration-200 hover:-translate-y-0.5 hover:z-10"
+                  title={`${u.full_name} - Đang hoạt động`}
+                >
+                  <Avatar
+                    src={u.avatar_url}
+                    name={u.full_name || "U"}
+                    size="sm"
+                    status="online"
+                    className="ring-2 ring-surface-container-lowest"
+                  />
+                </div>
+              ))}
+            </div>
+            <span className="hidden sm:inline text-[11px] font-bold text-on-surface-variant/80 pl-1 md:pl-2">
+              +{otherOnlineUsers.length} online
+            </span>
           </div>
-        </div>
-
-        {/* Mobile search button */}
-        <button className="md:hidden w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
-          <Search className="w-4 h-4" />
-        </button>
+        )}
 
         {/* Theme Toggle */}
         <button

@@ -229,130 +229,81 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
             onClick={handleEdit}
             variant="outline"
             size="sm"
-            className="rounded-xl flex items-center gap-1 cursor-pointer text-xs"
+            className="rounded-xl w-8 p-0 cursor-pointer"
+            title="Chỉnh sửa nhân sự"
           >
-            <Edit2 className="w-3.5 h-3.5" /> Sửa
+            <Edit2 className="w-3.5 h-3.5" />
           </Button>
           <Button
             onClick={() => setIsDeleteDialogOpen(true)}
             variant="outline"
             size="sm"
-            className="rounded-xl border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 flex items-center gap-1 cursor-pointer text-xs"
+            className="rounded-xl w-8 p-0 border-red-200 hover:bg-red-50 hover:border-red-300 text-red-600 cursor-pointer"
+            title="Xóa nhân sự"
           >
-            <Trash2 className="w-3.5 h-3.5" /> Xóa
+            <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>
 
-      {/* ═══ TABS ═══ */}
-      <div className="flex px-4 border-b border-outline-variant/20 bg-white shrink-0">
-        {[
-          { id: 'profile', label: 'Thông tin cá nhân', icon: User },
-          { id: 'classes', label: 'Lớp phụ trách', icon: Layers, enabled: teacher.role === 'teacher' }
-        ].filter(tab => tab.enabled !== false).map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            className={cn(
-              "flex-1 flex items-center justify-center gap-1.5 py-3 text-[13px] font-bold border-b-2 transition-colors cursor-pointer",
-              activeTab === tab.id 
-                ? "border-b-primary text-primary" 
-                : "border-b-transparent text-on-surface-variant hover:bg-surface-container-low/50"
-            )}
-          >
-            <tab.icon className="w-4 h-4" />
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ═══ TAB CONTENT ═══ */}
+      {/* ═══ CONTENT ═══ */}
       <div className="flex-1 overflow-y-auto p-6">
-        
-        {/* ── PROFILE TAB ── */}
-        {activeTab === 'profile' && (
-          <div className="space-y-6 animate-fade-in bg-white p-5 rounded-2xl border border-outline-variant/40 shadow-xs">
-            <div>
-              <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Lý lịch nhân sự</h4>
-              <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13.5px]">
-                <div>
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Họ và tên</div>
-                  <div className="text-on-surface font-semibold">{teacher.full_name}</div>
-                </div>
-                <div>
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Ngày sinh</div>
-                  <div className="text-on-surface font-semibold">{formatDate(teacher.date_of_birth)}</div>
-                </div>
-                <div>
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Số điện thoại</div>
-                  <div className="text-on-surface font-semibold select-all">{teacher.phone || '—'}</div>
-                </div>
-                <div>
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Email liên hệ</div>
-                  <div className="text-on-surface font-semibold select-all">{teacher.email}</div>
-                </div>
-                <div className="col-span-2">
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Địa chỉ liên hệ</div>
-                  <div className="text-on-surface font-semibold leading-relaxed">{teacher.address || 'Chưa cập nhật'}</div>
-                </div>
+        <div className="space-y-6 bg-white p-5 rounded-2xl border border-outline-variant/40 shadow-xs">
+          <div>
+            <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Lý lịch nhân sự</h4>
+            <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13.5px]">
+              <div>
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Họ và tên</div>
+                <div className="text-on-surface font-semibold">{teacher.full_name}</div>
               </div>
-            </div>
-            
-            <div>
-              <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Thông tin công việc</h4>
-              <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13.5px]">
-                <div>
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Vai trò hệ thống</div>
-                  <div className="text-on-surface font-semibold capitalize">{teacher.role === 'admin' ? 'Quản trị viên / BGH' : teacher.role === 'staff' ? 'Nhân viên văn phòng / tổ bếp' : 'Giáo viên'}</div>
-                </div>
-                <div>
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Chức vụ hiển thị</div>
-                  <div className="text-on-surface font-semibold">{teacher.job_title || '—'}</div>
-                </div>
-                <div>
-                  <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Ngày cập nhật hồ sơ</div>
-                  <div className="text-on-surface font-semibold">{formatDate(teacher.updated_at)}</div>
-                </div>
+              <div>
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Ngày sinh</div>
+                <div className="text-on-surface font-semibold">{formatDate(teacher.date_of_birth)}</div>
+              </div>
+              <div>
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Số điện thoại</div>
+                <div className="text-on-surface font-semibold select-all">{teacher.phone || '—'}</div>
+              </div>
+              <div>
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Email liên hệ</div>
+                <div className="text-on-surface font-semibold select-all">{teacher.email}</div>
+              </div>
+              <div className="col-span-2">
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Địa chỉ liên hệ</div>
+                <div className="text-on-surface font-semibold leading-relaxed">{teacher.address || 'Chưa cập nhật'}</div>
               </div>
             </div>
           </div>
-        )}
-
-        {/* ── CLASSES TAB ── */}
-        {activeTab === 'classes' && (
-          <div className="space-y-4 animate-fade-in bg-white p-5 rounded-2xl border border-outline-variant/40 shadow-xs">
-            <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Danh sách các lớp phụ trách</h4>
-            
-            {assignedClasses.length === 0 ? (
-              <div className="py-8 text-center border border-dashed border-outline-variant rounded-2xl text-on-surface-variant space-y-2">
-                <Layers className="w-8 h-8 mx-auto text-on-surface-variant/40" />
-                <p className="text-[13px] font-bold">Chưa phân công phụ trách lớp</p>
-                <p className="text-[12px] text-on-surface-variant/80 px-4">Nhân sự này chưa được gán phụ trách bất kỳ lớp học nào.</p>
+          
+          <div>
+            <h4 className="text-[13px] font-extrabold text-primary uppercase tracking-wider border-b border-outline-variant/20 pb-2 mb-3">Thông tin công việc</h4>
+            <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13.5px]">
+              <div>
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Vai trò hệ thống</div>
+                <div className="text-on-surface font-semibold capitalize">{teacher.role === 'admin' ? 'Quản trị viên / BGH' : teacher.role === 'staff' ? 'Nhân viên văn phòng / tổ bếp' : 'Giáo viên'}</div>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {assignedClasses.map((ct: any) => (
-                  <div 
-                    key={ct.id} 
-                    className="border border-outline-variant/30 p-4 rounded-xl flex items-center justify-between bg-surface-container-low hover:border-primary/30 transition-all shadow-2xs"
-                  >
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[14px] text-on-surface">
-                        Lớp {ct.classes?.name}
-                      </span>
-                      <span className="text-[12px] text-on-surface-variant/80 font-semibold mt-0.5">
-                        Khối: {getGradeName(ct.classes?.grade_level)}
-                      </span>
+              <div>
+                {teacher.role === 'teacher' ? (
+                  <>
+                    <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Lớp phụ trách</div>
+                    <div className="text-on-surface font-semibold text-primary font-bold">
+                      {assignedClasses.map((ct: any) => ct.classes?.name).filter(Boolean).join(', ') || 'Chưa phân công'}
                     </div>
-                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-100 rounded text-[12px] font-extrabold uppercase tracking-wider">
-                      Giảng dạy
-                    </span>
-                  </div>
-                ))}
+                  </>
+                ) : (
+                  <>
+                    <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Chức vụ hiển thị</div>
+                    <div className="text-on-surface font-semibold">{teacher.job_title || '—'}</div>
+                  </>
+                )}
               </div>
-            )}
+              <div>
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Ngày cập nhật hồ sơ</div>
+                <div className="text-on-surface font-semibold">{formatDate(teacher.updated_at)}</div>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
       <ConfirmDialog

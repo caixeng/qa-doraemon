@@ -77,10 +77,9 @@ const StudentTransferPanelContent: React.FC<StudentTransferPanelContentProps> = 
             {classesList
               .filter((c) => c.id !== classId)
               .map((c) => {
-                const gradeLabel = getGradeLabel(c.grade_level);
                 return (
                   <option key={c.id} value={c.id}>
-                    {gradeLabel ? `${c.name} (Khối ${gradeLabel})` : c.name}
+                    {c.name}
                   </option>
                 );
               })}
@@ -184,10 +183,9 @@ const BulkStudentTransferPanelContent: React.FC<BulkStudentTransferPanelContentP
             {classesList
               .filter((c) => c.id !== classId)
               .map((c) => {
-                const gradeLabel = getGradeLabel(c.grade_level);
                 return (
                   <option key={c.id} value={c.id}>
-                    {gradeLabel ? `${c.name} (Khối ${gradeLabel})` : c.name}
+                    {c.name}
                   </option>
                 );
               })}

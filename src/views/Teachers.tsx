@@ -39,6 +39,19 @@ const getTeacherTitle = (_email: string, role: string, jobTitle?: string | null)
 
 const getRoleBadge = (row: TeacherRow) => {
   const title = row.job_title || getTeacherTitle(row.email, row.role, row.job_title);
+  const titleLower = title.toLowerCase();
+  const isTeacher = row.role === 'teacher' || titleLower.includes('giáo viên') || titleLower.includes('gv');
+
+  if (isTeacher) {
+    const classes = row.class_teachers?.map((ct: any) => ct.classes?.name).filter(Boolean).join(', ');
+    const displayTitle = classes ? `Giáo viên lớp ${classes}` : title;
+    return (
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+        {displayTitle}
+      </span>
+    );
+  }
+
   switch (row.role) {
     case 'admin':
       return (
@@ -47,15 +60,9 @@ const getRoleBadge = (row: TeacherRow) => {
         </span>
       );
     case 'staff':
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
-          {title}
-        </span>
-      );
-    case 'teacher':
     default:
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-sky-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] bg-purple-600 text-white font-extrabold tracking-wide shadow-2xs select-none">
           {title}
         </span>
       );
@@ -363,10 +370,9 @@ export function Teachers() {
           >
             <option value="all">Tất cả các lớp phụ trách</option>
             {classesList.map((c) => {
-              const gradeName = getGradeName(c.grade_level);
               return (
                 <option key={c.id} value={c.id}>
-                  {c.name}{gradeName ? ` (${gradeName})` : ''}
+                  {c.name}
                 </option>
               );
             })}

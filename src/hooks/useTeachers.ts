@@ -43,8 +43,9 @@ export interface ExcelTeacherRow {
 }
 
 const compareVietnameseNames = (nameA: string, nameB: string) => {
-  const cleanA = (nameA || '').trim();
-  const cleanB = (nameB || '').trim();
+  // Loại bỏ phần thông tin trong ngoặc đơn (ví dụ: "(GV)") trước khi so sánh tên tiếng Việt
+  const cleanA = (nameA || '').replace(/\s*\(.*\)\s*/g, '').trim();
+  const cleanB = (nameB || '').replace(/\s*\(.*\)\s*/g, '').trim();
 
   if (!cleanA && !cleanB) return 0;
   if (!cleanA) return 1;
@@ -74,7 +75,7 @@ export function useTeachers() {
   const schoolId = useAuthStore((state) => state.user?.school_id) || '00000000-0000-0000-0000-000000000001';
 
   // View mode: grid vs table
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
 
   // Delete state
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -159,94 +160,63 @@ export function useTeachers() {
     const name = (user.full_name || '').trim();
     const email = (user.email || '').toLowerCase().trim();
 
-    if (email === 'admin@doraemon.edu.vn' || name.toLowerCase().includes('quản trị viên')) {
-      return 5;
-    }
+    // 8. IT / Quản trị viên (xếp cuối cùng danh sách)
+    const isITOrAdmin =
+      email === 'admin@doraemon.edu.vn' ||
+      name.toLowerCase().includes('quản trị viên') ||
+      title.includes('it') ||
+      title.includes('quản trị');
+    if (isITOrAdmin) return 8;
 
-    const isBGH =
-      role === 'admin' ||
-      title.includes('hiệu trưởng') ||
-      title.includes('hiệu phó') ||
+    // 1. Hiệu trưởng
+    const isPrincipal = title.includes('hiệu trưởng') && !title.includes('phó') && !title.startsWith('p.');
+    if (isPrincipal) return 1;
+
+    // 2. Hiệu phó
+    const isVicePrincipal =
+      title.includes('phó hiệu trưởng') ||
       title.includes('p. hiệu trưởng') ||
-      title.includes('p.hiệu trưởng') ||
-      title.includes('chủ tịch') ||
-      title.includes('ban giám hiệu');
+      title.includes('phó hiệu') ||
+      title.includes('p.hiệu') ||
+      title.includes('hiệu phó');
+    if (isVicePrincipal) return 2;
 
-    const isBGHAndOffice =
-      isBGH ||
-      title.includes('kế toán') ||
+    // 3. Kế toán
+    const isAccountant = title.includes('kế toán');
+    if (isAccountant) return 3;
+
+    // Phân loại Giáo viên, Tổ bếp, Lao công trước để tránh bị gộp vào Văn phòng do check role staff
+    const isTeacher = role === 'teacher' || title.includes('giáo viên') || title.includes('gv');
+    const isKitchen = title.includes('bếp') || title.includes('cấp dưỡng') || title.includes('nấu ăn');
+    const isMaintenance = title.includes('kỹ thuật') || title.includes('bảo vệ') || title.includes('lao công') || title.includes('vệ sinh');
+
+    if (isTeacher) return 5;
+    if (isKitchen) return 6;
+    if (isMaintenance) return 7;
+
+    // 4. Văn phòng / Hành chính khác
+    const isOffice =
       title.includes('y tế') ||
       title.includes('bác sĩ') ||
       title.includes('văn phòng') ||
       title.includes('thủ quỹ') ||
       title.includes('văn thư') ||
       title.includes('tuyển sinh') ||
-      (role === 'staff' &&
-        !title.includes('bếp') &&
-        !title.includes('cấp dưỡng') &&
-        !title.includes('nấu ăn') &&
-        !title.includes('kỹ thuật') &&
-        !title.includes('bảo vệ') &&
-        !title.includes('lao công') &&
-        !title.includes('vệ sinh'));
+      role === 'admin' ||
+      role === 'staff';
+    
+    if (isOffice) return 4;
 
-    if (isBGHAndOffice) return 1;
-
-    const isTeacher = role === 'teacher' || title.includes('giáo viên');
-    if (isTeacher) return 2;
-
-    const isKitchen = title.includes('bếp') || title.includes('cấp dưỡng') || title.includes('nấu ăn');
-    if (isKitchen) return 3;
-
-    return 4;
-  };
-
-  const compareGroup1 = (a: TeacherRow, b: TeacherRow) => {
-    const getSubRank = (user: TeacherRow) => {
-      const title = (
-        user.job_title ||
-        getTeacherTitle(user.email, user.role, user.job_title) ||
-        ''
-      )
-        .toLowerCase()
-        .trim();
-
-      const isPrincipal = title.includes('hiệu trưởng') && !title.includes('phó') && !title.startsWith('p.');
-      if (isPrincipal) return 1;
-
-      if (
-        title.includes('phó hiệu trưởng') ||
-        title.includes('p. hiệu trưởng') ||
-        title.includes('phó hiệu') ||
-        title.includes('p.hiệu')
-      ) {
-        return 2;
-      }
-
-      return 3;
-    };
-
-    const subRankA = getSubRank(a);
-    const subRankB = getSubRank(b);
-
-    if (subRankA !== subRankB) return subRankA - subRankB;
-
-    if (subRankA === 2) {
-      const dateA = a.date_of_birth ? new Date(a.date_of_birth).getTime() : Infinity;
-      const dateB = b.date_of_birth ? new Date(b.date_of_birth).getTime() : Infinity;
-      if (dateA !== dateB) return dateA - dateB;
-    }
-
-    return compareVietnameseNames(a.full_name, b.full_name);
+    return 7;
   };
 
   const filteredTeachersData = [...rawTeachersData].filter((user) => {
     if (selectedRole === 'all') return true;
     const group = classifyUser(user);
-    if (selectedRole === 'bgh' && (group === 1 || group === 5)) return true;
-    if (selectedRole === 'teacher' && group === 2) return true;
-    if (selectedRole === 'kitchen' && group === 3) return true;
-    if (selectedRole === 'maintenance' && group === 4) return true;
+    if (selectedRole === 'bgh' && (group === 1 || group === 2 || group === 3 || group === 4 || group === 8)) return true;
+    if (selectedRole === 'teacher' && group === 5) return true;
+    if (selectedRole === 'kitchen' && group === 6) return true;
+    if (selectedRole === 'maintenance' && group === 7) return true;
     return false;
   });
 
@@ -256,8 +226,11 @@ export function useTeachers() {
 
     if (groupA !== groupB) return groupA - groupB;
 
-    if (groupA === 1) {
-      return compareGroup1(a, b);
+    // Sắp xếp hiệu phó theo tuổi (ngày sinh nhỏ hơn / lớn tuổi hơn xếp trước)
+    if (groupA === 2) {
+      const dateA = a.date_of_birth ? new Date(a.date_of_birth).getTime() : Infinity;
+      const dateB = b.date_of_birth ? new Date(b.date_of_birth).getTime() : Infinity;
+      if (dateA !== dateB) return dateA - dateB;
     }
 
     return compareVietnameseNames(a.full_name, b.full_name);
