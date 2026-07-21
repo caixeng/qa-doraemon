@@ -119,7 +119,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               aria-describedby={error ? errorId : (helperText ? helperId : undefined)}
               aria-label="Ngày bắt đầu"
               className={cn(
-                "w-full rounded-xl border bg-surface-container-lowest font-inter text-sm h-10 px-3 pl-10 text-on-surface",
+                "w-full rounded-xl border bg-surface-container-lowest font-inter text-[12.5px] font-semibold h-9 px-2.5 pl-8.5 text-on-surface",
                 "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all",
                 error ? "border-error" : "border-outline-variant hover:border-outline",
                 disabled && "opacity-50 cursor-not-allowed bg-surface-container"
@@ -127,9 +127,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             />
             <span 
               onClick={handleIconClick}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-3.5 h-3.5" />
             </span>
           </div>
 
@@ -150,7 +150,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               aria-describedby={error ? errorId : (helperText ? helperId : undefined)}
               aria-label="Ngày kết thúc"
               className={cn(
-                "w-full rounded-xl border bg-surface-container-lowest font-inter text-sm h-10 px-3 pl-10 text-on-surface",
+                "w-full rounded-xl border bg-surface-container-lowest font-inter text-[12.5px] font-semibold h-9 px-2.5 pl-8.5 text-on-surface",
                 "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all",
                 error ? "border-error" : "border-outline-variant hover:border-outline",
                 disabled && "opacity-50 cursor-not-allowed bg-surface-container"
@@ -158,9 +158,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             />
             <span 
               onClick={() => !disabled && endRef.current?.showPicker()}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-3.5 h-3.5" />
             </span>
           </div>
         </div>
@@ -188,7 +188,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           <div
             aria-hidden="true"
             className={cn(
-              "w-full rounded-xl border bg-surface-container-lowest font-inter text-sm h-10 px-3 pl-10 text-on-surface",
+              "w-full rounded-xl border bg-surface-container-lowest font-inter text-[12.5px] font-semibold h-9 px-2.5 pl-8.5 text-on-surface",
               "flex items-center pointer-events-none",
               "peer-focus:border-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-all",
               error ? "border-error" : "border-outline-variant",
@@ -199,8 +199,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               ? `Tháng ${formatMonthString(value).split('-')[1]}/${formatMonthString(value).split('-')[0]}`
               : 'Chọn tháng'}
           </div>
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
-            <Calendar className="w-4 h-4" />
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
+            <Calendar className="w-3.5 h-3.5" />
           </span>
         </div>
       ) : (
@@ -217,7 +217,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             aria-invalid={!!error}
             aria-describedby={error ? errorId : (helperText ? helperId : undefined)}
             className={cn(
-              "w-full rounded-xl border bg-surface-container-lowest font-inter text-sm h-10 px-3 pl-10 text-on-surface",
+              "w-full rounded-xl border bg-surface-container-lowest font-inter text-[12.5px] font-semibold h-9 px-2.5 pl-8.5 text-on-surface",
               "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all",
               error ? "border-error" : "border-outline-variant hover:border-outline",
               disabled && "opacity-50 cursor-not-allowed bg-surface-container"
@@ -225,9 +225,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           />
           <span
             onClick={handleIconClick}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer"
           >
-            <Calendar className="w-4 h-4" />
+            <Calendar className="w-3.5 h-3.5" />
           </span>
         </div>
       )}
