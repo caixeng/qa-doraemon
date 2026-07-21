@@ -399,13 +399,26 @@ export function Attendance() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          {/* DatePicker inline on mobile */}
-          <div className="w-[125px] sm:w-64 shrink-0">
-            <DatePicker
-              value={selectedDate}
-              onChange={(date) => date && setSelectedDate(date)}
-              maxDate={format(new Date(), 'yyyy-MM-dd')}
+          {/* Mini Compact DatePicker (hiện dd/MM nhỏ gọn 10.5px trên mobile) */}
+          <div className="relative inline-block shrink-0">
+            <input
+              type="date"
+              value={format(selectedDate, 'yyyy-MM-dd')}
+              max={format(new Date(), 'yyyy-MM-dd')}
+              onChange={(e) => {
+                if (e.target.value) {
+                  const [y, m, d] = e.target.value.split('-').map(Number);
+                  setSelectedDate(new Date(y, m - 1, d));
+                }
+              }}
+              className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer"
             />
+            <div className="flex items-center gap-1 bg-surface-container-lowest border border-outline-variant/60 px-2 py-1 rounded-xl text-[10.5px] sm:text-[12.5px] font-bold text-on-surface hover:bg-surface-container transition-colors shadow-3xs cursor-pointer select-none">
+              <CalendarIcon className="w-3 h-3 text-primary shrink-0" />
+              <span className="sm:hidden">{format(selectedDate, 'dd/MM')}</span>
+              <span className="hidden sm:inline">{format(selectedDate, 'dd/MM/yyyy')}</span>
+              <span className="text-[9px] text-on-surface-variant ml-0.5">▼</span>
+            </div>
           </div>
 
           {/* View mode toggle - only shown in class details */}
