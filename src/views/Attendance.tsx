@@ -323,7 +323,7 @@ export function Attendance() {
     : isLoadingClasses || isLoadingStudents || isLoadingAttendance;
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12">
+    <div className="animate-in fade-in duration-300 max-w-[1400px] mx-auto pb-12 pt-2 md:pt-0">
       {/* Back button & Header section */}
       {!isDashboardMode && (
         <button
@@ -334,7 +334,7 @@ export function Attendance() {
         </button>
       )}
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2.5 md:gap-4 mt-2 md:mt-0 mb-4 md:mb-6">
         <div>
           <h2 className="text-[20px] md:text-[24px] font-bold italic font-playfair text-on-surface leading-tight tracking-[-0.02em]">
             {isDashboardMode ? "Điểm danh hàng ngày" : `Điểm danh lớp ${classesList.find(c => c.id === selectedClassId)?.name || ''}`}
@@ -383,7 +383,7 @@ export function Attendance() {
 
       {/* Filter and Date selection panel */}
       <div className="md:bg-surface-container-lowest md:p-3.5 md:rounded-2xl md:border md:border-outline-variant/30 md:shadow-sm flex flex-wrap md:flex-nowrap gap-2.5 md:gap-3.5 items-center mb-5">
-        <div className="flex-1 min-w-0 md:flex-none md:w-64">
+        <div className="w-[180px] sm:w-64 shrink-0">
           <DatePicker
             value={selectedDate}
             onChange={(date) => date && setSelectedDate(date)}
