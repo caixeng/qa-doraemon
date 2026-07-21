@@ -283,7 +283,7 @@ export function Topbar({
         {/* Online Users Avatar Stack */}
         {otherOnlineUsers.length > 0 && (
           <div className="flex items-center gap-1.5 md:gap-2 mr-1 md:mr-3 border-r border-outline-variant/40 pr-3 md:pr-4 h-10 select-none">
-            <div className="flex -space-x-2 md:-space-x-3 overflow-hidden">
+            <div className="flex -space-x-1.5 md:-space-x-2">
               {otherOnlineUsers.map((u: any) => (
                 <div 
                   key={u.id} 
@@ -295,7 +295,6 @@ export function Topbar({
                     name={u.full_name || "U"}
                     size="sm"
                     status="online"
-                    className="ring-2 ring-surface-container-lowest"
                   />
                 </div>
               ))}
