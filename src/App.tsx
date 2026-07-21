@@ -1,12 +1,12 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppLayout } from './components/AppLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastContainer, ViewSkeleton } from './components/ui';
-import { useAppStore } from './stores/appStore';
 import { SlidePanelProvider } from './context/SlidePanelContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Lazy load views for optimal bundle size
 const Login = lazy(() => import('./views/Login').then(m => ({ default: m.Login })));
@@ -39,18 +39,12 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  const theme = useAppStore((state) => state.theme);
-  const setTheme = useAppStore((state) => state.setTheme);
-
-  useEffect(() => {
-    setTheme(theme);
-  }, [theme, setTheme]);
-
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <SlidePanelProvider>
-          <ToastContainer />
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <SlidePanelProvider>
+            <ToastContainer />
           <BrowserRouter>
             <Suspense fallback={<ViewSkeleton />}>
               <Routes>
@@ -118,8 +112,9 @@ export default function App() {
               </Routes>
             </Suspense>
           </BrowserRouter>
-        </SlidePanelProvider>
-      </QueryClientProvider>
+          </SlidePanelProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

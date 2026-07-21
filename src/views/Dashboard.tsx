@@ -429,7 +429,7 @@ export function Dashboard() {
                   <div 
                     key={student.id} 
                     onClick={() => handleOpenDetail(student.id)}
-                    className="bg-amber-50/50 dark:bg-amber-950/10 rounded-2xl p-4 border border-outline-variant/30 hover:border-amber-400 hover:bg-amber-100/30 dark:hover:bg-amber-900/20 transition-all duration-200 cursor-pointer shadow-xs hover:shadow-sm"
+                    className="bg-surface-container/60 hover:bg-surface-container-high/60 rounded-2xl p-4 border border-outline-variant/40 hover:border-primary/40 transition-all duration-200 cursor-pointer shadow-2xs hover:shadow-sm"
                   >
                     <div className="flex justify-between items-start">
                       <div>

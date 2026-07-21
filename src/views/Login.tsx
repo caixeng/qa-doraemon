@@ -1,21 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Eye, EyeOff, LogIn, GraduationCap } from 'lucide-react';
+import { 
+  Eye, 
+  EyeOff, 
+  LogIn, 
+  GraduationCap, 
+  User, 
+  Lock, 
+  Users, 
+  Utensils, 
+  Calendar, 
+  HeartHandshake,
+  LoaderCircle
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import schoolLogo from '../assets/logo.jpg';
 
 export function Login() {
   const navigate = useNavigate();
-  const { setUser, setAccessToken, setLoading, setError, error, isLoading } =
-    useAuthStore();
+  const { setUser, setAccessToken, setLoading, setError, error } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [logoError, setLogoError] = useState(false);
+
+  useEffect(() => {
+    // Tạm thời tắt dark mode trên trang đăng nhập (luôn hiển thị giao diện sáng)
+    const htmlElement = document.documentElement;
+    const hasDark = htmlElement.classList.contains('dark');
+    if (hasDark) {
+      htmlElement.classList.remove('dark');
+    }
+
+    return () => {
+      if (hasDark) {
+        htmlElement.classList.add('dark');
+      }
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +57,6 @@ export function Login() {
         loginEmail = `${loginEmail.toLowerCase()}@doraemon.edu.vn`;
       }
 
-      // Sign in with Supabase Auth
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
           email: loginEmail,
@@ -39,23 +64,27 @@ export function Login() {
         });
 
       if (authError) {
-        throw new Error(
-          authError.message === 'Invalid login credentials'
-            ? 'Email hoặc mật khẩu không đúng'
-            : authError.message
-        );
+        if (
+          authError.message === 'Invalid login credentials' ||
+          authError.message === 'Email not confirmed'
+        ) {
+          throw new Error('Tài khoản hoặc mật khẩu không chính xác.');
+        }
+        throw authError;
       }
 
-      if (!authData.session || !authData.user) {
-        throw new Error('Không thể đăng nhập. Vui lòng thử lại.');
+      if (!authData.session) {
+        throw new Error('Không thể thiết lập phiên đăng nhập.');
       }
 
-      // Fetch user profile from users table
-      const { data: profile, error: profileError } = (await supabase
+      // Fetch user profile from the database
+      const { data: profileData, error: profileError } = await supabase
         .from('users')
         .select('*')
-        .eq('id', authData.user.id)
-        .single()) as { data: any; error: any };
+        .eq('email', loginEmail)
+        .single();
+
+      const profile = profileData as any;
 
       if (profileError || !profile) {
         throw new Error(
@@ -96,178 +125,238 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
+    <div className="flex h-full w-full bg-slate-50 font-sans text-slate-800 relative overflow-hidden select-none">
+      
+      {/* ─── LEFT COLUMN: BRANDING & FEATURES (Hidden on Mobile) ─── */}
+      <div className="hidden lg:flex w-1/2 flex-col justify-between relative overflow-hidden bg-sky-50/50 border-r border-slate-200/60 p-12 xl:p-16">
+        {/* Accents phát sáng nền */}
+        <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-primary/10 blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-sky-400/10 blur-[100px] pointer-events-none" />
+        
+        {/* Top Branding Header */}
+        <div className="relative z-10 flex items-center gap-3.5">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+            {!logoError ? (
+              <img src={schoolLogo} alt="Logo" onError={() => setLogoError(true)} className="h-full w-full object-contain rounded-lg" />
+            ) : (
+              <GraduationCap className="w-6 h-6 text-primary" />
+            )}
+          </div>
+          <div>
+            <div className="font-black tracking-widest text-[16px] uppercase text-slate-900 leading-tight">
+              Doraemon<span className="text-primary"> Kids</span>
+            </div>
+            <div className="text-[10px] text-slate-500 font-bold tracking-wider uppercase mt-0.5">
+              Hệ thống Quản lý Trường Mầm non
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 my-auto max-w-xl">
+          <h1 className="text-4xl xl:text-5.5xl font-black leading-[1.15] tracking-tight text-slate-900 font-playfair">
+            Ươm mầm <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-600">
+              tương lai hạnh phúc.
+            </span>
+          </h1>
+          <p className="mt-4 text-[15px] xl:text-[16px] text-slate-600 font-medium leading-relaxed">
+            Hệ thống quản lý thông minh giúp tối ưu hóa vận hành trường học, theo dõi sát sao sự phát triển của bé và kết nối phụ huynh chặt chẽ.
+          </p>
+
+          {/* Feature List (CIC Style) */}
+          <div className="mt-10 space-y-3.5">
+            {/* Feature 1 */}
+            <div className="flex items-center gap-4 p-4.5 rounded-2xl bg-white/70 border border-slate-200/40 backdrop-blur-md hover:bg-white/90 transition-all duration-300 shadow-3xs">
+              <div className="text-primary flex-shrink-0 bg-primary/5 p-2.5 rounded-xl">
+                <Users className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-800">Quản lý Học sinh & Lớp học</h3>
+                <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Theo dõi hồ sơ học sinh, xếp lớp nhanh chóng và phân công giáo viên khoa học.</p>
+              </div>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="flex items-center gap-4 p-4.5 rounded-2xl bg-white/70 border border-slate-200/40 backdrop-blur-md hover:bg-white/90 transition-all duration-300 shadow-3xs">
+              <div className="text-primary flex-shrink-0 bg-primary/5 p-2.5 rounded-xl">
+                <Utensils className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-800">Dinh dưỡng & Sức khỏe</h3>
+                <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Lập thực đơn phong phú theo tuần, theo dõi chỉ số chiều cao, cân nặng định kỳ.</p>
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="flex items-center gap-4 p-4.5 rounded-2xl bg-white/70 border border-slate-200/40 backdrop-blur-md hover:bg-white/90 transition-all duration-300 shadow-3xs">
+              <div className="text-primary flex-shrink-0 bg-primary/5 p-2.5 rounded-xl">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-800">Kế hoạch Tuần & Hoạt động</h3>
+                <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Đồng bộ lịch học, hoạt động vui chơi và kế hoạch giảng dạy trực quan.</p>
+              </div>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="flex items-center gap-4 p-4.5 rounded-2xl bg-white/70 border border-slate-200/40 backdrop-blur-md hover:bg-white/90 transition-all duration-300 shadow-3xs">
+              <div className="text-primary flex-shrink-0 bg-primary/5 p-2.5 rounded-xl">
+                <HeartHandshake className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-[14px] font-bold text-slate-800">Kết nối & Tương tác Phụ huynh</h3>
+                <p className="text-[12px] text-slate-500 mt-0.5 font-medium">Gửi thông báo nhanh chóng, điểm danh hàng ngày và tiếp nhận ý kiến hai chiều.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Info */}
+        <div className="relative z-10 flex items-center gap-5 text-[10.5px] font-bold text-slate-400 tracking-wider uppercase">
+          <span>Phiên bản v1.2</span>
+          <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+          <span>Bảo mật SSL 256-bit</span>
+          <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> 99.9% Uptime
+          </span>
+        </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="relative w-full max-w-md"
-      >
-        {/* Card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl shadow-primary/10 border border-white/50 overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-primary to-sky-600 px-8 py-10 text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-              className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl mb-4 border border-white/30 overflow-hidden shadow-md"
-            >
+      {/* ─── RIGHT COLUMN: LOGIN FORM ─── */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 relative bg-white transition-colors duration-300">
+        <div className="w-full max-w-[420px] lg:-mt-6">
+          
+          {/* Logo & Headers */}
+          <div className="flex flex-col items-center text-center mb-7 w-full">
+            <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm transition-transform hover:scale-105 duration-500">
               {!logoError ? (
-                <img
-                  src={schoolLogo}
-                  alt="Doraemon School Logo"
-                  onError={() => setLogoError(true)}
-                  className="w-full h-full object-cover"
-                />
+                <img src={schoolLogo} alt="School Logo" className="h-full w-full object-contain rounded-lg" />
               ) : (
-                <div className="w-full h-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <GraduationCap className="w-10 h-10 text-white" />
-                </div>
+                <GraduationCap className="w-10 h-10 text-primary" />
               )}
-            </motion.div>
-            <h1 className="text-2xl font-bold text-white font-playfair">
-              Trường Mầm Non Doraemon
-            </h1>
-            <p className="text-white/80 text-sm mt-1">
-              Hệ thống Quản lý — Đăng nhập
+            </div>
+            
+            <h2 className="text-[12px] font-black tracking-[0.18em] uppercase text-slate-400 mb-1 flex justify-center w-full">
+              Hà Tĩnh
+            </h2>
+            <h3 className="text-[20px] sm:text-[22px] font-black tracking-wider uppercase leading-snug flex justify-center w-full text-slate-900 font-playfair">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-700">
+                Trường Mầm Non Doraemon
+              </span>
+            </h3>
+            <p className="mt-1 text-[11px] font-bold text-slate-400 tracking-[0.15em] uppercase flex justify-center w-full">
+              Hệ thống Quản lý tổng thể trường học
             </p>
           </div>
 
+          {/* Divider */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-slate-200"></div>
+            <span className="text-xs font-bold text-slate-400 tracking-widest uppercase">Đăng nhập hệ thống</span>
+            <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-slate-200"></div>
+          </div>
+
           {/* Form */}
-          <form onSubmit={handleLogin} className="px-8 py-8 space-y-5">
-            {/* Error message */}
+          <form onSubmit={handleLogin} className="space-y-4">
             {error && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg border border-red-200"
-              >
+              <div className="p-3 bg-red-50 text-red-600 text-xs font-semibold rounded-xl border border-red-100 flex items-center justify-center text-center">
                 {error}
-              </motion.div>
+              </div>
             )}
 
-            {/* Email */}
+            {/* Username Input */}
             <div className="space-y-1.5">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-slate-900"
-              >
+              <label htmlFor="email" className="block text-2xs font-black uppercase tracking-wider text-slate-400">
                 Tên đăng nhập hoặc Email
               </label>
-              <input
-                id="email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Admin, số điện thoại hoặc email"
-                required
-                autoComplete="username"
-                className="login-input w-full px-4 py-3 border border-slate-200 rounded-lg
-                  text-slate-900 placeholder:text-slate-400
-                  focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
-                  transition-all duration-200"
-              />
+              <div className="relative group flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-3 focus-within:border-primary focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                <User size={17} className="shrink-0 text-slate-400 group-focus-within:text-primary" />
+                <input
+                  id="email"
+                  type="text"
+                  required
+                  autoFocus
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Admin, số điện thoại hoặc email"
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-semibold"
+                  disabled={isSubmitting}
+                />
+              </div>
             </div>
 
-            {/* Password */}
+            {/* Password Input */}
             <div className="space-y-1.5">
-              <label
-                htmlFor="password"
-                className="text-sm font-medium text-slate-900"
-              >
+              <label htmlFor="password" className="block text-2xs font-black uppercase tracking-wider text-slate-400">
                 Mật khẩu
               </label>
-              <div className="relative">
+              <div className="relative group flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-3 focus-within:border-primary focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                <Lock size={17} className="shrink-0 text-slate-400 group-focus-within:text-primary" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  required
-                  autoComplete="current-password"
-                  className="login-input w-full px-4 py-3 pr-12 border border-slate-200 rounded-lg
-                    text-slate-900 placeholder:text-slate-400
-                    focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
-                    transition-all duration-200"
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 pr-8 font-semibold"
+                  disabled={isSubmitting}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                  tabIndex={-1}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
+                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
             </div>
 
-            {/* Remember & Forgot */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-slate-500 cursor-pointer">
+            {/* Ghi nhớ & Quên mật khẩu */}
+            <div className="flex justify-between items-center pt-1 pb-2">
+              <label className="flex items-center gap-2 cursor-pointer group">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/30"
+                  className="w-4 h-4 rounded border-slate-200 text-primary focus:ring-primary/10 bg-slate-50/50"
                 />
-                Ghi nhớ đăng nhập
+                <span className="text-xs text-slate-400 group-hover:text-slate-600 transition-colors font-medium">
+                  Ghi nhớ đăng nhập
+                </span>
               </label>
+              
               <button
                 type="button"
-                className="text-primary hover:text-primary/80 font-medium transition-colors"
+                className="text-xs font-bold text-primary hover:text-primary/80 transition-colors"
               >
                 Quên mật khẩu?
               </button>
             </div>
 
-            {/* Submit */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting || !email || !password}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary text-on-primary
-                font-semibold rounded-lg shadow-lg shadow-primary/25
-                hover:bg-primary/90 active:scale-[0.98]
-                disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
-                transition-all duration-200"
+              className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl bg-primary text-white font-bold text-[14px] shadow-md shadow-primary/10 hover:bg-primary/95 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 transition-all duration-200 cursor-pointer"
             >
               {isSubmitting ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Đang đăng nhập...
-                </>
+                <LoaderCircle size={17} className="animate-spin" />
               ) : (
                 <>
-                  <LogIn className="w-5 h-5" />
-                  Đăng nhập
+                  <LogIn size={17} />
+                  <span>Đăng nhập</span>
                 </>
               )}
             </button>
           </form>
 
-          {/* Footer */}
-          <div className="px-8 pb-6 text-center">
-            <p className="text-xs text-slate-400">
-              AN TOÀN — YÊU THƯƠNG — TÔN TRỌNG
-            </p>
+          {/* Slogan */}
+          <div className="mt-14 text-center text-2xs text-slate-400 font-bold tracking-widest uppercase">
+            AN TOÀN — YÊU THƯƠNG — TÔN TRỌNG
           </div>
         </div>
-
-        {/* Copyright */}
-        <p className="text-center text-xs text-slate-400 mt-6">
-          © 2026 Trường Mầm Non Doraemon — Hà Tĩnh
-        </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

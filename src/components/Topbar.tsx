@@ -11,12 +11,16 @@ import {
   X,
   Sun,
   Moon,
-  Calendar
+  Calendar,
+  Check,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { Avatar } from "./ui/Avatar";
 import { useAppStore } from "../stores/appStore";
 import { useAuthStore } from "../stores/authStore";
+import { useTheme, PRIMARY_COLORS } from "../context/ThemeContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import { subscribeToTable } from "../lib/supabase";
@@ -85,8 +89,7 @@ export function Topbar({
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const theme = useAppStore((state) => state.theme);
-  const setTheme = useAppStore((state) => state.setTheme);
+  const { theme, setTheme, primaryColor, setPrimaryColor, zoom, setZoom } = useTheme();
   const selectedAcademicYearId = useAppStore((state) => state.selectedAcademicYearId);
   const setSelectedAcademicYearId = useAppStore((state) => state.setSelectedAcademicYearId);
 
@@ -444,7 +447,7 @@ export function Topbar({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-full mt-2 w-56 bg-surface rounded-2xl shadow-xl border border-outline-variant/60 overflow-hidden z-50"
+                className="absolute right-0 top-full mt-2 w-72 bg-surface rounded-2xl shadow-xl border border-outline-variant/60 overflow-hidden z-50"
               >
                 {/* User info header */}
                 {user && (
@@ -475,6 +478,111 @@ export function Topbar({
                       {item.label}
                     </button>
                   ))}
+                </div>
+
+                <div className="border-t border-outline-variant/40 py-3 px-4 space-y-3.5">
+                  <div className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Cài đặt cá nhân</div>
+                  
+                  {/* Theme selection */}
+                  <div className="space-y-1.5">
+                    <div className="text-[11px] font-semibold text-on-surface-variant">Giao diện nền</div>
+                    <div className="flex items-center gap-1 rounded-lg bg-surface-variant p-0.5">
+                      {[
+                        { value: 'light' as const, icon: Sun, label: 'Sáng' },
+                        { value: 'dark' as const, icon: Moon, label: 'Tối' },
+                      ].map(({ value, icon: Icon, label }) => (
+                        <button
+                          key={value}
+                          onClick={() => setTheme(value)}
+                          className={cn(
+                            'flex-1 flex cursor-pointer items-center justify-center rounded-md py-1.5 transition-all text-xs font-semibold gap-1',
+                            theme === value
+                              ? 'border border-outline-variant bg-surface shadow-sm text-on-surface'
+                              : 'text-on-surface-variant hover:text-on-surface',
+                          )}
+                        >
+                          <Icon size={13} />
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Primary Color selection */}
+                  <div className="space-y-1.5">
+                    <div className="text-[11px] font-semibold text-on-surface-variant">Màu sắc chủ đạo</div>
+                    <div className="grid grid-cols-9 gap-1.5 justify-items-center rounded-lg bg-surface-variant p-2">
+                      {PRIMARY_COLORS.map(({ id, name, hex }) => {
+                        const active = primaryColor === id;
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setPrimaryColor(id)}
+                            title={name}
+                            className={cn(
+                              'grid h-5 w-5 place-items-center rounded-full transition-transform hover:scale-110 cursor-pointer',
+                              active && 'scale-110',
+                            )}
+                            style={{
+                              background: hex,
+                              ...(active
+                                ? { boxShadow: `0 0 0 2px var(--color-surface, #fff), 0 0 0 3.5px ${hex}` }
+                                : {}),
+                            }}
+                          >
+                            {active && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[10px] text-on-surface-variant">
+                      Đang chọn:{' '}
+                      <span className="font-bold text-on-surface">
+                        {PRIMARY_COLORS.find((c) => c.id === primaryColor)?.name}
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Tỷ lệ hiển thị Zoom */}
+                  <div className="space-y-1.5 pt-1.5 border-t border-outline-variant/30">
+                    <div className="flex justify-between items-center text-[11px] font-semibold text-on-surface-variant">
+                      <span>Tỷ lệ hiển thị</span>
+                      <span className="font-bold text-primary">{zoom}%</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setZoom(Math.max(80, zoom - 10))}
+                        disabled={zoom <= 80}
+                        title="Thu nhỏ"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg border border-outline-variant bg-surface-variant hover:bg-surface-container-high text-on-surface-variant transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        <ZoomOut size={12} />
+                      </button>
+                      <input
+                        type="range"
+                        min="80"
+                        max="120"
+                        step="10"
+                        value={zoom}
+                        onChange={(e) => setZoom(Number(e.target.value))}
+                        className="flex-1 h-1.5 rounded-lg bg-surface-variant appearance-none cursor-pointer accent-primary focus:outline-none"
+                        style={{
+                          background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${((zoom - 80) / 40) * 100}%, var(--color-surface-container-high) ${((zoom - 80) / 40) * 100}%, var(--color-surface-container-high) 100%)`
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setZoom(Math.min(120, zoom + 10))}
+                        disabled={zoom >= 120}
+                        title="Phóng to"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg border border-outline-variant bg-surface-variant hover:bg-surface-container-high text-on-surface-variant transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        <ZoomIn size={12} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="border-t border-outline-variant/40 py-1.5">
