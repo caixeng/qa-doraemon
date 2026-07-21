@@ -259,24 +259,23 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
             )}
           </div>
           <div className="min-w-0 flex-1">
-            {/* Row 1: Tên học sinh */}
-            <h2 className="text-[16px] sm:text-[18px] font-bold text-on-surface leading-tight font-playfair italic truncate" title={student.full_name}>
+            {/* Row 1: Tên học sinh (Nổi bật nhất) */}
+            <h2 className="text-[17px] sm:text-[19px] font-bold text-on-surface leading-tight font-playfair italic truncate" title={student.full_name}>
               {student.full_name}
             </h2>
 
-            {/* Row 2: Mã HS & Lớp học */}
-            <p className="text-[12px] text-on-surface-variant font-medium mt-0.5 truncate">
-              Mã HS: <strong className="text-on-surface font-semibold">{student.student_code}</strong> • Lớp: <strong className="text-on-surface font-semibold">{student.classes?.name || 'Chưa xếp lớp'}</strong>
-            </p>
-
-            {/* Row 3: Trạng thái mini pill nhỏ gọn vừa vặn với cỡ chữ xung quanh */}
-            <div className="mt-1.5 flex items-center">
+            {/* Row 2: Mã HS • Lớp • Trạng thái (Nhỏ nhắn bên dưới tên) */}
+            <div className="flex items-center gap-1.5 mt-1 flex-wrap text-[11.5px] text-on-surface-variant font-medium">
+              <span>Mã HS: <strong className="text-on-surface font-semibold">{student.student_code}</strong></span>
+              <span>•</span>
+              <span>Lớp: <strong className="text-on-surface font-semibold">{student.classes?.name || 'Chưa xếp lớp'}</strong></span>
+              <span>•</span>
               <select
                 value={student.status === 'waiting' && student.target_school_year === '2027-2028' ? 'future' : student.status}
                 disabled={isUpdatingStatus}
                 onChange={(e) => handleStatusChange(e.target.value)}
                 className={cn(
-                  "px-2 py-0.5 rounded-lg text-[11px] font-semibold border cursor-pointer outline-none transition-all shadow-3xs max-w-fit leading-tight shrink-0",
+                  "px-1.5 py-0.5 rounded-md text-[10px] font-bold border cursor-pointer outline-none transition-all shadow-3xs shrink-0 inline-block leading-tight",
                   student.status === 'active' && "bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800",
                   student.status === 'registered' && "bg-purple-50 text-purple-700 border-purple-300 hover:bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800",
                   (student.status === 'waiting' && student.target_school_year !== '2027-2028') && "bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800",
@@ -285,12 +284,12 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
                   student.status === 'transferred' && "bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700"
                 )}
               >
-                <option value="active">● Đang học</option>
-                <option value="registered">● Đã ghi danh</option>
-                <option value="waiting">● Danh sách chờ</option>
-                <option value="future">● Đăng ký năm tới</option>
-                <option value="graduated">● Đã tốt nghiệp</option>
-                <option value="transferred">● Đã chuyển trường</option>
+                <option value="active">Đang học</option>
+                <option value="registered">Đã ghi danh</option>
+                <option value="waiting">Danh sách chờ</option>
+                <option value="future">Đăng ký năm tới</option>
+                <option value="graduated">Đã tốt nghiệp</option>
+                <option value="transferred">Đã chuyển trường</option>
               </select>
             </div>
           </div>
