@@ -309,8 +309,8 @@ export function Login() {
               <label htmlFor="email" className="block text-2xs font-black uppercase tracking-wider text-on-surface-variant">
                 Tên đăng nhập hoặc Email
               </label>
-              <div className="relative group flex items-center gap-2.5 rounded-xl border border-outline-variant bg-surface-container-low/60 px-3.5 py-3 focus-within:border-primary focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/10 transition-all">
-                <User size={17} className="shrink-0 text-on-surface-variant/70 group-focus-within:text-primary transition-colors" />
+              <div className="relative flex items-center">
+                <User size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/70 pointer-events-none z-10" />
                 <input
                   id="email"
                   type="text"
@@ -319,7 +319,7 @@ export function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Admin, số điện thoại hoặc email"
-                  className="w-full !bg-transparent text-sm text-on-surface outline-none border-none shadow-none placeholder:text-on-surface-variant/50 font-semibold focus:ring-0"
+                  className="w-full rounded-xl border border-outline-variant bg-surface-container-low/60 pl-10 pr-3.5 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 font-semibold focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
                   disabled={isSubmitting}
                 />
               </div>
@@ -330,8 +330,8 @@ export function Login() {
               <label htmlFor="password" className="block text-2xs font-black uppercase tracking-wider text-on-surface-variant">
                 Mật khẩu
               </label>
-              <div className="relative group flex items-center gap-2.5 rounded-xl border border-outline-variant bg-surface-container-low/60 px-3.5 py-3 focus-within:border-primary focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/10 transition-all">
-                <Lock size={17} className="shrink-0 text-on-surface-variant/70 group-focus-within:text-primary transition-colors" />
+              <div className="relative flex items-center">
+                <Lock size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/70 pointer-events-none z-10" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -339,13 +339,13 @@ export function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full !bg-transparent text-sm text-on-surface outline-none border-none shadow-none placeholder:text-on-surface-variant/50 pr-8 font-semibold focus:ring-0"
+                  className="w-full rounded-xl border border-outline-variant bg-surface-container-low/60 pl-10 pr-10 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 font-semibold focus:border-primary focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/10 transition-all"
                   disabled={isSubmitting}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-on-surface-variant/70 hover:text-on-surface transition-colors cursor-pointer"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/70 hover:text-on-surface transition-colors cursor-pointer z-10"
                 >
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
