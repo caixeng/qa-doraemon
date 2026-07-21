@@ -379,7 +379,7 @@ export const StudentDetailPanel: React.FC<StudentDetailPanelProps> = ({
       </div>
 
       {/* ═══ TAB CONTENT ═══ */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-28 [-webkit-overflow-scrolling:touch]">
         
         {/* ── PROFILE TAB ── */}
         {activeTab === 'profile' && (
