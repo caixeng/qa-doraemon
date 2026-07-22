@@ -300,18 +300,6 @@ export function Teachers() {
           {/* View Mode Switcher Toggle */}
           <div className="bg-surface-container rounded-xl p-1 flex items-center border border-outline-variant/30">
             <button 
-              onClick={() => setViewMode('grid')}
-              className={cn(
-                "p-1.5 md:p-2 rounded-lg transition-all cursor-pointer",
-                viewMode === 'grid' 
-                  ? "bg-surface text-primary shadow-sm" 
-                  : "text-on-surface-variant hover:text-on-surface"
-              )}
-              title="Xem dạng lưới"
-            >
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-            <button 
               onClick={() => setViewMode('table')}
               className={cn(
                 "p-1.5 md:p-2 rounded-lg transition-all cursor-pointer",
@@ -322,6 +310,18 @@ export function Teachers() {
               title="Xem dạng bảng"
             >
               <List className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => setViewMode('grid')}
+              className={cn(
+                "p-1.5 md:p-2 rounded-lg transition-all cursor-pointer",
+                viewMode === 'grid' 
+                  ? "bg-surface text-primary shadow-sm" 
+                  : "text-on-surface-variant hover:text-on-surface"
+              )}
+              title="Xem dạng lưới"
+            >
+              <LayoutGrid className="w-4 h-4" />
             </button>
           </div>
 

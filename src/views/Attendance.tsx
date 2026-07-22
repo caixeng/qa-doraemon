@@ -426,19 +426,6 @@ export function Attendance() {
             <div className="flex items-center bg-surface-container border border-outline-variant/60 rounded-xl p-0.5 select-none shrink-0">
               <button
                 type="button"
-                onClick={() => setViewMode('grid')}
-                className={cn(
-                  "p-1.5 rounded-lg transition-all cursor-pointer",
-                  viewMode === 'grid'
-                    ? "bg-surface text-primary shadow-sm"
-                    : "text-on-surface-variant hover:text-on-surface"
-                )}
-                title="Xem dạng lưới"
-              >
-                <LayoutGrid className="w-4.5 h-4.5" />
-              </button>
-              <button
-                type="button"
                 onClick={() => setViewMode('table')}
                 className={cn(
                   "p-1.5 rounded-lg transition-all cursor-pointer",
@@ -449,6 +436,19 @@ export function Attendance() {
                 title="Xem dạng bảng"
               >
                 <TableIcon className="w-4.5 h-4.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  "p-1.5 rounded-lg transition-all cursor-pointer",
+                  viewMode === 'grid'
+                    ? "bg-surface text-primary shadow-sm"
+                    : "text-on-surface-variant hover:text-on-surface"
+                )}
+                title="Xem dạng lưới"
+              >
+                <LayoutGrid className="w-4.5 h-4.5" />
               </button>
             </div>
           )}
