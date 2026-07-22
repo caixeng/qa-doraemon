@@ -154,6 +154,7 @@ export interface UserRow {
   is_active: boolean;
   work_status: 'active' | 'maternity_leave' | 'inactive' | 'on_leave';
   must_change_password: boolean;
+  cccd: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -170,6 +171,7 @@ export interface UserInsert {
   is_active?: boolean;
   work_status?: 'active' | 'maternity_leave' | 'inactive' | 'on_leave';
   must_change_password?: boolean;
+  cccd?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -185,6 +187,7 @@ export interface UserUpdate {
   is_active?: boolean;
   work_status?: 'active' | 'maternity_leave' | 'inactive' | 'on_leave';
   must_change_password?: boolean;
+  cccd?: string | null;
   updated_at?: string;
 }
 

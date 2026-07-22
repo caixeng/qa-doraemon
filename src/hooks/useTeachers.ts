@@ -20,6 +20,7 @@ export interface TeacherRow {
   work_status: 'active' | 'maternity_leave' | 'inactive' | 'on_leave';
   date_of_birth: string | null;
   address: string | null;
+  cccd: string | null;
   created_at: string;
   updated_at: string;
   class_teachers?: { class_id: string; classes: { name: string } | null }[];
@@ -36,6 +37,8 @@ export interface ExcelTeacherRow {
   'Chức danh'?: string;
   'Ngày sinh'?: string | number;
   'Địa chỉ'?: string;
+  'CCCD'?: string | number;
+  'Số CCCD'?: string | number;
   'Trạng thái hoạt động'?: string;
   'Trạng thái'?: string;
   'Lớp'?: string;
@@ -328,6 +331,7 @@ export function useTeachers() {
           job_title: row.job_title || '',
           date_of_birth: row.date_of_birth ? new Date(row.date_of_birth).toLocaleDateString('vi-VN') : '',
           address: row.address || '',
+          cccd: row.cccd || '',
           status:
             row.work_status === 'active'
               ? 'Đang làm việc'
@@ -348,6 +352,7 @@ export function useTeachers() {
         { key: 'job_title', label: 'Chức vụ' },
         { key: 'date_of_birth', label: 'Ngày sinh' },
         { key: 'address', label: 'Địa chỉ' },
+        { key: 'cccd', label: 'Số CCCD' },
         { key: 'status', label: 'Trạng thái hoạt động' },
         { key: 'classes', label: 'Lớp phụ trách' },
       ];
@@ -382,6 +387,7 @@ export function useTeachers() {
       const jobTitle = row['Chức vụ'] || row['Chức danh'];
       const rawDob = row['Ngày sinh'];
       const address = row['Địa chỉ'];
+      const cccd = row['CCCD'] || row['Số CCCD'];
       const rawStatus = row['Trạng thái hoạt động'] || row['Trạng thái'];
 
       const dob = rawDob ? parseExcelDate(rawDob) : null;
@@ -447,6 +453,7 @@ export function useTeachers() {
           job_title: jobTitle ? jobTitle.trim() : role === 'teacher' ? 'Giáo viên' : 'Nhân viên',
           date_of_birth: dob,
           address: address ? address.trim() : null,
+          cccd: cccd ? String(cccd).trim() : null,
           is_active: isActive,
           work_status: workStatus,
           created_at: new Date().toISOString(),

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { User, Phone, Briefcase, Mail, MapPin, Calendar } from 'lucide-react';
+import { User, Phone, Briefcase, Mail, MapPin, Calendar, FileText } from 'lucide-react';
 import { 
   Input, 
   Select, 
@@ -28,6 +28,7 @@ const teacherFormSchema = z.object({
   avatar_url: z.string().nullable().optional(),
   date_of_birth: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
+  cccd: z.string().optional().nullable(),
   work_status: z.enum(['active', 'maternity_leave', 'inactive', 'on_leave']).default('active'),
   assigned_class_ids: z.array(z.string()).default([]),
 });
@@ -120,6 +121,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
     avatar_url: teacher?.avatar_url || '',
     date_of_birth: teacher?.date_of_birth ? teacher.date_of_birth.split('T')[0] : '',
     address: teacher?.address || '',
+    cccd: teacher?.cccd || '',
     work_status: teacher?.work_status || (teacher?.is_active === false ? 'inactive' : 'active'),
     assigned_class_ids: teacher?.class_teachers?.map((ct: any) => ct.class_id) || [],
   };
@@ -151,6 +153,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
         avatar_url: teacher?.avatar_url || '',
         date_of_birth: teacher?.date_of_birth ? teacher.date_of_birth.split('T')[0] : '',
         address: teacher?.address || '',
+        cccd: teacher?.cccd || '',
         work_status: teacher?.work_status || (teacher?.is_active === false ? 'inactive' : 'active'),
         assigned_class_ids: teacher?.class_teachers?.map((ct: any) => ct.class_id) || [],
       });
@@ -206,6 +209,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
         job_title: finalJobTitle,
         date_of_birth: values.date_of_birth || null,
         address: values.address || null,
+        cccd: values.cccd || null,
         work_status: values.work_status,
         is_active: values.work_status !== 'inactive',
         updated_at: new Date().toISOString(),
@@ -347,6 +351,14 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
               leftIcon={<Calendar />}
               error={errors.date_of_birth?.message}
               {...register('date_of_birth')}
+            />
+
+            <Input
+              label="Số CCCD / Định danh"
+              placeholder="Nhập số CCCD (12 số)..."
+              leftIcon={<FileText />}
+              error={errors.cccd?.message}
+              {...register('cccd')}
             />
           </div>
         </div>

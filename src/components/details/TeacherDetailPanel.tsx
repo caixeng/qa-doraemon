@@ -268,6 +268,10 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
                 <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Email liên hệ</div>
                 <div className="text-on-surface font-semibold select-all">{teacher.email}</div>
               </div>
+              <div>
+                <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Số CCCD / Định danh</div>
+                <div className="text-on-surface font-semibold select-all">{teacher.cccd || '—'}</div>
+              </div>
               <div className="col-span-2">
                 <div className="text-on-surface-variant/80 text-[12px] font-bold uppercase tracking-wider mb-0.5">Địa chỉ liên hệ</div>
                 <div className="text-on-surface font-semibold leading-relaxed">{teacher.address || 'Chưa cập nhật'}</div>
