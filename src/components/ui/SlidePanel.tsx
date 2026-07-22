@@ -120,7 +120,9 @@ const SlidePanelItem: React.FC<SlidePanelItemProps> = ({
     const observer = new ResizeObserver(() => {
       const rect = elementRef.current?.getBoundingClientRect();
       if (rect) {
-        onLeftEdgeChange(panel.id, rect.left);
+        // Lấy tỉ lệ zoom-scale từ custom property của CSS hoặc style (mặc định là 0.8)
+        const zoomScale = parseFloat(document.documentElement.style.getPropertyValue('--zoom-scale') || getComputedStyle(document.documentElement).getPropertyValue('--zoom-scale')) || 0.8;
+        onLeftEdgeChange(panel.id, rect.left / zoomScale);
       }
     });
     observer.observe(elementRef.current);
@@ -484,9 +486,11 @@ export const SlidePanelContainer: React.FC<SlidePanelContainerProps> = ({ isSide
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!resizeStartRef.current) return;
-      const delta = resizeStartRef.current.startX - e.clientX;
+      const zoomScale = parseFloat(document.documentElement.style.getPropertyValue('--zoom-scale') || getComputedStyle(document.documentElement).getPropertyValue('--zoom-scale')) || 0.8;
+      const deltaPhysical = resizeStartRef.current.startX - e.clientX;
+      const delta = deltaPhysical / zoomScale; // Quy đổi delta sang CSS pixels
       const newWidth = resizeStartRef.current.startWidth + delta;
-      const maxWidth = window.innerWidth * 0.95;
+      const maxWidth = (window.innerWidth / zoomScale) * 0.95;
       const clamped = Math.min(maxWidth, Math.max(MIN_PANEL_WIDTH, newWidth));
       setPanelWidth(clamped);
     };
@@ -511,9 +515,10 @@ export const SlidePanelContainer: React.FC<SlidePanelContainerProps> = ({ isSide
   }, [isResizing, setPanelWidth]);
 
   const handleResizeStart = useCallback((startX: number) => {
+    const zoomScale = parseFloat(document.documentElement.style.getPropertyValue('--zoom-scale') || getComputedStyle(document.documentElement).getPropertyValue('--zoom-scale')) || 0.8;
     const currentWidth = panelWidth > 0
       ? panelWidth
-      : (panelViewportRef.current?.querySelector<HTMLElement>('[role="dialog"]')?.offsetWidth || window.innerWidth * 0.7);
+      : (panelViewportRef.current?.querySelector<HTMLElement>('[role="dialog"]')?.offsetWidth || (window.innerWidth / zoomScale) * 0.7);
     resizeStartRef.current = { startX, startWidth: currentWidth };
     setIsResizing(true);
   }, [panelWidth]);
