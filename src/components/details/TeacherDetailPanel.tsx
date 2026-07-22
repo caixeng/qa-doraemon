@@ -169,11 +169,11 @@ export const TeacherDetailPanel: React.FC<TeacherDetailPanelProps> = ({
       {/* ═══ DETAIL HEADER ═══ */}
       <div className="px-6 py-5 bg-white border-b border-outline-variant/30 flex items-center justify-between shrink-0 shadow-xs">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-primary/10 rounded-full overflow-hidden border-2 border-primary/20 p-0.5 shrink-0 shadow-inner flex items-center justify-center">
+          <div className="w-28 h-28 bg-primary/10 rounded-full overflow-hidden border-2 border-primary/20 p-0.5 shrink-0 shadow-inner flex items-center justify-center">
             {teacher.avatar_url ? (
               <img src={teacher.avatar_url} alt={teacher.full_name} className="w-full h-full rounded-full object-cover" />
             ) : (
-              <div className="w-full h-full rounded-full bg-primary/20 flex items-center justify-center text-[20px] font-black text-primary font-playfair">
+              <div className="w-full h-full rounded-full bg-primary/20 flex items-center justify-center text-[36px] font-black text-primary font-playfair">
                 {getInitials(teacher.full_name)}
               </div>
             )}

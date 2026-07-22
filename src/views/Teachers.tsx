@@ -190,11 +190,11 @@ export function Teachers() {
       sortable: true,
       render: (row: any) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
+          <div className="w-16 h-16 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
             {row.avatar_url ? (
               <img src={row.avatar_url} alt={row.full_name} className="w-full h-full object-cover" />
             ) : (
-              <span className="text-[12px] font-bold text-primary font-playfair">
+              <span className="text-[22px] font-bold text-primary font-playfair">
                 {getInitials(row.full_name)}
               </span>
             )}
@@ -435,11 +435,11 @@ export function Teachers() {
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/5 border border-outline-variant/30 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                    <div className="w-28 h-28 rounded-2xl bg-primary/5 border border-outline-variant/30 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
                       {row.avatar_url ? (
                         <img src={row.avatar_url} alt={row.full_name} className="w-full h-full object-cover" />
                       ) : (
-                        <span className="text-[18px] font-bold text-primary font-playfair">
+                        <span className="text-[36px] font-bold text-primary font-playfair">
                           {getInitials(row.full_name)}
                         </span>
                       )}
