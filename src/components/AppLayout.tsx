@@ -3,6 +3,7 @@ import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { MobileBottomNav } from './MobileBottomNav';
 import { MobileMoreSheet } from './MobileMoreSheet';
+import { MobileQuickActionModal } from './mobile/MobileQuickActionModal';
 import { useUIStore } from '../stores/uiStore';
 import { useAuthStore } from '../stores/authStore';
 import { SlidePanelContainer } from './ui';
@@ -14,8 +15,14 @@ import { cn } from '../lib/utils';
  * Used as a wrapper for all authenticated routes.
  */
 export function AppLayout() {
-  const { sidebarCollapsed, mobileMoreOpen, setMobileMoreOpen, toggleSidebar } =
-    useUIStore();
+  const { 
+    sidebarCollapsed, 
+    mobileMoreOpen, 
+    setMobileMoreOpen, 
+    mobileQuickActionOpen,
+    setMobileQuickActionOpen,
+    toggleSidebar 
+  } = useUIStore();
   const { user } = useAuthStore();
 
   return (
@@ -54,7 +61,7 @@ export function AppLayout() {
       {/* Main Content */}
       <main
         className={cn(
-          "flex-1 pt-14 md:pt-[96px] h-full overflow-y-auto px-3 md:px-8 pb-32 md:pb-8 transition-all duration-300 [-webkit-overflow-scrolling:touch]",
+          "flex-1 pt-14 md:pt-[96px] h-full overflow-y-auto px-3 md:px-8 pb-24 md:pb-8 transition-all duration-300 [-webkit-overflow-scrolling:touch]",
           sidebarCollapsed ? "md:ml-[72px]" : "md:ml-[280px]"
         )}
       >
@@ -63,9 +70,10 @@ export function AppLayout() {
         </div>
       </main>
 
-      {/* Mobile bottom tab bar (replaces sidebar on small screens) */}
+      {/* Mobile bottom tab bar & bottom sheets */}
       <MobileBottomNav />
       <MobileMoreSheet isOpen={mobileMoreOpen} onClose={() => setMobileMoreOpen(false)} />
+      <MobileQuickActionModal isOpen={mobileQuickActionOpen} onClose={() => setMobileQuickActionOpen(false)} />
 
       {/* SlidePanel Container */}
       <SlidePanelContainer isSidebarCollapsed={sidebarCollapsed} />

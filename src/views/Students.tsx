@@ -19,6 +19,7 @@ import {
 } from "../components/ui";
 import { cn } from "../lib/utils";
 import { useStudents, type StudentWithRelations } from "../hooks/useStudents";
+import { MobileCardList, type MobileCardItem } from "../components/mobile/MobileCardList";
 
 import { getVietnameseSortKeys } from "../lib/vietnameseName";
 
@@ -573,21 +574,67 @@ export function Students() {
               <p className="text-sm text-on-surface-variant max-w-sm mx-auto">Không tìm thấy bản ghi nào trùng khớp với bộ lọc hoặc tìm kiếm hiện tại.</p>
             </div>
           ) : (
-            <Table
-              className={cn(
-                "rounded-none border-0 bg-transparent transition-opacity duration-200",
-                isRefetchingNewFilter && "opacity-60 pointer-events-none"
-              )}
-              columns={tableColumns}
-              data={studentsData}
-              rowKey={(row) => row.id}
-              selectable={true}
-              selectedKeys={selectedKeys}
-              onSelectionChange={setSelectedKeys}
-              onRowClick={(row) => handleOpenDetail(row.id)}
-              onScrollToBottom={handleScrollToBottom}
-              loadingMore={isFetchingMore}
-            />
+            <>
+              {/* Mobile Card View (md:hidden) */}
+              <div className="p-3 md:hidden">
+                <MobileCardList
+                  items={studentsData.map((s) => {
+                    const primaryGuardian = s.guardians?.find((g) => g.is_primary) || s.guardians?.[0];
+                    const parentDisplay = primaryGuardian
+                      ? `${primaryGuardian.full_name}${primaryGuardian.phone ? ` • ${primaryGuardian.phone}` : ''}`
+                      : ((s as Record<string, any>).parent_name || (s as Record<string, any>).parent_phone || '—');
+                    return {
+                      id: s.id,
+                      title: s.full_name,
+                      subtitle: `Mã: ${s.student_code || '—'} • Lớp: ${s.classes?.name || 'Chưa phân lớp'}`,
+                      avatar: (
+                        <Avatar
+                          src={s.profile_image_url || undefined}
+                          name={s.full_name}
+                          className="w-10 h-10 rounded-full ring-2 ring-primary/20 shrink-0"
+                        />
+                      ),
+                      badge: (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-primary/10 text-primary">
+                          {s.gender === 'male' ? 'Nam' : 'Nữ'}
+                        </span>
+                      ),
+                      fields: [
+                        {
+                          label: 'Ngày sinh',
+                          value: s.date_of_birth ? new Date(s.date_of_birth).toLocaleDateString('vi-VN') : '—',
+                        },
+                        {
+                          label: 'Phụ huynh',
+                          value: parentDisplay,
+                        },
+                      ],
+                      onClick: () => handleOpenDetail(s.id),
+                    };
+                  })}
+                  emptyMessage="Không tìm thấy học sinh nào"
+                />
+              </div>
+
+              {/* Desktop Table View (hidden md:block) */}
+              <div className="hidden md:block">
+                <Table
+                  className={cn(
+                    "rounded-none border-0 bg-transparent transition-opacity duration-200",
+                    isRefetchingNewFilter && "opacity-60 pointer-events-none"
+                  )}
+                  columns={tableColumns}
+                  data={studentsData}
+                  rowKey={(row) => row.id}
+                  selectable={true}
+                  selectedKeys={selectedKeys}
+                  onSelectionChange={setSelectedKeys}
+                  onRowClick={(row) => handleOpenDetail(row.id)}
+                  onScrollToBottom={handleScrollToBottom}
+                  loadingMore={isFetchingMore}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>

@@ -9,5 +9,8 @@ coverage/
 *.csv
 *.xlsx
 *.xls
+*.pdf
+*.docx
+.claude/
 scratch/
 _Delete/
