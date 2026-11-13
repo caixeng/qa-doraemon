@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { MobileHeader } from './MobileHeader';
 import { MobileBottomNav } from './MobileBottomNav';
 import { MobileMoreSheet } from './MobileMoreSheet';
 import { MobileQuickActionModal } from './mobile/MobileQuickActionModal';
@@ -9,10 +10,10 @@ import { useAuthStore } from '../stores/authStore';
 import { SlidePanelContainer } from './ui';
 import { cn } from '../lib/utils';
 
-
 /**
- * Main application layout with sidebar, topbar, and content area.
- * Used as a wrapper for all authenticated routes.
+ * Main application layout with responsive shell:
+ * - Desktop: Sidebar + Topbar
+ * - Mobile: MobileHeader + MobileBottomNav + MobileMoreSheet
  */
 export function AppLayout() {
   const { 
@@ -42,21 +43,26 @@ export function AppLayout() {
         }
       />
 
-      {/* Topbar */}
-      <Topbar
-        sidebarCollapsed={sidebarCollapsed}
-        onToggleSidebar={toggleSidebar}
-        user={
-          user
-            ? {
-                name: user.full_name,
-                role: user.role === 'admin' ? 'Quản trị viên' : user.role === 'teacher' ? 'Giáo viên' : 'Nhân viên',
-                avatar: user.avatar_url || undefined,
-              }
-            : undefined
-        }
-        onLogout={useAuthStore.getState().logout}
-      />
+      {/* Mobile Header (dedicated for small screens < md) */}
+      <MobileHeader />
+
+      {/* Desktop Topbar (screens >= md) */}
+      <div className="hidden md:block">
+        <Topbar
+          sidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={toggleSidebar}
+          user={
+            user
+              ? {
+                  name: user.full_name,
+                  role: user.role === 'admin' ? 'Quản trị viên' : user.role === 'teacher' ? 'Giáo viên' : 'Nhân viên',
+                  avatar: user.avatar_url || undefined,
+                }
+              : undefined
+          }
+          onLogout={useAuthStore.getState().logout}
+        />
+      </div>
 
       {/* Main Content */}
       <main

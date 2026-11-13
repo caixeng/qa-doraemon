@@ -160,13 +160,18 @@ const SlidePanelItem: React.FC<SlidePanelItemProps> = ({
     touchStartRef.current = null;
   }, [swipeOffset, onClose]);
 
-  // Compute width style: user-resized width (panelWidth) overrides panel.width
-  const initialWidth = panel.width
-    ? (typeof panel.width === 'number' ? `${panel.width}px` : panel.width)
-    : `calc(50% - ${stackOffset}px)`;
-  const widthValue = (isTopPanel && panelWidth > 0) ? `${panelWidth}px` : initialWidth;
+  // Check if mobile screen (< 768px)
+  const isMobileScreen = typeof window !== 'undefined' && window.innerWidth < 768;
 
-  const widthStyle: React.CSSProperties = isMaximized
+  // Compute width style: on mobile it must be 100% full width
+  const initialWidth = isMobileScreen
+    ? '100%'
+    : panel.width
+      ? (typeof panel.width === 'number' ? `${panel.width}px` : panel.width)
+      : `calc(50% - ${stackOffset}px)`;
+  const widthValue = (!isMobileScreen && isTopPanel && panelWidth > 0) ? `${panelWidth}px` : initialWidth;
+
+  const widthStyle: React.CSSProperties = (isMaximized || isMobileScreen)
     ? {
         width: '100%',
         maxWidth: '100%',

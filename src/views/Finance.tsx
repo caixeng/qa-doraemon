@@ -16,6 +16,7 @@ import {
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
 import { DatePicker, Table, type TableColumn, Button, useSlidePanel, ErrorState, MobileFilterToggle } from "../components/ui";
+import { MobileCardList } from "../components/mobile/MobileCardList";
 import { FeeForm } from "../components/forms/FeeForm";
 import { FeeDetailPanel } from "../components/details/FeeDetailPanel";
 import { toast } from "../stores/toastStore";
@@ -694,25 +695,53 @@ export function Finance() {
           </MobileFilterToggle>
         </div>
 
-        {/* Data Table */}
-        <div className="p-4">
+        {/* Data List / Table */}
+        <div className="p-3 md:p-4">
           {isError ? (
             <ErrorState onRetry={refetch} />
           ) : (
-          <Table
-            columns={tableColumns}
-            data={feesData}
-            rowKey={(row) => row.id}
-            onRowClick={(row) => handleOpenDetail(row.id)}
-            loading={isLoading}
-            emptyTitle="Không có dữ liệu phiếu thu"
-            emptyDescription="Không tìm thấy phiếu thu nào khớp với bộ lọc tháng học hoặc trạng thái đã chọn."
-            emptyAction={
-              <Button size="sm" onClick={handleCreateFee} className="mt-1">
-                <Plus className="w-4 h-4" /> Tạo phiếu thu tháng này
-              </Button>
-            }
-          />
+            <>
+              {/* Mobile Card List View */}
+              <div className="md:hidden">
+                <MobileCardList
+                  items={feesData.map((f: any) => {
+                    const remaining = Math.max(0, (f.amount || 0) - (f.paid_amount || 0));
+                    return {
+                      id: f.id,
+                      title: f.students?.full_name || 'Học sinh',
+                      subtitle: `Lớp: ${f.students?.classes?.name || '---'} • Mã: ${f.students?.student_code || '---'}`,
+                      badge: getStatusBadge(f.status),
+                      fields: [
+                        { label: 'Phải thu', value: `${(f.amount || 0).toLocaleString('vi-VN')} ₫` },
+                        { label: 'Đã đóng', value: `${(f.paid_amount || 0).toLocaleString('vi-VN')} ₫` },
+                        { label: 'Còn nợ', value: `${remaining.toLocaleString('vi-VN')} ₫` },
+                        { label: 'Hạn nộp', value: f.due_date ? format(new Date(f.due_date), 'dd/MM/yyyy') : '---' },
+                      ],
+                      onClick: () => handleOpenDetail(f.id),
+                    };
+                  })}
+                  emptyMessage="Không tìm thấy phiếu thu nào khớp với bộ lọc."
+                />
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block">
+                <Table
+                  columns={tableColumns}
+                  data={feesData}
+                  rowKey={(row) => row.id}
+                  onRowClick={(row) => handleOpenDetail(row.id)}
+                  loading={isLoading}
+                  emptyTitle="Không có dữ liệu phiếu thu"
+                  emptyDescription="Không tìm thấy phiếu thu nào khớp với bộ lọc tháng học hoặc trạng thái đã chọn."
+                  emptyAction={
+                    <Button size="sm" onClick={handleCreateFee} className="mt-1">
+                      <Plus className="w-4 h-4" /> Tạo phiếu thu tháng này
+                    </Button>
+                  }
+                />
+              </div>
+            </>
           )}
         </div>
 

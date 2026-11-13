@@ -32,6 +32,10 @@ export function Nutrition({ classId }: { classId?: string }) {
   const [selectedClassId, setSelectedClassId] = useState<string>(classId || "all");
   const [cloning, setCloning] = useState(false);
   const [showCloneConfirm, setShowCloneConfirm] = useState(false);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(() => {
+    const day = new Date().getDay();
+    return day === 0 ? 0 : Math.min(day - 1, 5);
+  });
 
   useEffect(() => {
     if (classId) {
@@ -442,151 +446,268 @@ export function Nutrition({ classId }: { classId?: string }) {
       ) : isError ? (
         <ErrorState onRetry={refetch} />
       ) : (
-        <div className="overflow-x-auto max-h-[650px] overflow-y-auto relative bg-surface border border-outline-variant/40 rounded-[32px] print:border-slate-300 print:rounded-none shadow-xs">
-          <table className="w-full text-left text-sm border-collapse min-w-[800px]">
-            <thead>
-              <tr className="bg-[#33a2f2] dark:bg-slate-800 border-b border-sky-400 dark:border-slate-700 print:bg-[#33a2f2]">
-                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[12px] uppercase tracking-wider text-center w-[6%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none">Bữa ăn</th>
-                <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[12px] uppercase tracking-wider text-center w-[10%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] border-l border-sky-300 dark:border-slate-700 select-none">Thời gian</th>
-                {weekDates.map((d, index) => {
-                  const dayName = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][index];
-                  const isToday = new Date().toDateString() === d.toDateString();
-                  return (
-                    <th
-                      key={index}
-                      className={cn(
-                        "px-4 py-3 font-extrabold text-[12px] uppercase tracking-wider text-center border-l border-sky-300 dark:border-slate-700 sticky top-0 z-10 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none",
-                        isToday 
-                          ? "bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-200 print:bg-amber-100" 
-                          : "bg-[#33a2f2] text-slate-900 dark:bg-slate-800 dark:text-slate-200"
-                      )}
-                    >
-                      <div className="font-bold">{dayName}</div>
-                      <div className="text-[12px] opacity-80 mt-0.5 font-medium">{d.toLocaleDateString('vi-VN')}</div>
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-sky-100 dark:divide-slate-800/80 print:divide-slate-200">
-              {MEAL_ROWS.map((row, rowIndex) => (
-                <tr 
-                  key={row.mealType} 
-                  className={cn(
-                    "hover:bg-sky-50/10 transition-colors",
-                    row.mealType === 'lunch_chao' && "bg-amber-50/10 print:bg-amber-50/10"
-                  )}
-                >
-                  {/* Bữa ăn (Group) - Sử dụng RowSpan */}
-                  {row.isGroupStart && (
-                    <td 
-                      rowSpan={row.groupSpan} 
-                      className="bg-[#99d5ff] dark:bg-slate-800/30 print:bg-[#99d5ff] text-center border-r border-sky-200 dark:border-slate-700/50 print:border-slate-300 select-none align-middle w-[6%] [print-color-adjust:exact]"
-                      style={{ verticalAlign: 'middle' }}
-                    >
-                      <div 
-                        className="font-extrabold text-sky-950 dark:text-sky-350 text-xs tracking-widest text-center mx-auto uppercase py-4"
-                        style={{ 
-                          writingMode: 'vertical-lr', 
-                          transform: 'rotate(180deg)', 
-                          whiteSpace: 'nowrap',
-                          display: 'inline-block'
-                        }}
-                      >
-                        {row.mealGroupLabel}
-                      </div>
-                    </td>
-                  )}
-
-                  {/* Thời gian */}
-                  <td 
+        <>
+          {/* Mobile Day-by-Day View (md:hidden print:hidden) */}
+          <div className="md:hidden space-y-3.5 print:hidden">
+            {/* Day selector pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+              {weekDates.map((d, idx) => {
+                const dayName = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'][idx];
+                const isSelected = selectedDayIndex === idx;
+                const isToday = new Date().toDateString() === d.toDateString();
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedDayIndex(idx)}
                     className={cn(
-                      "px-2 py-4 font-bold text-center border-r border-sky-100 dark:border-slate-800/30 print:border-slate-200 text-xs w-[10%] select-none bg-slate-50/50 dark:bg-slate-900/30 print:bg-slate-50",
-                      row.mealType === 'lunch_chao' && "bg-amber-50/40 dark:bg-amber-950/20 print:bg-amber-50/40"
+                      "flex-1 min-w-[52px] py-2 px-1 rounded-2xl flex flex-col items-center justify-center transition-all cursor-pointer border text-center",
+                      isSelected
+                        ? "bg-primary text-white border-primary shadow-xs font-bold"
+                        : isToday
+                        ? "bg-primary/10 text-primary border-primary/30 font-semibold"
+                        : "bg-surface-container-low text-on-surface-variant border-outline-variant/30 hover:bg-surface-container font-medium"
                     )}
-                    style={{ verticalAlign: 'middle' }}
                   >
-                    {row.timeLabel === 'Dành cho trẻ chưa ăn được cơm' ? (
-                      <div 
-                        className="text-[12px] text-red-600 dark:text-red-400 font-extrabold text-center mx-auto leading-none py-2"
-                        style={{ 
-                          writingMode: 'vertical-lr', 
-                          transform: 'rotate(180deg)', 
-                          whiteSpace: 'nowrap',
-                          display: 'inline-block'
-                        }}
-                      >
-                        Dành cho trẻ chưa ăn được cơm
-                      </div>
-                    ) : (
-                      <span className="font-mono text-xs text-slate-700 dark:text-slate-300">{row.timeLabel}</span>
-                    )}
-                  </td>
+                    <span className="text-[10.5px] uppercase tracking-wider">{dayName}</span>
+                    <span className="text-[12.5px] font-bold mt-0.5">{d.getDate()}/{d.getMonth() + 1}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-                  {/* Các ngày trong tuần */}
-                  {weekDates.map((d, dayIndex) => {
-                    const dateStr = d.toISOString().split('T')[0];
+            {/* Meals for selected day */}
+            {(() => {
+              const selectedDate = weekDates[selectedDayIndex] || weekDates[0];
+              const dateStr = selectedDate.toISOString().split('T')[0];
+
+              return (
+                <div className="space-y-3">
+                  {MEAL_ROWS.map((row) => {
                     const plan = getMealPlanForCell(dateStr, row.mealType);
-                    
+                    const isChao = row.mealType === 'lunch_chao';
+
                     return (
-                      <td 
-                        key={dayIndex} 
-                        onClick={() => plan && handleOpenDetail(plan.id)}
+                      <div
+                        key={row.mealType}
+                        onClick={() => {
+                          if (plan) {
+                            handleOpenDetail(plan.id);
+                          } else if (classId && isPrivileged) {
+                            handleQuickAddClick(dateStr, row.mealType);
+                          }
+                        }}
                         className={cn(
-                          "px-4 py-4 text-center border-l border-sky-100 dark:border-slate-800/40 print:border-slate-200 align-top relative group min-w-[130px] transition-all",
-                          plan ? "cursor-pointer hover:bg-sky-50/30 dark:hover:bg-slate-800/20" : "hover:bg-slate-50/30 dark:hover:bg-slate-850/20",
-                          row.mealType === 'lunch_chao' && "border-t border-dashed border-sky-300! dark:border-slate-700/60 bg-amber-50/10 dark:bg-amber-950/5 print:bg-amber-50/5"
+                          "bg-surface rounded-2xl border p-3.5 shadow-2xs transition-all",
+                          plan
+                            ? "border-outline-variant/40 hover:border-primary/40 cursor-pointer active:scale-99"
+                            : classId && isPrivileged
+                            ? "border-dashed border-outline-variant/60 hover:border-primary/60 cursor-pointer"
+                            : "border-outline-variant/20 opacity-70"
                         )}
                       >
-                        {plan ? (
-                          <div className="flex flex-col justify-between h-full min-h-[90px] text-left">
-                            <div className="space-y-2">
-                              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">
-                                {plan.menu_items}
-                              </p>
-                              {plan.calories && (
-                                <div className="inline-flex items-center gap-0.5 text-[12px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/40 px-1.5 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/30 print:bg-white">
-                                  <Flame className="w-2.5 h-2.5 shrink-0" />
-                                  {plan.calories} kcal
-                                </div>
-                              )}
-                              {plan.notes && (
-                                <p className="text-[12px] text-slate-500 dark:text-slate-400 italic leading-tight select-text" onClick={(e) => e.stopPropagation()}>
-                                  Lưu ý: {plan.notes}
-                                </p>
-                              )}
-                            </div>
-
-                            {/* View detail button on hover (prints-hidden) */}
-                            <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity mt-2 print:hidden">
-                              <span className="p-1 text-primary bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/20 dark:border-primary/30 flex items-center justify-center">
-                                <Eye className="w-3.5 h-3.5" />
+                        <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-outline-variant/20">
+                          <div className="flex items-center gap-2">
+                            <span className="p-1.5 rounded-xl bg-primary/10 text-primary">
+                              {getMealTypeIcon(row.mealGroup)}
+                            </span>
+                            <div>
+                              <h4 className="text-xs font-bold text-on-surface">
+                                {row.mealGroupLabel}
+                              </h4>
+                              <span className="text-[11px] font-semibold text-on-surface-variant">
+                                {row.timeLabel}
                               </span>
                             </div>
                           </div>
+
+                          {plan?.calories && (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                              <Flame className="w-3 h-3" />
+                              {plan.calories} kcal
+                            </span>
+                          )}
+                        </div>
+
+                        {plan ? (
+                          <div className="space-y-1.5">
+                            <p className="text-[13px] font-semibold text-on-surface whitespace-pre-line leading-relaxed">
+                              {plan.menu_items}
+                            </p>
+                            {plan.notes && (
+                              <p className="text-[11.5px] text-on-surface-variant italic">
+                                Lưu ý: {plan.notes}
+                              </p>
+                            )}
+                          </div>
                         ) : (
-                          <div className="flex flex-col items-center justify-center min-h-[90px] h-full" onClick={(e) => e.stopPropagation()}>
+                          <div className="py-2 text-center">
                             {classId && isPrivileged ? (
-                              <button
-                                onClick={() => handleQuickAddClick(dateStr, row.mealType)}
-                                className="w-8 h-8 rounded-full border border-dashed border-sky-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary text-sky-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 flex items-center justify-center transition-all cursor-pointer print:hidden"
-                                title="Thêm thực đơn nhanh"
-                              >
-                                <Plus className="w-3.5 h-3.5" />
-                              </button>
+                              <span className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">
+                                <Plus className="w-3.5 h-3.5" /> Thêm thực đơn cho giờ này
+                              </span>
                             ) : (
-                              <span className="text-xs text-slate-400/60 dark:text-slate-500/50 italic select-none">Chưa có thực đơn</span>
+                              <span className="text-xs text-on-surface-variant/50 italic">
+                                Chưa có thực đơn
+                              </span>
                             )}
                           </div>
                         )}
-                      </td>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Desktop Table View (hidden md:block) */}
+          <div className="hidden md:block overflow-x-auto max-h-[650px] overflow-y-auto relative bg-surface border border-outline-variant/40 rounded-[32px] print:border-slate-300 print:rounded-none shadow-xs">
+            <table className="w-full text-left text-sm border-collapse min-w-[800px]">
+              <thead>
+                <tr className="bg-[#33a2f2] dark:bg-slate-800 border-b border-sky-400 dark:border-slate-700 print:bg-[#33a2f2]">
+                  <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[12px] uppercase tracking-wider text-center w-[6%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none">Bữa ăn</th>
+                  <th className="px-3 py-3 font-extrabold text-slate-900 dark:text-slate-200 text-[12px] uppercase tracking-wider text-center w-[10%] sticky top-0 z-10 bg-[#33a2f2] dark:bg-slate-800 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] border-l border-sky-300 dark:border-slate-700 select-none">Thời gian</th>
+                  {weekDates.map((d, index) => {
+                    const dayName = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][index];
+                    const isToday = new Date().toDateString() === d.toDateString();
+                    return (
+                      <th
+                        key={index}
+                        className={cn(
+                          "px-4 py-3 font-extrabold text-[12px] uppercase tracking-wider text-center border-l border-sky-300 dark:border-slate-700 sticky top-0 z-10 shadow-[0_1px_0_0_#38bdf8] dark:shadow-[0_1px_0_0_theme(colors.slate.700)] select-none",
+                          isToday 
+                            ? "bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-200 print:bg-amber-100" 
+                            : "bg-[#33a2f2] text-slate-900 dark:bg-slate-800 dark:text-slate-200"
+                        )}
+                      >
+                        <div className="font-bold">{dayName}</div>
+                        <div className="text-[12px] opacity-80 mt-0.5 font-medium">{d.toLocaleDateString('vi-VN')}</div>
+                      </th>
                     );
                   })}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-sky-100 dark:divide-slate-800/80 print:divide-slate-200">
+                {MEAL_ROWS.map((row, rowIndex) => (
+                  <tr 
+                    key={row.mealType} 
+                    className={cn(
+                      "hover:bg-sky-50/10 transition-colors",
+                      row.mealType === 'lunch_chao' && "bg-amber-50/10 print:bg-amber-50/10"
+                    )}
+                  >
+                    {/* Bữa ăn (Group) - Sử dụng RowSpan */}
+                    {row.isGroupStart && (
+                      <td 
+                        rowSpan={row.groupSpan} 
+                        className="bg-[#99d5ff] dark:bg-slate-800/30 print:bg-[#99d5ff] text-center border-r border-sky-200 dark:border-slate-700/50 print:border-slate-300 select-none align-middle w-[6%] [print-color-adjust:exact]"
+                        style={{ verticalAlign: 'middle' }}
+                      >
+                        <div 
+                          className="font-extrabold text-sky-950 dark:text-sky-350 text-xs tracking-widest text-center mx-auto uppercase py-4"
+                          style={{ 
+                            writingMode: 'vertical-lr', 
+                            transform: 'rotate(180deg)', 
+                            whiteSpace: 'nowrap',
+                            display: 'inline-block'
+                          }}
+                        >
+                          {row.mealGroupLabel}
+                        </div>
+                      </td>
+                    )}
+
+                    {/* Thời gian */}
+                    <td 
+                      className={cn(
+                        "px-2 py-4 font-bold text-center border-r border-sky-100 dark:border-slate-800/30 print:border-slate-200 text-xs w-[10%] select-none bg-slate-50/50 dark:bg-slate-900/30 print:bg-slate-50",
+                        row.mealType === 'lunch_chao' && "bg-amber-50/40 dark:bg-amber-950/20 print:bg-amber-50/40"
+                      )}
+                      style={{ verticalAlign: 'middle' }}
+                    >
+                      {row.timeLabel === 'Dành cho trẻ chưa ăn được cơm' ? (
+                        <div 
+                          className="text-[12px] text-red-600 dark:text-red-400 font-extrabold text-center mx-auto leading-none py-2"
+                          style={{ 
+                            writingMode: 'vertical-lr', 
+                            transform: 'rotate(180deg)', 
+                            whiteSpace: 'nowrap',
+                            display: 'inline-block'
+                          }}
+                        >
+                          Dành cho trẻ chưa ăn được cơm
+                        </div>
+                      ) : (
+                        <span className="font-mono text-xs text-slate-700 dark:text-slate-300">{row.timeLabel}</span>
+                      )}
+                    </td>
+
+                    {/* Các ngày trong tuần */}
+                    {weekDates.map((d, dayIndex) => {
+                      const dateStr = d.toISOString().split('T')[0];
+                      const plan = getMealPlanForCell(dateStr, row.mealType);
+                      
+                      return (
+                        <td 
+                          key={dayIndex} 
+                          onClick={() => plan && handleOpenDetail(plan.id)}
+                          className={cn(
+                            "px-4 py-4 text-center border-l border-sky-100 dark:border-slate-800/40 print:border-slate-200 align-top relative group min-w-[130px] transition-all",
+                            plan ? "cursor-pointer hover:bg-sky-50/30 dark:hover:bg-slate-800/20" : "hover:bg-slate-50/30 dark:hover:bg-slate-850/20",
+                            row.mealType === 'lunch_chao' && "border-t border-dashed border-sky-300! dark:border-slate-700/60 bg-amber-50/10 dark:bg-amber-950/5 print:bg-amber-50/5"
+                          )}
+                        >
+                          {plan ? (
+                            <div className="flex flex-col justify-between h-full min-h-[90px] text-left">
+                              <div className="space-y-2">
+                                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">
+                                  {plan.menu_items}
+                                </p>
+                                {plan.calories && (
+                                  <div className="inline-flex items-center gap-0.5 text-[12px] font-bold text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/40 px-1.5 py-0.5 rounded-md border border-amber-100 dark:border-amber-900/30 print:bg-white">
+                                    <Flame className="w-2.5 h-2.5 shrink-0" />
+                                    {plan.calories} kcal
+                                  </div>
+                                )}
+                                {plan.notes && (
+                                  <p className="text-[12px] text-slate-500 dark:text-slate-400 italic leading-tight select-text" onClick={(e) => e.stopPropagation()}>
+                                    Lưu ý: {plan.notes}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* View detail button on hover (prints-hidden) */}
+                              <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity mt-2 print:hidden">
+                                <span className="p-1 text-primary bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/20 dark:border-primary/30 flex items-center justify-center">
+                                  <Eye className="w-3.5 h-3.5" />
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center min-h-[90px] h-full" onClick={(e) => e.stopPropagation()}>
+                              {classId && isPrivileged ? (
+                                <button
+                                  onClick={() => handleQuickAddClick(dateStr, row.mealType)}
+                                  className="w-8 h-8 rounded-full border border-dashed border-sky-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary text-sky-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 flex items-center justify-center transition-all cursor-pointer print:hidden"
+                                  title="Thêm thực đơn nhanh"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                </button>
+                              ) : (
+                                <span className="text-xs text-slate-400/60 dark:text-slate-500/50 italic select-none">Chưa có thực đơn</span>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Footer notes on printed menu */}

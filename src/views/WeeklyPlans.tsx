@@ -314,6 +314,13 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
   const [saving, setSaving] = useState(false);
   const [cloning, setCloning] = useState(false);
   const [showCloneConfirm, setShowCloneConfirm] = useState(false);
+  const [selectedDayKey, setSelectedDayKey] = useState<'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat'>(() => {
+    const day = new Date().getDay();
+    const map: Record<number, 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat'> = {
+      1: 'mon', 2: 'tue', 3: 'wed', 4: 'thu', 5: 'fri', 6: 'sat'
+    };
+    return map[day] || 'mon';
+  });
 
   useEffect(() => {
     if (classId) {
@@ -730,7 +737,97 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
       {loadingPlan ? (
         <div className="h-96 bg-surface dark:bg-slate-900 border border-outline-variant/20 rounded-3xl animate-pulse shadow-xs" />
       ) : (
-        <div className="overflow-x-auto max-h-[700px] overflow-y-auto relative bg-surface dark:bg-slate-900 border border-outline-variant/40 rounded-[28px] print:border-slate-900 print:rounded-none shadow-xs">
+        <>
+          {/* Mobile Day-by-Day View (md:hidden print:hidden) */}
+          <div className="md:hidden space-y-3.5 print:hidden">
+            {/* Day selector pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+              {[
+                { key: 'mon', label: 'Thứ 2', date: weekDates[0] },
+                { key: 'tue', label: 'Thứ 3', date: weekDates[1] },
+                { key: 'wed', label: 'Thứ 4', date: weekDates[2] },
+                { key: 'thu', label: 'Thứ 5', date: weekDates[3] },
+                { key: 'fri', label: 'Thứ 6', date: weekDates[4] },
+                { key: 'sat', label: 'Thứ 7', date: weekDates[5] },
+              ].map((item) => {
+                const isSelected = selectedDayKey === item.key;
+                const isToday = item.date && new Date().toDateString() === item.date.toDateString();
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => setSelectedDayKey(item.key as any)}
+                    className={cn(
+                      "flex-1 min-w-[52px] py-2 px-1 rounded-2xl flex flex-col items-center justify-center transition-all cursor-pointer border text-center",
+                      isSelected
+                        ? "bg-primary text-white border-primary shadow-xs font-bold"
+                        : isToday
+                        ? "bg-primary/10 text-primary border-primary/30 font-semibold"
+                        : "bg-surface-container-low text-on-surface-variant border-outline-variant/30 hover:bg-surface-container font-medium"
+                    )}
+                  >
+                    <span className="text-[10.5px] uppercase tracking-wider">{item.label}</span>
+                    {item.date && (
+                      <span className="text-[12.5px] font-bold mt-0.5">{item.date.getDate()}/{item.date.getMonth() + 1}</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Activity cards for selected day */}
+            <div className="space-y-3">
+              {rows.map((row) => {
+                const isCommon = row.isWeeklyCommon;
+                const content = isCommon ? row.commonContent : row.dailyContent?.[selectedDayKey];
+
+                return (
+                  <div
+                    key={row.id}
+                    onClick={() => isPrivileged && handleEditCell(row.id, isCommon ? 'common' : selectedDayKey)}
+                    className={cn(
+                      "bg-surface rounded-2xl border p-3.5 shadow-2xs transition-all",
+                      isPrivileged ? "cursor-pointer active:scale-99 hover:border-primary/40" : "",
+                      isCommon ? "border-sky-200/60 dark:border-sky-900/40 bg-sky-50/15" : "border-outline-variant/40"
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-outline-variant/20">
+                      <div>
+                        <span className="font-mono text-[11px] font-bold text-primary px-2 py-0.5 rounded-full bg-primary/10">
+                          {row.time}
+                        </span>
+                        <h4 className="text-[13px] font-bold text-on-surface mt-1">
+                          {row.name}
+                        </h4>
+                      </div>
+                      {isCommon ? (
+                        <span className="text-[10.5px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 px-2 py-0.5 rounded-full border border-sky-200/50">
+                          Chung cả tuần
+                        </span>
+                      ) : (
+                        isPrivileged && (
+                          <span className="p-1 rounded-lg text-primary hover:bg-primary/10 transition-colors">
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </span>
+                        )
+                      )}
+                    </div>
+
+                    <div className="text-[12.5px] font-medium text-on-surface leading-relaxed whitespace-pre-line">
+                      {content || (
+                        <span className="text-on-surface-variant/40 italic">
+                          {isPrivileged ? "Chưa có nội dung — Chạm để nhập" : "Chưa có nội dung"}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Desktop Table View (hidden md:block) */}
+          <div className="hidden md:block overflow-x-auto max-h-[700px] overflow-y-auto relative bg-surface dark:bg-slate-900 border border-outline-variant/40 rounded-[28px] print:border-slate-900 print:rounded-none shadow-xs">
           <table className="w-full text-left text-sm border-collapse min-w-[900px] print:text-[12px] print:text-slate-900">
             <thead>
               <tr className="bg-slate-100 dark:bg-slate-800 border-b border-outline-variant/60 dark:border-slate-700 print:bg-white print:border-slate-900">
@@ -813,7 +910,8 @@ export function WeeklyPlans({ classId }: { classId?: string }) {
               ))}
             </tbody>
           </table>
-        </div>
+          </div>
+        </>
       )}
 
       {/* Print-Only Signature Section (Styled exactly like file Word) */}

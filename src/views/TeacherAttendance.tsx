@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClipboardList, Edit2, MessageSquare, Search, Zap } from "lucide-react";
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
-import { DatePicker, Skeleton, EmptyState, ErrorState, Button, Modal, Table, MobileFilterToggle, type TableColumn } from "../components/ui";
+import { DatePicker, Skeleton, EmptyState, ErrorState, Button, Modal, Table, MobileFilterToggle, Avatar, type TableColumn } from "../components/ui";
+import { MobileCardList } from "../components/mobile/MobileCardList";
 import { useSlidePanel } from "../context/SlidePanelContext";
 import { toast } from "../stores/toastStore";
 import { useAuthStore } from "../stores/authStore";
@@ -462,12 +463,97 @@ export function TeacherAttendance() {
           icon={<ClipboardList className="w-12 h-12" />}
         />
       ) : (
-        <Table
-          className="rounded-2xl border border-outline-variant/30 shadow-sm bg-surface-container-lowest"
-          columns={tableColumns}
-          data={filteredTeachers}
-          rowKey={(row) => row.id}
-        />
+        <>
+          {/* Mobile Card View (md:hidden) */}
+          <div className="md:hidden">
+            <MobileCardList
+              items={filteredTeachers.map((row) => {
+                const record = attendanceMap.get(row.id);
+                const status = record?.status;
+                const note = record?.note;
+                const statusLabel = status ? STATUS_LABELS[status] : null;
+
+                return {
+                  id: row.id,
+                  title: row.full_name,
+                  subtitle: row.job_title || 'Giáo viên',
+                  avatar: (
+                    <Avatar
+                      name={row.full_name}
+                      className="w-10 h-10 rounded-full ring-2 ring-primary/20 shrink-0 font-playfair"
+                    />
+                  ),
+                  badge: statusLabel ? (
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase tracking-wide",
+                      status === 'full_day'
+                        ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                        : status === 'excused_absence'
+                        ? "bg-purple-500/15 text-purple-600 dark:text-purple-400"
+                        : "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    )}>
+                      {statusLabel}
+                    </span>
+                  ) : undefined,
+                  fields: [
+                    {
+                      label: 'Tình trạng',
+                      value: (
+                        <select
+                          value={record?.status || ""}
+                          onChange={(e) => e.target.value && handleStatusChange(row.id, e.target.value as TeacherAttendanceStatus)}
+                          onClick={(e) => e.stopPropagation()}
+                          className={cn(
+                            "w-full rounded-xl border px-2.5 py-1.5 text-xs font-bold focus:outline-none cursor-pointer transition-colors",
+                            record ? "bg-primary/10 border-primary/30 text-primary" : "bg-surface-container-high border-outline-variant/40 text-on-surface-variant"
+                          )}
+                        >
+                          <option value="" disabled>Chưa điểm danh</option>
+                          {STATUS_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      ),
+                    },
+                    {
+                      label: 'Ghi chú',
+                      value: (
+                        <div className="flex items-center justify-between gap-2 w-full" onClick={(e) => e.stopPropagation()}>
+                          <span className={cn(
+                            "text-xs truncate max-w-[150px]",
+                            note ? "text-on-surface font-semibold" : "text-on-surface-variant/40 italic"
+                          )}>
+                            {note || "Chưa có"}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenNotePanel(row)}
+                            className="p-1 rounded-lg text-primary hover:bg-primary/10 transition-colors shrink-0"
+                            title="Ghi chú"
+                          >
+                            <MessageSquare className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ),
+                    },
+                  ],
+                  onClick: () => handleOpenNotePanel(row),
+                };
+              })}
+              emptyMessage="Không có giáo viên/nhân viên nào"
+            />
+          </div>
+
+          {/* Desktop Table View (hidden md:block) */}
+          <div className="hidden md:block">
+            <Table
+              className="rounded-2xl border border-outline-variant/30 shadow-sm bg-surface-container-lowest"
+              columns={tableColumns}
+              data={filteredTeachers}
+              rowKey={(row) => row.id}
+            />
+          </div>
+        </>
       )}
     </div>
   );

@@ -18,6 +18,7 @@ import { cn } from "../lib/utils";
 import { api } from "../lib/api";
 import { toast } from "../stores/toastStore";
 import { ConfirmDialog, Table, type TableColumn, useSlidePanel, ErrorState } from "../components/ui";
+import { MobileCardList } from "../components/mobile/MobileCardList";
 import { ClassForm } from "../components/forms/ClassForm";
 import { ClassDetailPanel } from "../components/details/ClassDetailPanel";
 import { useAppStore } from "../stores/appStore";
@@ -336,83 +337,112 @@ export function Classes() {
                 <Home className="w-10 h-10 text-on-surface-variant/40 mb-3" />
                 <span className="text-sm text-on-surface-variant font-bold">Không tìm thấy lớp học nào</span>
               </div>
-            ) : viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredClasses.map((c) => {
-                  const homeroom = c.class_teachers?.find(ct => ct.is_homeroom)?.users?.full_name || "Chưa phân công";
-                  const teacherCount = c.class_teachers?.length || 0;
-                  const studentCount = c.students?.length || 0;
-                  
-                  return (
-                    <div
-                      key={c.id}
-                      onClick={() => handleOpenDetail(c.id)}
-                      className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative group flex flex-col justify-between overflow-hidden cursor-pointer"
-                    >
-                      {/* Hover actions */}
-                      <div className="absolute top-4 right-4 flex gap-1.5 bg-white border border-outline-variant/60 shadow-md p-1 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 select-none" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={() => handleOpenDetail(c.id)}
-                          className="p-1.5 text-on-surface-variant hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
-                          title="Xem chi tiết"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleEditClass(c)}
-                          className="p-1.5 text-on-surface-variant hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
-                          title="Sửa lớp"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedClass(c);
-                            setIsDeleteDialogOpen(true);
-                          }}
-                          className="p-1.5 text-on-surface-variant hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                          title="Xóa lớp"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-
-                      <div className="flex flex-col gap-3">
-                        <div>
-                          {getGradeBadge(c.grade_level)}
-                          <h3 className="font-bold font-playfair text-[18px] text-on-surface mt-2 italic">{c.name}</h3>
-                          <p className="text-xs text-on-surface-variant font-medium mt-1">
-                            Phòng: <strong>{c.room_number || "---"}</strong> | Sức chứa: <strong>{c.capacity}</strong> trẻ
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="border-t border-outline-variant/20 pt-4 mt-4 flex items-center justify-between text-xs font-semibold text-on-surface-variant">
-                        <span className="flex items-center gap-1">
-                          <UserCheck className="w-4 h-4 text-primary shrink-0" />
-                          CN: {homeroom}
-                        </span>
-                        <span className="flex items-center gap-3">
-                          <span className="flex items-center gap-1.5">
-                            <Users className="w-4 h-4 text-secondary shrink-0" />
-                            {studentCount} trẻ
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             ) : (
-              <Table 
-                className="rounded-2xl border border-outline-variant/30 shadow-sm bg-surface"
-                columns={tableColumns} 
-                data={filteredClasses} 
-                rowKey={(row) => row.id}
-                onRowClick={(row) => handleOpenDetail(row.id)}
-                emptyTitle="Không tìm thấy lớp học"
-                emptyDescription="Không có lớp học nào khớp với bộ lọc."
-              />
+              <>
+                {/* Mobile Card List View */}
+                <div className="md:hidden">
+                  <MobileCardList
+                    items={filteredClasses.map((c) => {
+                      const homeroom = c.class_teachers?.find(ct => ct.is_homeroom)?.users?.full_name || "Chưa phân công";
+                      const studentCount = c.students?.length || 0;
+                      return {
+                        id: c.id,
+                        title: c.name,
+                        subtitle: `Phòng: ${c.room_number || "---"} • Sức chứa: ${c.capacity} trẻ`,
+                        badge: getGradeBadge(c.grade_level),
+                        fields: [
+                          { label: 'Chủ nhiệm', value: homeroom },
+                          { label: 'Sĩ số', value: `${studentCount} / ${c.capacity} trẻ` },
+                        ],
+                        onClick: () => handleOpenDetail(c.id),
+                      };
+                    })}
+                    emptyMessage="Không tìm thấy lớp học nào"
+                  />
+                </div>
+
+                {/* Desktop Layout Mode (Grid / Table) */}
+                <div className="hidden md:block">
+                  {viewMode === 'grid' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {filteredClasses.map((c) => {
+                        const homeroom = c.class_teachers?.find(ct => ct.is_homeroom)?.users?.full_name || "Chưa phân công";
+                        const teacherCount = c.class_teachers?.length || 0;
+                        const studentCount = c.students?.length || 0;
+                        
+                        return (
+                          <div
+                            key={c.id}
+                            onClick={() => handleOpenDetail(c.id)}
+                            className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative group flex flex-col justify-between overflow-hidden cursor-pointer"
+                          >
+                            {/* Hover actions */}
+                            <div className="absolute top-4 right-4 flex gap-1.5 bg-white border border-outline-variant/60 shadow-md p-1 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 select-none" onClick={(e) => e.stopPropagation()}>
+                              <button
+                                onClick={() => handleOpenDetail(c.id)}
+                                className="p-1.5 text-on-surface-variant hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                                title="Xem chi tiết"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleEditClass(c)}
+                                className="p-1.5 text-on-surface-variant hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                                title="Sửa lớp"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setSelectedClass(c);
+                                  setIsDeleteDialogOpen(true);
+                                }}
+                                className="p-1.5 text-on-surface-variant hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                                title="Xóa lớp"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            <div className="flex flex-col gap-3">
+                              <div>
+                                {getGradeBadge(c.grade_level)}
+                                <h3 className="font-bold font-playfair text-[18px] text-on-surface mt-2 italic">{c.name}</h3>
+                                <p className="text-xs text-on-surface-variant font-medium mt-1">
+                                  Phòng: <strong>{c.room_number || "---"}</strong> | Sức chứa: <strong>{c.capacity}</strong> trẻ
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="border-t border-outline-variant/20 pt-4 mt-4 flex items-center justify-between text-xs font-semibold text-on-surface-variant">
+                              <span className="flex items-center gap-1">
+                                <UserCheck className="w-4 h-4 text-primary shrink-0" />
+                                CN: {homeroom}
+                              </span>
+                              <span className="flex items-center gap-3">
+                                <span className="flex items-center gap-1.5">
+                                  <Users className="w-4 h-4 text-secondary shrink-0" />
+                                  {studentCount} trẻ
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <Table 
+                      className="rounded-2xl border border-outline-variant/30 shadow-sm bg-surface"
+                      columns={tableColumns} 
+                      data={filteredClasses} 
+                      rowKey={(row) => row.id}
+                      onRowClick={(row) => handleOpenDetail(row.id)}
+                      emptyTitle="Không tìm thấy lớp học"
+                      emptyDescription="Không có lớp học nào khớp với bộ lọc."
+                    />
+                  )}
+                </div>
+              </>
             )}
           </div>
 

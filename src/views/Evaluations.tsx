@@ -9,9 +9,10 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
-import { useSlidePanel, Table, type TableColumn, ErrorState, MobileFilterToggle } from "../components/ui";
+import { useSlidePanel, Table, type TableColumn, ErrorState, MobileFilterToggle, Avatar } from "../components/ui";
 import { EvaluationForm } from "../components/forms/EvaluationForm";
 import { EvaluationDetailPanel } from "../components/details/EvaluationDetailPanel";
+import { MobileCardList } from "../components/mobile/MobileCardList";
 
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useClassesList } from "../hooks/useClassesList";
@@ -268,20 +269,76 @@ export function Evaluations({ classId }: { classId?: string }) {
         )}
       </div>
 
-      {/* Main Table view */}
+      {/* Main Content: Mobile Cards + Desktop Table */}
       {isErrorStudents ? (
         <ErrorState onRetry={refetchStudents} />
       ) : (
-      <Table 
-        className="rounded-2xl border border-outline-variant/30 shadow-sm bg-white"
-        columns={tableColumns} 
-        data={students} 
-        rowKey={(row) => row.id}
-        onRowClick={(row) => handleOpenDetail(row.id)}
-        loading={isLoadingStudents}
-        emptyTitle="Không tìm thấy dữ liệu đánh giá"
-        emptyDescription="Không có dữ liệu học sinh nào khớp với bộ lọc lớp học hoặc từ khóa tìm kiếm."
-      />
+        <>
+          {/* Mobile Card View (md:hidden) */}
+          <div className="md:hidden">
+            <MobileCardList
+              items={students.map((row: any) => {
+                const evalObj = row.latest_evaluation;
+                let avg = null;
+                if (evalObj) {
+                  const sum = Number(evalObj.physical_score || 0) + 
+                              Number(evalObj.cognitive_score || 0) + 
+                              Number(evalObj.language_score || 0) + 
+                              Number(evalObj.social_score || 0) + 
+                              Number(evalObj.aesthetic_score || 0);
+                  avg = (sum / 5).toFixed(1);
+                }
+                return {
+                  id: row.id,
+                  title: row.full_name,
+                  subtitle: `Mã: ${row.student_code || '—'} • Lớp: ${row.classes?.name || 'Chưa xếp lớp'}`,
+                  avatar: (
+                    <Avatar
+                      src={row.profile_image_url || undefined}
+                      name={row.full_name}
+                      className="w-10 h-10 rounded-full ring-2 ring-primary/20 shrink-0"
+                    />
+                  ),
+                  badge: avg ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-primary/10 text-primary">
+                      {avg}/5 điểm
+                    </span>
+                  ) : undefined,
+                  fields: [
+                    {
+                      label: 'Kỳ đánh giá',
+                      value: evalObj?.period ? `${evalObj.period} (${new Date(evalObj.evaluation_date).toLocaleDateString('vi-VN')})` : 'Chưa đánh giá',
+                    },
+                    {
+                      label: 'Nhận xét',
+                      value: evalObj?.overall_comment ? (
+                        <span className="text-on-surface-variant font-medium line-clamp-1">
+                          "{evalObj.overall_comment}"
+                        </span>
+                      ) : '—',
+                    },
+                  ],
+                  onClick: () => handleOpenDetail(row.id),
+                };
+              })}
+              emptyMessage="Không tìm thấy dữ liệu đánh giá học sinh nào"
+            />
+          </div>
+
+          {/* Desktop Table View (hidden md:block) */}
+          <div className="hidden md:block">
+            <Table 
+              className="rounded-2xl border border-outline-variant/30 shadow-sm bg-surface"
+              columns={tableColumns} 
+              data={students} 
+              rowKey={(row) => row.id}
+              onRowClick={(row) => handleOpenDetail(row.id)}
+              loading={isLoadingStudents}
+              emptyTitle="Không tìm thấy dữ liệu đánh giá"
+              emptyDescription="Không có dữ liệu học sinh nào khớp với bộ lọc lớp học hoặc từ khóa tìm kiếm."
+            />
+          </div>
+        </>
       )}
     </div>
   );

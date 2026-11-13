@@ -14,11 +14,12 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { api } from "../lib/api";
-import { useSlidePanel, Table, type TableColumn, ErrorState, MobileFilterToggle } from "../components/ui";
+import { useSlidePanel, Table, type TableColumn, ErrorState, MobileFilterToggle, Avatar } from "../components/ui";
 import { HealthRecordForm } from "../components/forms/HealthRecordForm";
 import { HealthRecordDetailPanel } from "../components/details/HealthRecordDetailPanel";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useClassesList } from "../hooks/useClassesList";
+import { MobileCardList } from "../components/mobile/MobileCardList";
 
 export function Health({ classId }: { classId?: string }) {
   const { openPanel } = useSlidePanel();
@@ -282,20 +283,80 @@ export function Health({ classId }: { classId?: string }) {
         )}
       </div>
 
-      {/* Main Table view */}
+      {/* Main Content: Mobile Cards + Desktop Table */}
       {isErrorStudents ? (
         <ErrorState onRetry={refetchStudents} />
       ) : (
-      <Table 
-        className="rounded-2xl border border-outline-variant/30 shadow-sm bg-surface"
-        columns={tableColumns} 
-        data={students} 
-        rowKey={(row) => row.id}
-        onRowClick={(row) => handleOpenDetail(row.id)}
-        loading={isLoadingStudents}
-        emptyTitle="Không tìm thấy dữ liệu sức khỏe"
-        emptyDescription="Không có dữ liệu học sinh nào khớp với bộ lọc lớp học hoặc từ khóa tìm kiếm."
-      />
+        <>
+          {/* Mobile Card View (md:hidden) */}
+          <div className="md:hidden">
+            <MobileCardList
+              items={students.map((row: any) => {
+                const rec = row.latest_health_record;
+                const status = rec?.health_status;
+                const hasWarning = row.allergies || row.medical_notes;
+                return {
+                  id: row.id,
+                  title: row.full_name,
+                  subtitle: `Mã: ${row.student_code || '—'} • Lớp: ${row.classes?.name || 'Chưa xếp lớp'}`,
+                  avatar: (
+                    <Avatar
+                      src={row.profile_image_url || undefined}
+                      name={row.full_name}
+                      className="w-10 h-10 rounded-full ring-2 ring-primary/20 shrink-0"
+                    />
+                  ),
+                  badge: status ? (
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase tracking-wide",
+                      status === 'Bình thường'
+                        ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                        : "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    )}>
+                      {status}
+                    </span>
+                  ) : undefined,
+                  fields: [
+                    {
+                      label: 'Chiều cao',
+                      value: rec?.height_cm ? `${rec.height_cm} cm` : '—',
+                    },
+                    {
+                      label: 'Cân nặng',
+                      value: rec?.weight_kg ? `${rec.weight_kg} kg` : '—',
+                    },
+                    {
+                      label: 'Lưu ý y tế',
+                      value: hasWarning ? (
+                        <span className="text-rose-600 font-bold truncate block max-w-[180px]">
+                          {row.allergies || row.medical_notes}
+                        </span>
+                      ) : (
+                        <span className="text-on-surface-variant/50">Bình thường</span>
+                      ),
+                    },
+                  ],
+                  onClick: () => handleOpenDetail(row.id),
+                };
+              })}
+              emptyMessage="Không tìm thấy dữ liệu sức khỏe học sinh nào"
+            />
+          </div>
+
+          {/* Desktop Table View (hidden md:block) */}
+          <div className="hidden md:block">
+            <Table 
+              className="rounded-2xl border border-outline-variant/30 shadow-sm bg-surface"
+              columns={tableColumns} 
+              data={students} 
+              rowKey={(row) => row.id}
+              onRowClick={(row) => handleOpenDetail(row.id)}
+              loading={isLoadingStudents}
+              emptyTitle="Không tìm thấy dữ liệu sức khỏe"
+              emptyDescription="Không có dữ liệu học sinh nào khớp với bộ lọc lớp học hoặc từ khóa tìm kiếm."
+            />
+          </div>
+        </>
       )}
     </div>
   );

@@ -24,8 +24,10 @@ import {
   ConfirmDialog,
   useSlidePanel,
   ExcelImportModal,
-  MobileFilterToggle
+  MobileFilterToggle,
+  Avatar,
 } from "../components/ui";
+import { MobileCardList } from "../components/mobile/MobileCardList";
 import { TeacherForm } from "../components/forms/TeacherForm";
 import { TeacherDetailPanel } from "../components/details/TeacherDetailPanel";
 import { useTeachers, type TeacherRow } from "../hooks/useTeachers";
@@ -422,9 +424,47 @@ export function Teachers() {
           <h4 className="font-bold text-lg text-on-surface">Không tìm thấy nhân sự nào</h4>
           <p className="text-[14px] text-on-surface-variant mt-1 max-w-sm mx-auto">Vui lòng điều chỉnh từ khóa tìm kiếm hoặc các tiêu chí bộ lọc.</p>
         </div>
-      ) : viewMode === 'grid' ? (
-        /* Grid Layout Mode */
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      ) : (
+        <>
+          {/* Mobile Card List View */}
+          <div className="md:hidden">
+            <MobileCardList
+              items={teachersData.map((row) => {
+                const classes = row.class_teachers?.map((ct: any) => ct.classes?.name).filter(Boolean).join(', ');
+                return {
+                  id: row.id,
+                  title: row.full_name,
+                  subtitle: row.phone ? `SĐT: ${row.phone}` : row.email,
+                  avatar: (
+                    <Avatar
+                      src={row.avatar_url || undefined}
+                      name={row.full_name}
+                      className="w-10 h-10 rounded-full ring-2 ring-primary/20 shrink-0"
+                    />
+                  ),
+                  badge: getRoleBadge(row),
+                  fields: [
+                    {
+                      label: 'Chức danh',
+                      value: row.job_title || getTeacherTitle(row.email, row.role, row.job_title),
+                    },
+                    {
+                      label: 'Lớp phụ trách',
+                      value: classes || 'Chưa phân công',
+                    },
+                  ],
+                  onClick: () => handleOpenDetail(row.id),
+                };
+              })}
+              emptyMessage="Không tìm thấy nhân sự nào"
+            />
+          </div>
+
+          {/* Desktop Layout Mode (Grid / Table) */}
+          <div className="hidden md:block">
+            {viewMode === 'grid' ? (
+              /* Grid Layout Mode */
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {teachersData.map((row) => {
             const classes = row.class_teachers?.map((ct: any) => ct.classes?.name).filter(Boolean).join(', ');
             return (
@@ -548,6 +588,9 @@ export function Teachers() {
           )}
         </div>
       )}
+    </div>
+  </>
+)}
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
